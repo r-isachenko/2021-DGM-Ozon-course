@@ -96,7 +96,7 @@
 		\vspace{-0.2cm}
 	\end{block}
 	
-	First step is a \textbf{split} operator which decouples variable into 2 subparts (usualy channel-wise).
+	First step is \textbf{split} operator which decouples a variable into 2 subparts (usualy channel-wise).
 	The order of decoupling should be manually changed between layers.
 	
 	Could we use more general operator?
@@ -167,7 +167,7 @@
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item Flows are generative models with tractable likelihood and latent representation.
-		\item Flows transform simple distributions to the complex one via sequence of invertible transformations.
+		\item Flows transform simple distributions into the complex ones via sequences of invertible transformations.
 		\item The goal is to achieve tractable Jacobian for efficient learning and density estimation.
 	\end{itemize}
 \end{frame}
@@ -357,17 +357,17 @@
 	\vspace{0.5cm}
 	Normal variational distribution $q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx))$ is poor (e.g. has only one mode). \\
 	\vspace{0.5cm}
-	Flows models transform simple base distribution to compex one using invertible transformation with simple Jacobian. \\
+	Flows models convert a simple base distribution to a compex one using invertible transformation with simple Jacobian. \\
 	\vspace{0.5cm}
 	How to use flows in VAE?
 \end{frame}
 %=======
 \begin{frame}{Flows in VAE}
-	Apply the sequence of transformations to the random variables 
+	Apply a sequence of transformations to the random variables 
 	\[
 	\bz_0 \sim q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
 	\]
-	Here, $q(\bz | \bx, \bphi)$ (which is a VAE encoder) plays the role of a base distribution.
+	Here, $q(\bz | \bx, \bphi)$ (which is a VAE encoder) plays a role of a base distribution.
 	\[
 	\bz_0 \xrightarrow{g_1} \bz_1 \xrightarrow{g_2} \dots \xrightarrow{g_K} \bz_K, \quad \bz_K = g(\bz_0), \quad g = g_K \circ \dots \circ g_1.
 	\]
@@ -441,7 +441,7 @@
 		\]
 	\end{block}
 	Sampling from autoregressive model is sequential. \\
-	Note that we could interpret this sampling as a transormation $\bx = g(\bz, \btheta)$, where $\bz$ comes from base distribution $\mathcal{N}(0, 1)$.
+	Note that we could interpret this sampling as a transformation $\bx = g(\bz, \btheta)$, where $\bz$ comes from base distribution $\mathcal{N}(0, 1)$.
 \end{frame}
 %=======
 \begin{frame}{Gaussian autoregressive model}
@@ -527,8 +527,8 @@
 	\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
 \end{figure}
 \begin{itemize}	
-	\item Inference mode in autoregressive flows is used for density estimation task.
-	\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get more flexible posterior distribution.
+	\item Inference mode in autoregressive flows is used for density estimation tasks.
+	\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get a more flexible posterior distribution.
 \end{itemize}
 \vfill
 \hrule\medskip

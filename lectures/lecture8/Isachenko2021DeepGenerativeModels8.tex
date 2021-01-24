@@ -137,14 +137,14 @@
 				H_0: \pi(\bx) = p(\bx | \btheta), \quad H_1: \pi(\bx) \neq p(\bx | \btheta)
 			\]
 	\end{block}
-	Define test statistic $T(\cS_1, \cS_2)$. Test statictic is likelihood free.
+	Define test statistic $T(\cS_1, \cS_2)$. The test statictic is likelihood free.
 	
 	If $T(\cS_1, \cS_2) < \alpha$, then accept $H_0$, else reject it.
 	
 	\begin{block}{Desired behaviour}
 		\begin{itemize}
 			\item The generative model $p(\bx | \btheta)$ minimizes the value of test statistic~$T(\cS_1, \cS_2)$.
-			\item Find appropriate test statistic in high dimensions is hard. We could try to learn the appropriate $T(\cS_1, \cS_2)$.
+			\item It is hard to find an appropriate test statistic in high dimensions. We could try to learn the appropriate $T(\cS_1, \cS_2)$.
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -152,16 +152,16 @@
 \begin{frame}{Vanila GAN}
 	\begin{itemize}
 		\item \textbf{Generator:} latent variable model $\bx = G(\bz)$, which minimizes two-sample test objective.
-		\item \textbf{Discriminator:} function $D(\bx)$, which distinguish real samples from model samples and maximizes two-sample test statistic.
+		\item \textbf{Discriminator:} function $D(\bx)$, which distinguishes real samples from model samples and maximizes a two-sample test statistic.
 	\end{itemize}
 	\begin{block}{Objective}
 		\[
 			V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
 		\]
 	\end{block}
-	For fixed generator $G(\bz)$ discriminator is performing binary classification with cross entropy loss.
+	For fixed generator $G(\bz)$ the discriminator is performing a binary classification with a cross entropy loss.
 	
-	 This minimax game has global optimum $\pi(\bx) = p(\bx | \btheta)$.
+	 This minimax game has the global optimum $\pi(\bx) = p(\bx | \btheta)$.
 	 \vfill
 	 \hrule\medskip
 	 {\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
@@ -230,8 +230,7 @@
 	\[
 		V(G^*, D^*) = -2\log 2, \quad \pi(\bx) = p(\bx | \btheta).
 	\]
-	If the generator updates are made in function space and discriminator is optimal at every step, then the generator is
-	guaranteed to converge to the data distribution.
+	If the generator updates are made in a function space and the discriminator is optimal at every step, then the generator is guaranteed to converge to the data distribution.
 \end{frame}
 %=======
 \begin{frame}{Vanila GAN}

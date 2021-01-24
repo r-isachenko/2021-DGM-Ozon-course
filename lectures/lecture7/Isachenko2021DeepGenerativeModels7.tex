@@ -352,7 +352,7 @@
 \begin{block}{Free bits}
 \begin{itemize}
 \item Divide the latent dimensions into the $K$ subsets.
-\item Ensure that using less than $\lambda$ nats of information per subset $j$.
+\item Ensure the use of less than $\lambda$ nats of information per subset $j$.
 \end{itemize}
 
 \[
@@ -419,7 +419,7 @@ This results in $KL (q(\bZ_j | \bx) || p(\bZ_j)) \geq \lambda$ for all $j$, in p
 %=======
 \begin{frame}{Variational Lossy AutoEncoder, 2016}
 \begin{block}{Theorem}
-VAE with AF prior in latent code $\bz$ is equivalent to using IAF posterior for latent code $\bepsilon$.
+VAE with the AF prior for latent code $\bz$ is equivalent to using the IAF posterior for latent code $\bepsilon$.
 \end{block}
 \begin{block}{Proof}
 \vspace{-0.5cm}
@@ -449,7 +449,7 @@ VAE with AF prior in latent code $\bz$ is equivalent to using IAF posterior for 
 		\item IAF posterior decoder path: $p(\bx|\bz, \btheta)$, $\bz \sim p(\bz)$.
 		\item AF prior decoder path: $p(\bx|\bz, \btheta)$, $\bz = g(\bepsilon, \blambda)$, $\bepsilon \sim p(\bepsilon)$. 
 	\end{itemize}
-	AF prior and IAF posterior have the same computation cost, so using AF prior makes the model more expressive at no training time cost.
+	The AF prior and the IAF posterior have the same computation cost, so using the AF prior makes the model more expressive at no training time cost.
 \vfill
 \hrule\medskip
 {\scriptsize \href{https://arxiv.org/abs/1611.02731}{https://arxiv.org/abs/1611.02731}}
@@ -548,7 +548,7 @@ VAE with AF prior in latent code $\bz$ is equivalent to using IAF posterior for 
 \begin{block}{VAE objective}
 	\vspace{-0.2cm}
 	\[
-	p(\bx | \btheta) \geq \mathcal{L} (q, \btheta)  = \mathbb{E}_{q(\bz | \bx)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx)} \rightarrow \max_{\bphi, \btheta}
+	\log p(\bx | \btheta) \geq \mathcal{L} (q, \btheta)  = \mathbb{E}_{q(\bz | \bx)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx)} \rightarrow \max_{\bphi, \btheta}
 	\]
 	\[
 	\mathcal{L} (q, \btheta)  = \mathbb{E}_{\bz_1, \dots, \bz_K \sim q(\bz | \bx)} \left( \frac{1}{K} \sum_{k=1}^K \log \frac{p(\bx, \bz_k | \btheta)}{q(\bz_k| \bx)} \right) \rightarrow \max_{q, \btheta}.
@@ -650,7 +650,7 @@ Which $q(\bz | \bx)$ gives $\mathcal{L}(q, \btheta) = \mathcal{L}_K(q, \btheta)$
 	q_{EW}(\bz | \bx) = \mathbb{E}_{\bz_2, \dots, \bz_K \sim q(\bz | \bx)} q_{IW}(\bz | \bx, \bz_{2:K}),
 	\]
 	where \[
-	q_{IW}(\bz | \bx, \bz_{2:K}) = \frac{\frac{p(\bx, \bz)}{q(\bz | \bx)})}{\frac{1}{K} \sum_{k=1}^K \frac{p(\bx, \bz_k)}{q(\bz_k | \bx)}} q(\bz | \bx) = \frac{p(\bx, \bz)}{\frac{1}{K}\left( \frac{p(\bx, \bz)}{q(\bz | \bx)} + \sum_{k=2}^K \frac{p(\bx, \bz_k)}{q(\bz_k | \bx)}\right)}.
+	q_{IW}(\bz | \bx, \bz_{2:K}) = \frac{\frac{p(\bx, \bz)}{q(\bz | \bx)}}{\frac{1}{K} \sum_{k=1}^K \frac{p(\bx, \bz_k)}{q(\bz_k | \bx)}} q(\bz | \bx) = \frac{p(\bx, \bz)}{\frac{1}{K}\left( \frac{p(\bx, \bz)}{q(\bz | \bx)} + \sum_{k=2}^K \frac{p(\bx, \bz_k)}{q(\bz_k | \bx)}\right)}.
 	\]
 \end{block}
 
@@ -676,12 +676,12 @@ Which $q(\bz | \bx)$ gives $\mathcal{L}(q, \btheta) = \mathcal{L}_K(q, \btheta)$
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item ELBO surgery reveals insights about prior distribution in VAE. The optimal prior is aggregated posterior.
-		\item VampPrior proposed to use variational mixture of posteriors as prior to approximate the aggregated posterior.
-		\item More powerful decoder in VAE leads to more expressive generative model. However, too expressive decoder could lead to posterior collapse.
-		\item Decoder weakening is a set of techniques to avoid posterior collapse.
-		\item Autoregressive flows could be used in prior. This is equivalent to the use of IAF posterior. 
-		\item Importance sampling could get tighter lower bound to the likelihood.
+		\item The ELBO surgery reveals insights about a prior distribution in VAE. The optimal prior is the aggregated posterior.
+		\item VampPrior proposes to use a variational mixture of posteriors as the prior to approximate the aggregated posterior.
+		\item More powerful decoder in VAE leads to more expressive generative model. However, too expressive decoder could lead to the posterior collapse.
+		\item The decoder weakening is a set of techniques to avoid the posterior collapse.
+		\item The autoregressive flows could be used as the prior. This is equivalent to the use of the IAF posterior. 
+		\item The importance sampling could get the tighter lower bound to the likelihood.
 	\end{itemize}
 \end{frame}
 %=======

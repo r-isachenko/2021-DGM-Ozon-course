@@ -98,10 +98,10 @@
 \end{frame}
 %=======
 \begin{frame}{Generative models}
-    Given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $p(\bx)$.
+    We age given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $p(\bx)$.
     
     \begin{block}{Goal}
-    	learn a distribution $p(\bx)$ for 
+    	We would like to learn a distribution $p(\bx)$ for 
     	\begin{itemize}
     	    \item evaluating $p(\bx)$ for new samples;
     	    \item sampling from $p(\bx)$.
@@ -116,8 +116,8 @@
     \end{block}
 \end{frame}
 %=======
-\begin{frame}{Latent variable models}
-    Suppose that our probabilistic model $p(\bx, \bz | \btheta)$ instead of $p(\bx | \btheta)$.
+\begin{frame}{Latent variable models (LVM)}
+    Suppose that our probabilistic model is $p(\bx, \bz | \btheta)$ instead of $p(\bx | \btheta)$.
     \begin{itemize}
         \item Here $\bz$ are latent variables.
         \item We observe only samples $\bx$. 
@@ -206,7 +206,7 @@
 		\end{figure}
 		\vspace{-0.5cm}
 	    \begin{itemize}
-	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \boldsymbol{\mu}_\bz, \boldsymbol{\Sigma}^2_\bz)$
+	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \boldsymbol{\mu}_\bz, \boldsymbol{\Sigma}_\bz)$
 	        \item $p(\bz) = \text{Cat}(\bz | \boldsymbol{\pi})$
 	    \end{itemize}
 	\end{minipage}%
@@ -219,7 +219,7 @@
 		\end{figure}
 		\vspace{-0.5cm}
 		\begin{itemize}
-	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}^2_\bz)$
+	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}_\bz)$
 	        \item $p(\bz) = \mathcal{N}(\bz | 0, \mathbf{I})$
 	    \end{itemize}
 	\end{minipage}
@@ -242,7 +242,7 @@
 	\end{figure}
 	\vspace{-0.5cm}
 	\begin{itemize}
-        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}^2_\bz)$
+        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}_\bz)$
         \item $p(\bz) = \mathcal{N}(\bz | 0, \mathbf{I})$
     \end{itemize}
 
@@ -294,7 +294,7 @@
 \[
     \log p(\bX| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bZ) || p(\bZ|\bX, \btheta)) \geq \mathcal{L} (q, \btheta).
 \]
-\begin{block}{ELBO}
+\begin{block}{Evidence Lower Bound (ELBO)}
 \begin{align*}
     \mathcal{L} (q, \btheta) &= \int q(\bZ) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ)}d\bZ = \\ 
     &= \int q(\bZ) \log p(\bX | \bZ, \btheta) d\bZ + \int q(\bZ) \log \frac{p(\bZ)}{q(\bZ)}d\bZ \\ 
@@ -339,7 +339,7 @@ Instead of maximizing incomplete likelihood, maximize ELBO
 	could be \textbf{intractable}.
     \end{block}
 	\begin{block}{Idea}
-	Restrict the family of all possible distributions $q(\bz)$ to the particular parametric class conditioned of sample: $q(\bz|\bx, \bphi)$.
+	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class conditioned on sample: $q(\bz|\bx, \bphi)$.
 	\end{block}
 	
 	\textbf{Variational Bayes}

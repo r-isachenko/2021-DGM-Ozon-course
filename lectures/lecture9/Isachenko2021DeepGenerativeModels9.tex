@@ -90,7 +90,7 @@
 %=======
 \begin{frame}{Wasserstein distance}
 	\[
-	W(\pi, p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+	W(\pi || p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
 	\]
 	\begin{itemize}
 		\item $\prod(\pi, p)$ -- the set of all joint distributions $\gamma (\bx, \by)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx, \by) d \bx = p(\by)$, $\int \gamma(\bx, \by) d \by = \pi(\bx)$)
@@ -106,7 +106,7 @@
 \begin{frame}{Wasserstein distance vs KL vs JSD}
 	\begin{block}{Theorem 1}
 		Let $G(\bz, \btheta)$ be any feedforward neural network, and $p(\bz)$ a prior over $\bz$ such that $\bbE_{\bz \sim p(\bz)}
-		\|\bz\| < \infty$. Then therefore $W(\pi, p)$ is continuous everywhere and differentiable almost everywhere.
+		\|\bz\| < \infty$. Then therefore $W(\pi || p)$ is continuous everywhere and differentiable almost everywhere.
 	\end{block}
 	\begin{block}{Theorem 2}
 		Let $\pi$ be a distribution on a compact space $\cX$ and $\{p_t\}_{t=1}^\infty$ be a sequence of distributions on $\cX$. 
@@ -127,13 +127,13 @@
 	\begin{block}{Wasserstein distance}
 		\vspace{-0.4cm}
 		\[
-			W(\pi, p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+			W(\pi || p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
 		\]
 	\end{block}
 	The infimum across all possible joint distributions in $\prod(\pi, p)$ is intractable.
 	\begin{block}{Kantorovich-Rubinstein duality}
 		\[
-			W(\pi, p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
+			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
 		\]
 		where $\| f \|_L \leq K$ are $K-$Lipschitz continuous functions ($f: \cX \rightarrow \bbR$)
 		\[
@@ -148,14 +148,14 @@
 \begin{frame}{Wasserstein GAN}
 		\begin{block}{Kantorovich-Rubinstein duality}
 		\[
-			W(\pi, p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
+			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
 		\]
 	\end{block}
 	\begin{itemize}
 		\item Now we have to ensure that $f$ is $K$-Lipschitz continuous.
-		\item Let make $f(\bx, \phi)$ parametrized by parameters $\bphi$.
+		\item Let $f(\bx, \phi)$ be parametrized by parameters $\bphi$.
 		\item If parameters $\phi$ lie in a compact set $\boldsymbol{\Phi}$ then $f(\bx, \bphi)$ will be $K$-Lipschitz continuous function. 
-		\item Let clamp the parameters to a fixed box $\boldsymbol{\Phi} \in [-0.01, 0.01]^d$ after each gradient update.
+		\item Let the parameters be clamped to a fixed box $\boldsymbol{\Phi} \in [-0.01, 0.01]^d$ after each gradient update.
 	\end{itemize}
 	{\footnotesize
 	\[
@@ -176,7 +176,7 @@
 	\begin{block}{WGAN objective}
 		\vspace{-0.6cm}
 		\[
-		\min_{G} W(\pi, p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
+		\min_{G} W(\pi || p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
 		\]
 	\end{block}
 	\begin{itemize}
@@ -252,11 +252,11 @@
 	
 	\begin{minipage}[t]{0.45\columnwidth}
 		\vspace{0.2cm}
-		The generator distribution is fixed and equals to the real distribution + Gaussian noise. \\
+		The generator distribution is fixed and equal to the real distribution + Gaussian noise. \\
 		Problems with weight clipping:
 		\begin{itemize}
 			\item The critic ignores higher moments of the data distribution.
-			\item The gradient either grow or decay exponentially.
+			\item The gradients either grow or decay exponentially.
 		\end{itemize}
 	Gradient penalty makes the gradients  more stable.
 	\end{minipage}%
@@ -300,12 +300,12 @@
 	A differentiable function is 1-Lipschtiz if and only if it has gradients with norm at most 1 everywhere.
 	\begin{block}{Gradient penalty}
 		\[
-			W(\pi, p) = \underbrace{\bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{\hat{\bx}} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
+			W(\pi || p) = \underbrace{\bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{\hat{\bx}} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
 		\]
 	\end{block}
 	\begin{itemize}
 		\item Samples $\hat{\bx}$ are uniformly sampled along straight lines between pairs of points from the data distribution $\pi(\bx)$ and the generator distribution $p(\bx | \btheta)$.
-		\item Enforcing the unit gradient norm constraint everywhere is intractable, it turns out sifficient to enforce it only along these straight lines.
+		\item Enforcing the unit gradient norm constraint everywhere is intractable, it turns out to be sifficient to enforce it only along these straight lines.
 	\end{itemize}
 	\vfill
 	\hrule\medskip 

@@ -218,7 +218,7 @@ Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo}
 \[
 	\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bX | \bZ, \btheta) - KL (q(\bZ| \bX, \phi) || p(\bZ)) \rightarrow \max_{\bphi, \btheta}.
 \]
-	Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use Monte-Carlo estimation:
+	Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
 	\[
 		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) d\bZ - \nabla_{\bphi} KL
 	\]
@@ -239,7 +239,7 @@ Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo}
 		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) d\bZ  - \nabla_{\bphi} KL = \\ 
 		=  \int q(\bZ| \bX, \bphi) \bigl[  \nabla_{\bphi} \log q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) \bigr] d\bZ - \nabla_{\bphi} KL
 	\end{multline*}
-	After applying log-reparametrization trick, we are able to use Monte-Carlo estimation:
+	After applying the log-reparametrization trick, we are able to use the Monte-Carlo estimation:
 	\[
 		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL,
 	\]
@@ -361,7 +361,7 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 \begin{frame}{Variational Lower Bound}
     We are given the set of objects $\bX = \{\bx_i\}_{i=1}^n$. 
     The goal is to perform bayesian inference on the latent variables $\bT = \{\bt_i\}_{i=1}^n$.
-    \begin{block}{Empirical Lower BOund (ELBO)}
+    \begin{block}{Evidence Lower Bound (ELBO)}
     \vspace{-0.3cm}
         \begin{multline*}
     		\log p(\bX) 
@@ -577,10 +577,10 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 
 \begin{itemize}
 	\item Latent variable models introduce latent variables to the initial probabilistic model to make distribution $p(\bx | \btheta)$ tractable.
-	\item To solve the MLE problem LVM optimizes variational lower bound.
-	\item EM-algorithm is an iterative algorithm which allows to optimize the variational lower bound.
-	\item VAE model is a LVM, encoder is a variational distribution, decoder is a likelihood model.
-	\item Mean field approximation is a general form of variational inference (EM-algorithm is just a special case).
+	\item To solve the MLE problem LVM optimizes the variational lower bound.
+	\item The EM-algorithm is an iterative algorithm which allows to optimize the variational lower bound.
+	\item VAE model is an LVM, where the encoder gives the variational distribution, the decoder defines the likelihood model.
+	\item The mean field approximation is a general form of variational inference (the EM-algorithm is just a special case).
 \end{itemize}
 \end{frame}
 %=======

@@ -165,7 +165,7 @@
 \end{frame}
 %=======
 \begin{frame}{Stacking flows}
-	Let $\bz = f(\bx) = f_2 \circ f_1(\bx)$ and $f_1, f_2$ satisfy conditions of change of variable theorem (differentiable and invertible).
+	Let $\bz = f(\bx) = f_2 \circ f_1(\bx)$ and $f_1, f_2$ satisfy conditions of the change of variable theorem (differentiable and invertible).
 	\begin{multline*}
 		p(\bx) = p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(f(\bx)) \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right) \right| = \\
 		= p(f(\bx)) \left|\det \left(\frac{\partial f_2 \circ f_1(\bx)}{\partial \bx} \right) \right| =
@@ -173,7 +173,7 @@
 		= p(f(\bx))  \left|\det \left(\frac{\partial \textbf{f}_2}{\partial \textbf{f}_1} \right) \right| \cdot \left| \det \left( \frac{\partial \textbf{f}_1}{\partial \bx} \right) \right|
 	\end{multline*}
 
-	What we will get in the case $\bz = f(\bx) = f_n \circ \dots \circ f_1(\bx)$?
+	What will we get in the case $\bz = f(\bx) = f_n \circ \dots \circ f_1(\bx)$?
 \end{frame}
 %=======
 \begin{frame}{Flows}
@@ -184,8 +184,8 @@
 		Normalizing flow is a \textit{differentiable, invertible} mapping from data $\bx$ to the noise $\bz$. 
 	\end{block}
 	\begin{itemize}
-		\item Normalizing - convert data distribution to \textit{noise}.
-		\item Flow - sequence of such mapping is also a flow
+		\item Normalizing - convert the data distribution into a \textit{noise}.
+		\item Flow - a sequence of such mappings is also a flow
 		\[
 		\bz = f_K \circ \dots \circ f_1(\bx); \quad \bx = f_1^{-1} \circ \dots \circ f_K^{-1} (\bz) = g_1 \circ \dots \circ g_K(\bz) 
 		\] 
@@ -200,12 +200,12 @@
 	\[
 	\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
 	\]
-	What is the computational comprexity of computing the determinant?
+	What is the complexity of the determinant computation?
 	\begin{block}{What we want}
 		\begin{itemize}
 			\item Efficient computation of Jacobian $\frac{\partial f(\bx, \btheta)}{\partial \bx}$;
 			\item Efficient sampling from the base distribution $p(\bz)$;
-			\item Easy to invert $f(\bx, \btheta)$.
+			\item Efficient inversion of $f(\bx, \btheta)$.
 		\end{itemize}
 		
 	\end{block}
@@ -215,7 +215,7 @@
 \begin{frame}{Planar Flows, 2015}
 	\vspace{-0.2cm}
 	\[
-	g(\bz, \btheta) = \bz + \mathbf{u} h(\bw^T\bz + b).
+	g(\bz, \btheta) = \bz + \mathbf{u} \, h(\bw^T\bz + b).
 	\]
 	\vspace{-0.2cm}
 	\begin{itemize}
@@ -250,16 +250,16 @@
 %=======
 \begin{frame}{Jacobian structure}
 	\begin{itemize}
-		\item What is the determinant of a diagonal matrix?
+		\item What is a determinant of a diagonal matrix?
 		\[
 		\bz = f(\bx, \btheta) = (f_1(x_1, \btheta), \dots, f_m(x_m, \btheta)).
 		\]
 		\[
 		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = \log \left| \prod_{i=1}^m f_i'(x_i, \btheta) \right| = \sum_{i=1}^m \log \left| f_i'(x_i, \btheta) \right|.
 		\]
-		\item What is the determinant of a triangular matrix? \\
+		\item What is a determinant of a triangular matrix? \\
 		Let $z_i$ depends only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
-		What is the inverse of such transformations?
+		What is the inverse of such a transformation?
 	\end{itemize}
 \end{frame}
 %=======
@@ -445,7 +445,7 @@
 		\includegraphics[width=0.8\linewidth]{figs/revnet_results.png}
 	\end{figure}
 	\begin{itemize}
-		\item If the network contains non-reversible blocks (poolings, strides), activations for this blocks should be stored.
+		\item If the network contains non-reversible blocks (poolings, strides), activations for these blocks should be stored.
 		\item To avoid storing activations in the modern frameworks, the backward pass should be manually redefined.
 	\end{itemize}
 	\vfill
@@ -458,7 +458,7 @@
 		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
 	\end{block}
 	\begin{itemize}
-		\item It is difficult of recovering images from their hidden representations. 
+		\item It is difficult to recover images from their hidden representations. 
 		\item Information bottleneck principle: an optimal representation must reduce the MI between an input and its representation to reduce uninformative variability + maximize the MI between the output and its representation to preserve each class from collapsing onto other classes.
 	\end{itemize}
 	\vfill

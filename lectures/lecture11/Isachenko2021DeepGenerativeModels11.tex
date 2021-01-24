@@ -205,7 +205,7 @@ Construct an unsupervised deep generative model
 \end{block}
 What do we get at $\beta = 1$? \\
 \begin{block}{Hypothesis}
-To learn disentangled representations of the conditionally independent factors $\bv$, it is important to set stronger constraint on the latent bottleneck: $\beta > 1$.
+To learn disentangled representations of the conditionally independent factors $\bv$, it is important to set a stronger constraint on the latent bottleneck: $\beta > 1$.
 \end{block}
 \textbf{Note:} It could lead to poorer reconstructions due to the loss of high frequency details when passing through a constrained latent bottleneck. \\ 
 \vspace{0.1cm}
@@ -546,7 +546,7 @@ As the information capacity increases the different latents associated with thei
 			\frac{q_1(\bx)}{q_2(\bx)} = \frac{p(\bx | y = 1)}{p(\bx | y = 0)} = \frac{p(y = 1 | \bx) p(\bx)}{p(y=1)} \bigg/ \frac{p(y = 0 | \bx) p(\bx)}{p(y=0)} = \\
 			= \frac{p(y = 1 | \bx)}{p(y = 0 | \bx)} = \frac{p(y = 1 | \bx)}{1 - p(y = 1 | \bx)} = \frac{D(\bx)}{1 - D(\bx)}
 		\end{multline*}
-	Here $D(\bx)$ could be treated as a discriminator model, which outputs the probability that $\bx$ is a sample
+	Here $D(\bx)$ could be treated as a discriminator a model the output of which is a probability that $\bx$ is a sample
 	from $q_1(\bx)$ rather than from $q_2(\bx)$.
 	\end{block}
 	
@@ -695,7 +695,7 @@ As the information capacity increases the different latents associated with thei
 \begin{frame}{Challenging Disentanglement Assumptions}
 	\begin{itemize}
 		\item \textbf{Training:} Factorizing \textbf{samples} from aggregated posterior $q(\bz) = \prod_{i=1}^d q(z_i)$.
-		\item \textbf{Inference:} Use the \textbf{mean} vector (usually mean of Gaussian encoder) as the representation.
+		\item \textbf{Inference:} Use a \textbf{mean} vector (usually mean of Gaussian encoder) as a representation.
 	\end{itemize}
 	\begin{figure}
 		\centering

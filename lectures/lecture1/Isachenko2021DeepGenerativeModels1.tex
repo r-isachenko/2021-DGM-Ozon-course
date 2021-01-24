@@ -167,10 +167,10 @@
 %--------------------------------------------------------------------------------
 \section{Likelihood based models}
 \begin{frame}{Problem Statement}
-Given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\bx)$.
+We are given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\bx)$.
 
 \begin{block}{Goal}
-	learn a distribution $\pi(\bx)$ for 
+	We would like to learn a distribution $\pi(\bx)$ for 
 	\begin{itemize}
 	    \item evaluating $\pi(\bx)$ for new samples;
 	    \item sampling from $\pi(\bx)$.
@@ -336,7 +336,7 @@ The model uses causal dilated convolutions.
 %=======
 \begin{frame}{PixelCNN (2016)}
 \begin{block}{Goal}
-Modeling the distribution of natural images.
+Model a distribution of natural images.
 \end{block}
 \begin{block}{Solution}
 Autoregressive model
@@ -383,7 +383,7 @@ Autoregressive model
 %=======
 \begin{frame}{Summary}
     \begin{itemize}
-        \item Sampling from autoregressive models are trivial, but sequential
+        \item Sampling from autoregressive models is trivial, but sequential
         \begin{itemize}
             \item sample $x_0 \sim p(x_0)$;
             \item sample $x_1 \sim p(x_1 | x_0)$;

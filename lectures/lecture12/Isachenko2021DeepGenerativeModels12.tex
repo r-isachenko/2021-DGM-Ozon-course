@@ -69,8 +69,8 @@
 \begin{minipage}[t]{0.6\columnwidth}
 \vspace{0.2cm}
 \begin{itemize}
-	\item Neural network for classification task has hundreds of layers.
-	\item Skip connections eliminates exploding/vanishing gradients.
+	\item Neural networks for classification task have hundreds of layers.
+	\item Skip connections eliminate exploding/vanishing gradients.
 \end{itemize}
 \[
 	\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
@@ -436,9 +436,9 @@
 %=======
 \begin{frame}{Vector Quantized VAE}
 	\begin{itemize}
-		\item Latent embedding space $\{\be_j\}_{j=1}^K$, where $\be_j \in \bbR^D$, $K$ is the size of the discrete latent space.
-		\item $\bz_e(\bx)$ is the encoder output.
-		\item $z$ is the discrete random variable calculated by a nearest neighbour look-up using the shared embedding space. The posterior categorical distribution is defined as 
+		\item Latent embedding space $\{\be_j\}_{j=1}^K$, where $\be_j \in \bbR^D$, $K$ is the size of a discrete latent space.
+		\item $\bz_e(\bx)$ is an encoder output.
+		\item $z$ is an discrete random variable calculated by a nearest neighbour look-up using the shared embedding space. The posterior categorical distribution is defined as 
 		\[
 			q(z = k | \bx) = \begin{cases}
 				1 , \quad \text{for } k = \argmin_j \| \bz_e(\bx) - \be_j \| \\
