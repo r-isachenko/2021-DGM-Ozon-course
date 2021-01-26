@@ -7,8 +7,6 @@
 %\thispagestyle{empty}
 \titlepage
 \end{frame}
-%--------------------------------------------------------------------------------
-\section{Intro}
 %=======
 \begin{frame}{Generative models zoo}
     \begin{figure}
@@ -16,9 +14,6 @@
         \includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
         \label{fig:generative_models_zoo}
     \end{figure}
-\vfill
-\hrule\medskip
-{\scriptsize Radford A., Metz L., Chintala S. Unsupervised representation learning with deep convolutional generative adversarial networks  \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
 \end{frame}
 %=======
 \begin{frame}{Latent variable models}
@@ -266,8 +261,8 @@ Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$
 	\centering
 	\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
 \end{figure}
- \hrule\medskip
-{\scriptsize \href{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}}
+
+\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
@@ -275,9 +270,7 @@ Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$
 	\centering
 	\includegraphics[width=.7\linewidth]{figs/VAE.png}
 \end{figure}
-
-\medskip\hrule\medskip
-{\scriptsize Isaac Dykeman, \href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}}
+\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
@@ -286,9 +279,7 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 	\centering
 	\includegraphics[width=.5\linewidth]{figs/vae_0.png}
 \end{figure}
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://bit.ly/2w73aXB}{http://bit.ly/2w73aXB}}
+\myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
@@ -533,8 +524,4 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 \end{itemize}
 \end{frame}
 %=======
-%--------------------------------------------------------------------------------
-\section{Conclusion}
-%--------------------------------------------------------------------------------
-
 \end{document} 

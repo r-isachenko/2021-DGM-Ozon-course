@@ -7,8 +7,6 @@
 %\thispagestyle{empty}
 \titlepage
 \end{frame}
-%--------------------------------------------------------------------------------
-\section{Intro}
 %=======
 \begin{frame}{Generative models zoo}
     \begin{figure}
@@ -16,12 +14,8 @@
         \includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
         \label{fig:generative_models_zoo}
     \end{figure}
-\vfill
-\hrule\medskip
-{\scriptsize Radford A., Metz L., Chintala S. Unsupervised representation learning with deep convolutional generative adversarial networks  \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
 \end{frame}
-%--------------------------------------------------------------------------------
-\subsection{Latent variable models}
+%=======
 \begin{frame}{Bayesian framework}
 \begin{itemize}
     \item $\bx$ -- samples;
@@ -181,11 +175,7 @@
 	    \end{itemize}
 	\end{minipage}
 	\end{block}
-
-\vfill
-\hrule\medskip
-{\scriptsize Bishop\,C. Pattern Recognition and Machine Learning, 2006.}
-    
+\myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
 \end{frame}
 %=======
 \begin{frame}{Latent variable models}
@@ -202,10 +192,8 @@
         \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \mathbf{W} \bz + \boldsymbol{\mu}, \boldsymbol{\Sigma}_\bz)$
         \item $p(\bz) = \mathcal{N}(\bz | 0, \mathbf{I})$
     \end{itemize}
-
-\vfill
-\hrule\medskip
-{\scriptsize Bishop\,C. Pattern Recognition and Machine Learning, 2006.}
+    
+    \myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
     
 \end{frame}
 %=======
@@ -229,7 +217,6 @@
 	
 \end{frame}
 %=======
-\subsubsection{Variational inference}
 \begin{frame}{Variational lower bound}
 	\begin{multline*}
 		\log p(\bX| \btheta) 
@@ -312,38 +299,6 @@ Instead of maximizing incomplete likelihood, maximize ELBO
 	\end{itemize}
 \end{frame}
 %=======
-\begin{frame}{References}
-{\scriptsize
-\begin{itemize}
-    \item \textit{Variational Bayesian inference with Stochastic Search} \\
-	\href{https://arxiv.org/abs/1206.6430}{https://arxiv.org/abs/1206.6430}
-
-    \item \textit{Stochastic Variational Inference} \\
-	\href{https://arxiv.org/abs/1206.7051}{https://arxiv.org/abs/1206.7051}
-
-    \item \textit{Doubly Stochastic Variational Bayes for non-Conjugate Inference} \\
-	\href{http://proceedings.mlr.press/v32/titsias14.pdf}{http://proceedings.mlr.press/v32/titsias14.pdf}
-
-    \item \textit{Auto-Encoding Variational Bayes} \\
-	\href{https://arxiv.org/abs/1312.6114}{https://arxiv.org/abs/1312.6114}
-    
-    \item \textit{Markov chain Monte Carlo and variational inference: Bridging the gap} \\
-	\href{https://arxiv.org/pdf/1410.6460.pdf}{https://arxiv.org/pdf/1410.6460.pdf}
-	
-    \item \textit{Tutorial on Variational Autoencoders} \\
-	\href{http://arxiv.org/abs/1606.05908}{http://arxiv.org/abs/1606.05908}
-\end{itemize}
-}
+\begin{frame}{Summary}
 \end{frame}
-%=======
-%--------------------------------------------------------------------------------
-\subsection{Flow models}
-%--------------------------------------------------------------------------------
-\subsection{Implicit models}
-\subsubsection{GAN}
-\subsubsection{Evatuation of GANs}
-%--------------------------------------------------------------------------------
-\section{Conclusion}
-%--------------------------------------------------------------------------------
-
 \end{document} 

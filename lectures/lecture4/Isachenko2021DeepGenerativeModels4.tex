@@ -51,10 +51,7 @@
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/flows_1d}
 	\end{figure}
-	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://sites.google.com/view/berkeley-cs294-158-sp19/home}{https://sites.google.com/view/berkeley-cs294-158-sp19/home}}
+	\myfootnotewithlink{https://sites.google.com/view/berkeley-cs294-158-sp19/home}{image credit: https://sites.google.com/view/berkeley-cs294-158-sp19/home}
 	
 \end{frame}
 %=======
@@ -90,9 +87,7 @@
 	\item Likelihood is given by $\bz = f(\bx, \btheta)$ and change of variables.
 	\item Sampling of $\bx$ is performed by sampling from a base distribution $p(\bz)$ and applying $\bx = f^{-1}(\bz, \btheta) = g(\bz, \btheta)$.
 \end{itemize}
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
+\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Fitting flows}
@@ -161,7 +156,7 @@
 	
 \end{frame}
 %=======
-\begin{frame}{Planar Flows, 2015}
+\begin{frame}{Planar Flows}
 	\vspace{-0.2cm}
 	\[
 	g(\bz, \btheta) = \bz + \mathbf{u} \, h(\bw^T\bz + b).
@@ -179,12 +174,10 @@
 	\[
 	h = \tanh; \quad h'(\bw^T \bz + b) \bu^T \bw \geq -1.
 	\]
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1505.05770.pdf}{https://arxiv.org/pdf/1505.05770.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
-\begin{frame}{Planar Flows, 2015}
+\begin{frame}{Planar Flows}
 	\[
 	\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
 	\]
@@ -192,9 +185,7 @@
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/planar_flows.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1505.05770.pdf}{https://arxiv.org/pdf/1505.05770.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
 \begin{frame}{Jacobian structure}
@@ -212,7 +203,7 @@
 	\end{itemize}
 \end{frame}
 %=======
-\begin{frame}{NICE, 2014}
+\begin{frame}{NICE}
 	\begin{block}{Coupling layer}
 		\begin{equation*}
 			\begin{cases} \bz_{1:d} = \bx_{1:d} \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}))\end{cases} \quad 
@@ -232,14 +223,12 @@
 			\]
 		\end{itemize}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1410.8516.pdf}{https://arxiv.org/pdf/1410.8516.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
-\begin{frame}{NICE, 2014}
+\begin{frame}{NICE}
 	\begin{block}{Coupling layer}
-		\vspace{-0.5cm}
+		\vspace{-0.8cm}
 		\begin{equation*}
 			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
 			\quad \Rightarrow \quad 
@@ -259,12 +248,10 @@
 	\end{block}
 	To obtain more flexible class of dictributions, stack more coupling layers (with different ordering of components!). \\
 	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1410.8516.pdf}{https://arxiv.org/pdf/1410.8516.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
-\begin{frame}{NICE, 2014}
+\begin{frame}{NICE}
 	\[
 	\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
 	\begin{pmatrix}
@@ -280,22 +267,18 @@
 	z_i = s_i x_i; \quad x_i = z_i / s_i.
 	\]
 	What is the Jacobian of the last layer?
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1410.8516.pdf}{https://arxiv.org/pdf/1410.8516.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
-\begin{frame}{NICE, 2014}
+\begin{frame}{NICE}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/nice.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1410.8516.pdf}{https://arxiv.org/pdf/1410.8516.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
-\begin{frame}{RealNVP, 2016}
+\begin{frame}{RealNVP}
 	\begin{block}{Affine coupling law}
 		\[
 		\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \bx_{d:m} \odot \exp \left(c_1(\bx_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).\end{cases} 
@@ -320,7 +303,7 @@
 	{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
 \end{frame}
 %=======
-\begin{frame}{RealNVP, 2016}
+\begin{frame}{RealNVP}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/realnvp_masking.png}
@@ -331,7 +314,7 @@
 	{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
 \end{frame}
 %=======
-\begin{frame}{RealNVP, 2016}
+\begin{frame}{RealNVP}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/realnvp_output.png}
