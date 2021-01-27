@@ -9,10 +9,10 @@
 \end{frame}
 %=======
 \begin{frame}{Generative models zoo}
-\begin{figure}
-	\centering
-	\includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
-\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
+	\end{figure}
 \end{frame}
 %=======
 \begin{frame}{Likelihood based models}
@@ -38,9 +38,7 @@
 		Noisy irrelevant samples, but for high dimensions $\log p(\bx)$ becames larger.
 		\end{block}
 	\end{minipage}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1511.01844}{https://arxiv.org/abs/1511.01844}}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A note on the evaluation of generative models, 2015}
 \end{frame}
 %=======
 \begin{frame}{Likelihood-free learning}
@@ -63,7 +61,6 @@
 			H_0: \pi(\bx) = p(\bx | \btheta), \quad H_1: \pi(\bx) \neq p(\bx | \btheta)
 		\]
 	\end{block}
-
 \end{frame}
 %=======
 \begin{frame}{Likelihood-free learning}
@@ -98,9 +95,7 @@
 	For fixed generator $G(\bz)$ the discriminator is performing a binary classification with a cross entropy loss.
 	
 	 This minimax game has the global optimum $\pi(\bx) = p(\bx | \btheta)$.
-	 \vfill
-	 \hrule\medskip
-	 {\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
+	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Vanila GAN optimality}
@@ -120,9 +115,7 @@
 			\frac{d y(D)}{d D} = \frac{\pi(\bx)}{D(\bx)} - \frac{p(\bx | \btheta)}{1 - D(\bx)} = 0 \quad \Rightarrow \quad D^*(\bx) = \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
 		\]
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 
 \end{frame}
 %=======
@@ -141,10 +134,7 @@
 			 = 2JSD(\pi(\bx) || p(\bx | \btheta)) - 2\log 2.
 		\end{multline*}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
-	
+	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Vanila GAN optimality}
@@ -187,9 +177,8 @@
 		\item Discriminator is not optimal at every step.
 		\item Generator and discriminator loss keeps oscillating during GAN training.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
+
+	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Vanishing gradients}
@@ -213,9 +202,7 @@
 			\includegraphics[width=0.9\linewidth]{figs/vanishing_gradients_2}
 		\end{figure}
 	\end{minipage}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1701.04862}{https://arxiv.org/abs/1701.04862}}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}
 \end{frame}
 %=======
 \begin{frame}{Vanishing gradients}
@@ -237,9 +224,7 @@
 			\includegraphics[width=1.0\linewidth]{figs/vanishing_gradients_3}
 		\end{figure}
 	\end{minipage}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1701.04862}{https://arxiv.org/abs/1701.04862}}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}
 \end{frame}
 %=======
 \begin{frame}{Likelihood-based vs GAN}
@@ -258,26 +243,23 @@
 	\end{block}
 
 	What is the difference between $JS$ and $KL$ divergences?
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/abs/1511.01844}{https://arxiv.org/abs/1511.01844}}
 \end{frame}
 %=======
 \begin{frame}{Mode collapse}
-The phenomena where the generator of a GAN collapses to one or few distribution modes.
-\begin{figure}
-	\centering
-	\includegraphics[width=0.9\linewidth]{figs/mode_collapse_1}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[width=1.0\linewidth]{figs/mode_collapse_3}
-\end{figure}
-Alternate architectures, adding regularization terms, injecting small noise
-perturbations and other millions bags and tricks are used to avoid the mode collapse.
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661} \\ \href{https://arxiv.org/abs/1611.02163}{https://arxiv.org/abs/1611.02163}}
+	The phenomena where the generator of a GAN collapses to one or few distribution modes.
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/mode_collapse_1}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/mode_collapse_3}
+	\end{figure}
+	Alternate architectures, adding regularization terms, injecting small noise
+	perturbations and other millions bags and tricks are used to avoid the mode collapse.
+	
+	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+	\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
 \end{frame}
 %=======
 \begin{frame}{Mode collapse}
@@ -296,9 +278,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\end{figure}
 	\vspace{-0.3cm}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://sites.google.com/view/berkeley-cs294-158-sp20/home}{https://sites.google.com/view/berkeley-cs294-158-sp20/home}}
+	\myfootnotewithlink{https://sites.google.com/view/berkeley-cs294-158-sp20/home}{image credit: https://sites.google.com/view/berkeley-cs294-158-sp20/home}
 \end{frame}
 %=======
 \begin{frame}{Vanila GAN results}
@@ -306,9 +286,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\centering
 		\includegraphics[width=0.95\linewidth]{figs/vanila_gan_results}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Deep Convolutional GAN}
@@ -326,9 +304,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\item Batch Normalization used to prevent mode collapse (not applied at the output of $G$ and input of $D$).
 		\item Adam: small LR = 2e-4; small momentum: 0.5, batch-size: 128.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{Deep Convolutional GAN}
@@ -338,9 +314,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_1}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{Deep Convolutional GAN}
@@ -350,9 +324,8 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_2}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{Deep Convolutional GAN}
@@ -362,9 +335,8 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			\includegraphics[width=1.0\linewidth]{figs/dcgan_results_3}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{Deep Convolutional GAN}
@@ -374,9 +346,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			\includegraphics[width=0.95\linewidth]{figs/mode_collapse_4}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1701.07875}{https://arxiv.org/abs/1701.07875}}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Improved techniques for training GANs}
@@ -393,9 +363,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\]
 		Here $\btheta_t$ -- value of parameters at the previous step $t$. It allows to stabilize training procedure.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1606.03498}{https://arxiv.org/abs/1606.03498}}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03498}{Salimans T. et al. Improved Techniques for Training GANs, 2016}
 \end{frame}
 %=======
 \begin{frame}{Improved techniques for training GANs}
@@ -411,9 +379,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\end{figure}
 	Use reference fixed batch to compute the normalization statistics. To avoid overfitting construct batch with the reference batch and the current sample. 
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1606.03498}{https://arxiv.org/abs/1606.03498}}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03498}{Salimans T. et al. Improved Techniques for Training GANs, 2016}
 \end{frame}
 %=======
 \begin{frame}{Informal theoretical results}
@@ -425,16 +391,17 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			\centering
 			\includegraphics[width=0.5\linewidth]{figs/low_dim_manifold}
 		\end{figure}
-		\item If $\pi(\bx)$ and $p(\bx | \btheta)$ have disjoint supports, then there is a smooth optimal discrimator. In this case we won’t really be able to learn anything by backproping through it.
+		\item If $\pi(\bx)$ and $p(\bx | \btheta)$ have disjoint supports, then there is a smooth optimal discrimator. We are not able to learn anything by backproping through it.
 		\item For such low-dimensional disjoint manifolds
+		\vspace{-0.1cm}
 		\[
 			KL(\pi || p) = KL(p || \pi) = \infty, \quad JSD(\pi || p) = \log 2
 		\]
+		\vspace{-0.7cm}
 		\item Adding continuous noise to the inputs of the discriminator smoothes the distributions of the probability mass.
 	\end{itemize}
-	\vfill
-	\hrule\medskip {\scriptsize \href{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html}{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html} \\ 
-	\href{https://arxiv.org/abs/1701.04862}{https://arxiv.org/abs/1701.04862}}
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+	\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein distance (discrete)}
@@ -447,9 +414,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 	\[
 		W(P, Q) = 2 \text{(step 1)} + 2 \text{(step 2)} + 1 \text{(step 3)}  = 5
 	\]
-	\vfill
-	\hrule\medskip 
-	{\scriptsize \href{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html}{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html}}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} 
 	
 \end{frame}
 %=======
@@ -463,9 +428,7 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		\item $\gamma(\bx, \by)$ -- the amount, $\|\bx - \by \|$-- the distance.
 	\end{itemize}
 	For better understanding of transportation plan function $\gamma$, try to write down the plan for previous discrete case.
-	\vfill
-	\hrule\medskip 
-	{\scriptsize \href{https://arxiv.org/abs/1701.07875}{https://arxiv.org/abs/1701.07875}}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein distance vs KL vs JSD}
@@ -504,9 +467,9 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 			W(\pi, p) = |\theta|
 		\]
 	\end{itemize}
-	\vfill
-	\hrule\medskip 
-	{\scriptsize  \href{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html}{https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html} \\ \href{https://arxiv.org/abs/1701.07875}{https://arxiv.org/abs/1701.07875}}
+	
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+	\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein distance vs KL vs JSD}
@@ -524,39 +487,10 @@ perturbations and other millions bags and tricks are used to avoid the mode coll
 		
 		Then, considering limits as $t \rightarrow \infty$, (1) implies (2), (2) implies (3).
 	\end{block}
-	\vfill
-	\hrule\medskip 
-	{\scriptsize \href{https://arxiv.org/abs/1701.07875}{https://arxiv.org/abs/1701.07875}}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
-\begin{frame}{References}
-{\tiny
-\begin{itemize}
-	\item A note on the evaluation of generative models \\
-	\href{https://arxiv.org/abs/1511.01844}{https://arxiv.org/abs/1511.01844} \\
-	\textbf{Summary:} Reviews properties relating to the evaluation and interpretation of generative models. Different divergences \\ leads to different properties. Log-likelihood values are not always meaningful in terms of samples quality.
-	
-	\item Generative Adversarial Nets \\
-	\href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661} \\
-	\textbf{Summary:} GAN framework is proposed. Theorem about oprimal discriminator has been proved. Some theroretical analysis \\ has been made. Experiments were carried out only on small datasets.
-	
-	\item \textbf{DCGAN}: Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks \\
-	\href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434} \\
-	\textbf{Summary:} First successful application of GAN for CNN models. Suggest simple architectural guides to train such models. 
-	
-	\item Improved techniques for training GANs \\
-	\href{https://arxiv.org/abs/1606.03498}{https://arxiv.org/abs/1606.03498} \\
-	\textbf{Summary:} Proposed techniques to improve gan training. Feature matching, minibatch discrimination, historical averaging, one-sided label smoothing, virtual batchnorm.
-	
-	\item Towards principled methods for training generative adversarial networks \\
-	\href{https://arxiv.org/abs/1701.04862}{https://arxiv.org/abs/1701.04862} \\
-	\textbf{Summary:} Low-dimensional manifolds are likely be disjoint. In this case KL and JSD are bad objectives. Analyzes \\ theoretically the vanishing gradient problems. Propose adding noise to samples.
-	
-	\item \textbf{WGAN}: Wasserstein GAN \\
-	\href{https://arxiv.org/abs/1701.07875}{https://arxiv.org/abs/1701.07875} \\
-	\textbf{Summary:} Proposed Earth-Mover distance as divergence measure. It shows theoretically that EM distance could be better \\ than KL, JS and TV measures. Kantorovich-Rubinstein duality gives the new objective. All we need to enforce is Lipschitz \\ continuity (e.x. by gradient clipping).
-\end{itemize}
-}
+\begin{frame}{Summary}
 \end{frame}
 %=======
 \end{document} 
