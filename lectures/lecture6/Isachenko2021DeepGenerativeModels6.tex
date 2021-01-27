@@ -394,9 +394,7 @@
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/wavenet2.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1609.03499.pdf}{https://arxiv.org/pdf/1609.03499.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
 \end{frame}
 %=======
 \begin{frame}{Parallel WaveNet, 2017}
@@ -412,9 +410,7 @@
 			\item 16-bit signals $\rightarrow$ mixture of logistics instead of categorical distribution.
 		\end{itemize}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1711.10433.pdf}{https://arxiv.org/pdf/1711.10433.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
 \end{frame}
 %=======
 \begin{frame}{Parallel WaveNet, 2017}
@@ -430,9 +426,7 @@
 		\]
 	\end{block}
 	More than 1000x speed-up relative to original WaveNet!
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1711.10433.pdf}{https://arxiv.org/pdf/1711.10433.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
 \end{frame}
 %=======
 \begin{frame}{Parallel WaveNet, 2017}
@@ -440,9 +434,8 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/parallel_wavenet.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1711.10433.pdf}{https://arxiv.org/pdf/1711.10433.pdf}}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
 \end{frame}
 %=======
 \begin{frame}{Summary}
@@ -502,172 +495,143 @@
 	\end{itemize}
 	\end{block}
 	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
-\vspace{-0.3cm}
-\[
-    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right].
-\]
-\vspace{-0.3cm}
-\begin{block}{Theorem}
-\[
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz],
-\]
-where $i$ is treated as random variable:
-\footnotesize{
-\[
-    q(i, \bz) = q(i) q(\bz | i); \quad p(i, \bz) = p(i) p(\bz); \quad 
-    q(i) = p(i) = \frac{1}{n}; \quad q(\bz | i) = q(\bz | \bx_i).
-\]
-\[
-    q(\bz) = \sum_{i=1}^n q(i, \bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i); \quad  \mathbb{I}_{q(i, \bz)} [i, \bz] = \mathbb{E}_{q(i, \bz)} \log \frac{q(i, \bz)}{q(i)q(\bz)}.
-\]
-}
-\end{block}
+	\vspace{-0.3cm}
+	\[
+	    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right].
+	\]
+	\vspace{-0.3cm}
+	\begin{block}{Theorem}
+	\[
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz],
+	\]
+	where $i$ is treated as random variable:
+	\footnotesize{
+	\[
+	    q(i, \bz) = q(i) q(\bz | i); \quad p(i, \bz) = p(i) p(\bz); \quad 
+	    q(i) = p(i) = \frac{1}{n}; \quad q(\bz | i) = q(\bz | \bx_i).
+	\]
+	\[
+	    q(\bz) = \sum_{i=1}^n q(i, \bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i); \quad  \mathbb{I}_{q(i, \bz)} [i, \bz] = \mathbb{E}_{q(i, \bz)} \log \frac{q(i, \bz)}{q(i)q(\bz)}.
+	\]
+	}
+	\end{block}
 
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
-\begin{block}{Theorem}
-\[
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
-\]
-\end{block}
-\begin{block}{Proof}
-\vspace{-0.3cm}
-{\footnotesize
-\begin{multline*}
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = \sum_{i=1}^n \int q(i) q(\bz | i) \log \frac{q(\bz | i)}{p(\bz)} d \bz = \\
-    = \sum_{i=1}^n \int q(i, \bz) \log \frac{q(i, \bz)}{p(\bz)p(i)} d \bz =
-    \int \sum_{i=1}^n q(i, \bz) \log \frac{ q (\bz) q(i | \bz) }{p(\bz) p(i) } d \bz = \\
-    = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d\bz + \int \sum_{i=1}^n q(i | \bz) q(\bz) \log \frac{q(i | \bz)}{p(i)} d \bz = \\
-    = KL (q(\bz) || p(\bz)) - \mathbb{E}_{q(\bz)} \mathbb{H} \left[q(i | \bz)  \right] + \log n.
-\end{multline*}
-}
-\end{block}
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+	\begin{block}{Theorem}
+	\[
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
+	\]
+	\end{block}
+	\begin{block}{Proof}
+	\vspace{-0.3cm}
+	{\footnotesize
+	\begin{multline*}
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = \sum_{i=1}^n \int q(i) q(\bz | i) \log \frac{q(\bz | i)}{p(\bz)} d \bz = \\
+	    = \sum_{i=1}^n \int q(i, \bz) \log \frac{q(i, \bz)}{p(\bz)p(i)} d \bz =
+	    \int \sum_{i=1}^n q(i, \bz) \log \frac{ q (\bz) q(i | \bz) }{p(\bz) p(i) } d \bz = \\
+	    = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d\bz + \int \sum_{i=1}^n q(i | \bz) q(\bz) \log \frac{q(i | \bz)}{p(i)} d \bz = \\
+	    = KL (q(\bz) || p(\bz)) - \mathbb{E}_{q(\bz)} \mathbb{H} \left[q(i | \bz)  \right] + \log n.
+	\end{multline*}
+	}
+	\end{block}
+
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
-\begin{block}{Theorem}
-\[
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
-\]
-\end{block}
-\begin{block}{Proof (continued)}
-{\footnotesize
-\[
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL (q(\bz) || p(\bz)) - \mathbb{E}_{q(\bz)} \mathbb{H} \left[q(i | \bz) \right] + \log n
-\]
-\begin{multline*}
-    \mathbb{I}_{q(i, \bz)} [i, \bz] = \mathbb{E}_{q(i, \bz)} \log \frac{q(i, \bz)}{q(i)q(\bz)} = \mathbb{E}_{q(\bz)} \mathbb{E}_{q(i | \bz)} \log \frac{q(i | \bz) q(\bz)}{q(i)q(\bz)} = \\
-    = \mathbb{E}_{q(\bz)} \mathbb{E}_{q(i | \bz)} \log \frac{q(i | \bz)}{q(i)} = - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] + \log n.
-\end{multline*}
-}
-\end{block}
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+	\begin{block}{Theorem}
+	\[
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
+	\]
+	\end{block}
+	\begin{block}{Proof (continued)}
+	{\footnotesize
+	\[
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL (q(\bz) || p(\bz)) - \mathbb{E}_{q(\bz)} \mathbb{H} \left[q(i | \bz) \right] + \log n
+	\]
+	\begin{multline*}
+	    \mathbb{I}_{q(i, \bz)} [i, \bz] = \mathbb{E}_{q(i, \bz)} \log \frac{q(i, \bz)}{q(i)q(\bz)} = \mathbb{E}_{q(\bz)} \mathbb{E}_{q(i | \bz)} \log \frac{q(i | \bz) q(\bz)}{q(i)q(\bz)} = \\
+	    = \mathbb{E}_{q(\bz)} \mathbb{E}_{q(i | \bz)} \log \frac{q(i | \bz)}{q(i)} = - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] + \log n.
+	\end{multline*}
+	}
+	\end{block}
+
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
-\begin{block}{Theorem}
-\[
-    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
-\]
-\end{block}
-\begin{block}{ELBO revisiting}
-{\footnotesize
-\begin{multline*}
-    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right] = \\
-    = \frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - \mathbb{I}_{q(i, \bz)} [i, \bz] - KL(q(\bz) || p(\bz)) = \\
-    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}} }_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-\end{multline*}
-}
-\end{block}
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+	\begin{block}{Theorem}
+	\[
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz].
+	\]
+	\end{block}
+	\begin{block}{ELBO revisiting}
+	{\footnotesize
+	\begin{multline*}
+	    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right] = \\
+	    = \frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - \mathbb{I}_{q(i, \bz)} [i, \bz] - KL(q(\bz) || p(\bz)) = \\
+	    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}} }_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
+	\end{multline*}
+	}
+	\end{block}
+
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
-\begin{block}{ELBO revisiting}
-\vspace{-0.3cm}
-{\footnotesize
-\[
-    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-\]}
-\end{block}
-\vspace{-0.3cm}
-\[
-    KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
-\]
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{figs/ELBO_surgery.png}
-\end{figure}
-\[
-\log n \approx 11.0021
-\]
-\vfill
-\hrule\medskip
-{\scriptsize \href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}}
+	\begin{block}{ELBO revisiting}
+	\vspace{-0.3cm}
+	{\footnotesize
+	\[
+	    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
+	\]}
+	\end{block}
+	\vspace{-0.3cm}
+	\[
+	    KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
+	\]
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.8\linewidth]{figs/ELBO_surgery.png}
+	\end{figure}
+	\[
+	\log n \approx 11.0021
+	\]
+
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{VAE prior}
-\begin{block}{ELBO revisiting}
-\vspace{-0.3cm}
-{\footnotesize
-\[
-    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log N } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-\]}
-\end{block}
+	\begin{block}{ELBO revisiting}
+	\vspace{-0.3cm}
+	{\footnotesize
+	\[
+	    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log N } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
+	\]}
+	\end{block}
+	
+	How to choose the optimal $p(\bz)$?
+	\begin{itemize}
+	    \item SG: $p(\bz) = \mathcal{N}(0, I)$ $\Rightarrow$ over-regularization;
+	    \vspace{0.1cm}
+	    \item MoG: $p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K \mathcal{N}(\bmu_k, \bsigma_k^2)$ $\Rightarrow$ (*), (**);
+	    \vspace{0.1cm}
+	    \item $p(\bz) = q(\bz) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i)$ $\Rightarrow$ overfitting and highly expensive.
+	\end{itemize}
 
-How to choose the optimal $p(\bz)$?
-\begin{itemize}
-    \item SG: $p(\bz) = \mathcal{N}(0, I)$ $\Rightarrow$ over-regularization;
-    \vspace{0.1cm}
-    \item MoG: $p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K \mathcal{N}(\bmu_k, \bsigma_k^2)$ $\Rightarrow$ (*), (**);
-    \vspace{0.1cm}
-    \item $p(\bz) = q(\bz) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i)$ $\Rightarrow$ overfitting and highly expensive.
-\end{itemize}
-\vfill
-\hrule\medskip
-{\tiny 
-(*) \href{https://arxiv.org/abs/1611.02648}{https://arxiv.org/abs/1611.02648} \\
-(**) \href{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}}
+	\myfootnote{\href{https://arxiv.org/abs/1611.02648}{(*) Dilokthanakul N. et al. Deep Unsupervised Clustering with Gaussian Mixture Variational Autoencoders, 2016} \\
+	\href{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}{(**) Nalisnick E., Hertel L., Smyth P. Approximate Inference for Deep Latent Gaussian Mixtures, 2016}}
 
 \end{frame}
 %=======
-\begin{frame}{References}
-{\tiny
-\begin{itemize}
-	
-	\item \textbf{IAF}: Improving Variational Inference with Inverse Autoregressive Flow \\
-	\href{https://arxiv.org/abs/1606.04934}{https://arxiv.org/abs/1606.04934} \\
-	\textbf{Summary:} Introduce inverse autoregressive flow (IAF). Models each autoregressive conditional as gaussian with autoregressive means and covariances. Inverse transformation allows to parallelize sampling.
-	
-	\item \textbf{MAF}: Masked Autoregressive Flow for Density Estimation \\ 
-	\href{https://arxiv.org/pdf/1705.07057.pdf}{https://arxiv.org/pdf/1705.07057.pdf} \\
-	\textbf{Summary:} Similar to IAF. Give comprehensive overview with link to IAF and RealNVP.  MAF is suitable for density estimation, IAF as a recognition network.
-	
-	\item \textbf{Parallel WaveNet}: Fast High-Fidelity Speech Synthesis \\
-	\href{https://arxiv.org/pdf/1711.10433.pdf}{https://arxiv.org/pdf/1711.10433.pdf} \\
-	\textbf{Summary}: WaveNet is MAF (sequential generation). To exploit IAF fast sampling, knowledge distillation used. Teacher network is large WaveNet, student - is a IAF small WaveNet (generate samples from noise is parallel). The loss is KL divergence between student and teacher distributions. The additional perceptual, contrastive and power losses used to create more natural sounds.
-	
-	\item \textbf{ELBO surgery:} yet another way to carve up the variational evidence lower bound \\
-	\href{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf} \\
-	\textbf{Summary:} Propose the decomposition of standard ELBO into 3 terms. The prior distribution should be close to average posterior. Show empirically that weak prior has a significant impact on ELBO value.
-\end{itemize}
-}
+\begin{frame}{Summary}
 \end{frame}
 \end{document} 
