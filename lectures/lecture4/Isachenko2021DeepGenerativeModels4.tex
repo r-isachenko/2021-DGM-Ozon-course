@@ -298,9 +298,8 @@
 		\]
 		Non-Volume Preserving.
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
+	
+		\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{RealNVP}
@@ -309,9 +308,8 @@
 		\includegraphics[width=0.75\linewidth]{figs/realnvp_masking.png}
 	\end{figure}
 	Masked convolutions are used to define ordering.
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{RealNVP}
@@ -319,9 +317,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/realnvp_output.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{RevNets, 2017}
@@ -342,9 +338,7 @@
 	\begin{block}{Problem}
 		Storing the activations imposes an increasing memory burden. GPUs have limited memory capacity, leading to constraints often exceeded by state-of-the-art architectures (with thousand layers).
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1707.04585.pdf}{https://arxiv.org/pdf/1707.04585.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
 \end{frame}
 %=======
 \begin{frame}{RevNets, 2017}
@@ -366,9 +360,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/revnet.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1707.04585.pdf}{https://arxiv.org/pdf/1707.04585.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
 \end{frame}
 %=======
 \begin{frame}{RevNets, 2017}
@@ -380,9 +372,7 @@
 		\item If the network contains non-reversible blocks (poolings, strides), activations for these blocks should be stored.
 		\item To avoid storing activations in the modern frameworks, the backward pass should be manually redefined.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1707.04585.pdf}{https://arxiv.org/pdf/1707.04585.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
 \end{frame}
 %=======
 \begin{frame}{i-RevNet, 2018}
@@ -393,9 +383,7 @@
 		\item It is difficult to recover images from their hidden representations. 
 		\item Information bottleneck principle: an optimal representation must reduce the MI between an input and its representation to reduce uninformative variability + maximize the MI between the output and its representation to preserve each class from collapsing onto other classes.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1802.07088.pdf}{https://arxiv.org/pdf/1802.07088.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{i-RevNet, 2018}
@@ -406,10 +394,7 @@
 	\begin{block}{Idea}
 		Build a cascade of homeomorphic layers (i-RevNet), a network that can be fully inverted up to the final projection onto the classes, i.e. no information is discarded.
 	\end{block}
-	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1802.07088.pdf}{https://arxiv.org/pdf/1802.07088.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{i-RevNet, 2018}
@@ -423,41 +408,10 @@
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/i-revnet_block.png}
 	\end{figure}
-	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1802.07088.pdf}{https://arxiv.org/pdf/1802.07088.pdf}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{References}
-	{\tiny
-		\begin{itemize}
-			
-			\item \textbf{NICE}: Non-linear Independent Components Estimation \\
-			\href{https://arxiv.org/abs/1410.8516}{https://arxiv.org/abs/1410.8516} \\
-			\textbf{Summary:} Uses flows to model complex high-dimensional densities. Introduce the ways to compute determinant of \\ Jacobian
-			 in a simple way. Triangular Jacobian, coupling layers, factorized distribution.
-			
-			\item Variational Inference with Normalizing Flows \\
-			\href{https://arxiv.org/abs/1505.05770}{https://arxiv.org/abs/1505.05770} \\
-			\textbf{Summary:} Propose to use normalizing flows in variational inference. Discuss finite and infinitesimal flows. Uses invertible \\
-			flows: planar, radial. Comparison with NICE.
-			
-			\item \textbf{RealNVP}: Density estimation using Real NVP \\
-			\href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf} \\
-			\textbf{Summary:} Authors of NICE. The same idea and architecture, more practical. Lots of experiments and images. Coupling\\ layers with checkerboard and channel-wise permutations.
-			
-			\item \textbf{RevNet:} The Reversible Residual Network: Backpropagation Without Storing Activations \\
-			\href{https://arxiv.org/abs/1707.04585}{https://arxiv.org/abs/1707.04585} \\
-			\textbf{Summary:} RevNet allows not to store network activations. Each layer’s activations can be computed from the next layer’s activations. RevNets are composed of a series of reversible blocks. Could enable training larger and more powerful networks \\
-			with limited computational resources. 
-			
-			\item \textbf{i-RevNet:} Deep Invertible Networks \\
-			\href{https://arxiv.org/abs/1802.07088}{https://arxiv.org/abs/1802.07088} \\
-			\textbf{Summary:} Invertible reversible networks. Remove noninvertible blocks (max-pooling, strides) from RevNets. Loss of \\
-			information is not a necessary condition to learn representations that generalize well on hard problems, such as ImageNet.
-			
-		\end{itemize}
-	}
+\begin{frame}{Summary}
 \end{frame}
 \end{document} 

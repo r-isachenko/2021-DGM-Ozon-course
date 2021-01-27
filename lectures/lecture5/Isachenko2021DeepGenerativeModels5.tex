@@ -13,9 +13,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/glow_faces.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -25,9 +23,7 @@
 			\includegraphics[width=\linewidth]{figs/glow_block.png}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}   
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -51,10 +47,8 @@
 	$\mathbf{W} \in \mathbb{R}^{c \times c}$ - kernel of 1x1 convolution with $c$ input and output channels.
 	
 	The cost of computing or differentiating $\det (\mathbf{W})$ is $O(c^3)$.
-	
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}    
+
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -62,9 +56,8 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/glow_ops.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}    
+
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -81,9 +74,8 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/glow_1x1_conv.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}    
+
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}  
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -93,9 +85,8 @@
 			\includegraphics[width=\linewidth]{figs/glow_interpolation.png}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -105,9 +96,8 @@
 			\includegraphics[width=\linewidth]{figs/glow_attributes.png}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1807.03039.pdf}{https://arxiv.org/pdf/1807.03039.pdf}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018} 
 \end{frame}
 \begin{frame}{Summary}
 	\begin{itemize}
@@ -188,8 +178,7 @@
 			\geq\sum_{i=1}^n \left[  \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu \right] = \\ = \int q(\bU | \bX) \log \frac{p(\bX + \bU | \btheta)}{q(\bU | \bX)} d \bU = \mathcal{L}(q, \btheta).
 		\end{multline*}
 	\end{block}
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1902.00275.pdf}{https://arxiv.org/pdf/1902.00275.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
 %=======
 \begin{frame}{Flow++}
@@ -206,8 +195,7 @@
 	\[
 		\log P(\bX | \btheta) \geq \sum_{i=1}^n \int \log \left( \frac{p(\bx + h(\bepsilon))}{p(\bepsilon) \cdot \left| \det \frac{\partial h(\bepsilon)}{\partial \bepsilon}\right|^{-1}} \right) d\bepsilon.
 	\]
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1902.00275.pdf}{https://arxiv.org/pdf/1902.00275.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
 %=======
 \begin{frame}{Flow++}
@@ -222,9 +210,7 @@
 		KL(q(\bU | \bX) || p(\bU | \bX)).
 	\]
 	In the case of uniform dequantization the model unnaturally places uniform density over each hypercube $\bx + U[0, 1]$ due to inexpressive distribution $q$.
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1902.00275.pdf}{https://arxiv.org/pdf/1902.00275.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
 %=======
 \begin{frame}{Flow++}
@@ -237,9 +223,7 @@
 		\centering
 		\includegraphics[width=0.8\linewidth]{figs/flow++2.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1902.00275.pdf}{https://arxiv.org/pdf/1902.00275.pdf}}
+	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
 %=======
 %--------------------------------------------------------------------------------
@@ -269,8 +253,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
 	\end{figure}
-	\hrule\medskip
-	{\scriptsize \href{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}}
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
 	
 \end{frame}
 %=======
@@ -365,9 +348,7 @@
 			&= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \bigg[\log p(\bx, \bz_K | \btheta) -  \log q(\bz_0 | \bx, \bphi ) + \\ & + \sum_{k=1}^K \log \left| \det \left( \frac{\partial g_k(\bz_{k - 1}, \bphi_k)}{\partial \bz_{k-1}} \right) \right| \bigg].
 		\end{align*}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1505.05770.pdf}{https://arxiv.org/pdf/1505.05770.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
 \begin{frame}{Gaussian autoregressive model}
@@ -440,9 +421,7 @@
 		\vspace{-0.3cm}
 	\end{block}
 	This process is \textbf{not} sequential.
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1606.04934.pdf}{https://arxiv.org/pdf/1606.04934.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Inverse autoregressive flow (IAF)}
@@ -462,22 +441,19 @@
 		\bz_0 &= \bsigma(\bx) \cdot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz_0 | \bx, \bphi). \\
 		\bz_k &= \bsigma_k(\bz_{k - 1}) \cdot \bz_{k-1} + \bmu_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\bphi_j\}_{j=1}^k).
 	\end{align*}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1606.04934.pdf}{https://arxiv.org/pdf/1606.04934.pdf}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Flows}
-\begin{figure}
-	\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
-\end{figure}
-\begin{itemize}	
-	\item Inference mode in autoregressive flows is used for density estimation tasks.
-	\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get a more flexible posterior distribution.
-\end{itemize}
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/pdf/1605.08803.pdf}{https://arxiv.org/pdf/1605.08803.pdf}} 
+	\begin{figure}
+		\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
+	\end{figure}
+	\begin{itemize}	
+		\item Inference mode in autoregressive flows is used for density estimation tasks.
+		\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get a more flexible posterior distribution.
+	\end{itemize}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Inverse autoregressive flow (IAF)}
@@ -487,33 +463,10 @@
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/iaf1.png}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/pdf/1606.04934.pdf}{https://arxiv.org/pdf/1606.04934.pdf}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
-\begin{frame}{References}
-	{\scriptsize
-		\begin{itemize}
-			
-			\item \textbf{Glow:} Better Reversible Generative Models \\
-			\href{https://arxiv.org/abs/1807.03039}{https://arxiv.org/abs/1807.03039} \\
-			\textbf{Summary:} Extension of RealNVP. Suggests 1x1 reversible convolutions instead of reversing channel ordering. 1x1 conv is square matrix which could be easily be inversed. Compares 1x1 conv with reversing and fixed shuffling. 
-			
-			\item \textbf{Flow++:} Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design \\
-			\href{https://arxiv.org/abs/1902.00275}{https://arxiv.org/abs/1902.00275} \\
-			\textbf{Summary:} Flow model which investigates the dequantization of discrete probability \\ distribution. Derives ELBO objective with variational noise dequantization distribution.
-			
-			\item Variational Inference with Normalizing Flows \\
-			\href{https://arxiv.org/abs/1505.05770}{https://arxiv.org/abs/1505.05770} \\
-			\textbf{Summary:} Propose to use normalizing flows in variational inference. Discuss finite and infinitesimal flows. Uses invertible \\
-			flows: planar, radial. Comparison with NICE.
-			
-			\item \textbf{IAF}: Improving Variational Inference with Inverse Autoregressive Flow \\
-			\href{https://arxiv.org/abs/1606.04934}{https://arxiv.org/abs/1606.04934} \\
-			\textbf{Summary:} Introduce inverse autoregressive flow (IAF). Models each autoregressive conditional as gaussian with autoregressive means and covariances. Inverse transformation allows to parallelize sampling.
-			
-		\end{itemize}
-	}
+\begin{frame}{Summary}
 \end{frame}
 \end{document} 
