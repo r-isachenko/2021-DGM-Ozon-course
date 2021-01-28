@@ -8,29 +8,27 @@
 \titlepage
 \end{frame}
 \begin{frame}{Neural ODE}
-\begin{minipage}[t]{0.6\columnwidth}
-\vspace{0.2cm}
-\begin{itemize}
-	\item Neural networks for classification task have hundreds of layers.
-	\item Skip connections eliminate exploding/vanishing gradients.
-\end{itemize}
-\[
-	\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
-\]
-\end{minipage}%
-\begin{minipage}[t]{0.4\columnwidth}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.95\linewidth]{figs/resnet_1.png}
-\end{figure}
-\end{minipage}
-\begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{figs/resnet_2.png}
-\end{figure}
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+	\begin{minipage}[t]{0.6\columnwidth}
+	\vspace{0.2cm}
+	\begin{itemize}
+		\item Neural networks for classification task have hundreds of layers.
+		\item Skip connections eliminate exploding/vanishing gradients.
+	\end{itemize}
+	\[
+		\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
+	\]
+	\end{minipage}%
+	\begin{minipage}[t]{0.4\columnwidth}
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.95\linewidth]{figs/resnet_1.png}
+	\end{figure}
+	\end{minipage}
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=\linewidth]{figs/resnet_2.png}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -58,9 +56,8 @@
 	 \item Residual learning is equavalent to Euler update step for solving ODE with $\Delta t = 1$!
 	 \item Euler update step is unstable and trivial. There are much more sophisticated methods.
 	\end{itemize}
-	 \vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -90,8 +87,8 @@
 			\includegraphics[width=0.8\linewidth]{figs/resnet_vs_neural_ode.png}
 		\end{figure}
 	\end{minipage}
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 
@@ -112,10 +109,8 @@
 		In theory of optimal control this functions called \textbf{adjoint} functions. 
 		They shows how the gradient of the loss depends on the hidden state~$\bz(t)$ and parameters $\btheta$.
 	\end{block}
-	\vspace{0.1cm}
-		
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}     
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -140,9 +135,8 @@
 	\]
 	Do we know any initilal condition?
 	\end{block}
-	 \vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -159,9 +153,8 @@
 		 \bz(t_0) &= \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
 		\end{align*}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -182,9 +175,8 @@
 			\text{ODE Solver}
 		\end{equation*}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
@@ -202,9 +194,8 @@
 			\item scalable and invertible normalizing flows (we will discuss it today).
 		\end{itemize}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}}   
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Continuous Normaling Flows}
@@ -233,9 +224,8 @@
 			\frac{d\bz(t)}{dt}  = \mathbf{u} h(\bw^T\bz_t + b); \quad \frac{\partial \log p (\bz(t))}{ \partial t} = - \mathbf{u}^T \frac{\partial h}{\partial \bz(t)}.
 		\]
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Continuous Normaling Flows}
@@ -256,9 +246,8 @@
 		\frac{d\bz(t)}{dt} = \sum_{j=1}^M f_j(\bz(t), \btheta); \quad \frac{\partial \log p(\bz(t))}{\partial t} = - \sum_{j=1}^M\text{trace} \left( \frac{\partial f_j}{\partial \bz(t)} \right).
 		\]
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Continuous NF}
@@ -274,9 +263,8 @@
 	    \centering
 	    \includegraphics[width=1\linewidth]{figs/cnf}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Continuous NF}
@@ -295,9 +283,8 @@
 			\includegraphics[width=\linewidth]{figs/cnf_flow.png}
 		\end{figure}
 	\end{minipage}
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{FFJORD}
@@ -315,11 +302,8 @@
 	    &= \log p(\bz(t_0)) - \mathbb{E}_{p(\bepsilon)} \int_{t_0}^{t_1} \left[ \bepsilon^T \frac{\partial f}{\partial \bz} \bepsilon \right] dt.
 	\end{align*}
 	\end{block}
-	\vspace{0.3cm}
 
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1810.01367}{https://arxiv.org/abs/1810.01367}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
 \end{frame}
 %=======
 \begin{frame}{FFJORD}
@@ -330,9 +314,8 @@
 		\end{figure}
 	\end{block}
 	\vspace{1cm}
-	
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1810.01367}{https://arxiv.org/abs/1810.01367}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
 \end{frame}
 %=======
 \begin{frame}{FFJORD}
@@ -348,19 +331,17 @@
 			\includegraphics[width=0.8\linewidth]{figs/ffjord_vae}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1810.01367}{https://arxiv.org/abs/1810.01367}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
 \end{frame}
 %=======
 \begin{frame}{FFJORD}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.6\linewidth]{figs/ffjord.png}
-\end{figure}
-\vfill
-\hrule\medskip
-{\scriptsize \href{https://arxiv.org/abs/1810.01367}{https://arxiv.org/abs/1810.01367}} 
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.6\linewidth]{figs/ffjord.png}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
 \end{frame}
 %=======
 \begin{frame}{Discrete VAE}
@@ -371,9 +352,7 @@
 		\item Powerful autoregressive models (like PixelCNNN) have been developed for modelling distributions over discrete variables.
 		\item However, to construct the model with discrete representations is not so easy (e.g. variance of such estimators is a problem).
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1711.00937}{https://arxiv.org/abs/1711.00937}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE}
@@ -395,9 +374,8 @@
 		\] 
 		
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1711.00937}{https://arxiv.org/abs/1711.00937}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE}
@@ -415,9 +393,8 @@
 		\item Quantization operation is not differentiable.
 		\item Straight-through gradient estimation is used to backpropagate the quantization operation.
 	\end{itemize}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1711.00937}{https://arxiv.org/abs/1711.00937}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE}
@@ -431,9 +408,8 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/vqvae_results}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1711.00937}{https://arxiv.org/abs/1711.00937}} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
@@ -461,9 +437,7 @@
 			\centering
 			\includegraphics[width=0.85\linewidth]{figs/vqvae2_latents}
 		\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
@@ -473,19 +447,15 @@
 		\includegraphics[width=0.63\linewidth]{figs/vqvae2_faces}
 	\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.7\linewidth]{figs/vqvae2_diversity}
+		\includegraphics[width=0.65\linewidth]{figs/vqvae2_diversity}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Feature Quantized GAN}
@@ -503,9 +473,7 @@
 		\centering
 		\includegraphics[width=0.7\linewidth]{figs/fqgan}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/2004.02088}{https://arxiv.org/abs/2004.02088}} 
+	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
 \end{frame}
 %=======
 \begin{frame}{Feature Quantized GAN}
@@ -529,9 +497,7 @@
 			\includegraphics[width=\linewidth]{figs/fqgan_features}
 		\end{figure}
 	\end{block}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/2004.02088}{https://arxiv.org/abs/2004.02088}} 
+	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
 \end{frame}
 %=======
 \begin{frame}{Feature Quantized GAN}
@@ -557,37 +523,9 @@
 				\end{figure}
 			\end{block}
 		\end{minipage}
-	\vspace{0.8cm}
-	
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/2004.02088}{https://arxiv.org/abs/2004.02088}} 
+	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
 \end{frame}
 %=======
-\begin{frame}{References}
-{\tiny
-\begin{itemize}
-    \item Neural Ordinary Differential Equations \\
-    \href{https://arxiv.org/abs/1806.07366}{https://arxiv.org/abs/1806.07366} \\
-    \textbf{Summary:} New interpretation of resnets as special case of ode. 
-    Discrete sequence of layers  are replaced with continuous dynamic. ODESolver is used for backpropagation. Pontryagin theorem gives the analog of the chain rule. Continuous version \\ of normalizing flow is constructed.
-    
-    \item \textbf{FFJORD:} Free-form Continuous Dynamics for Scalable Reversible Generative Models \\
-    \href{https://arxiv.org/abs/1810.01367}{https://arxiv.org/abs/1810.01367} \\
-    \textbf{Summary:} Continuous version of NF is investigated. 
-    Jacobian computation cost is reduced to O(D) by using Hutchinson’s \\ trace estimator. 
-    
-    \item \textbf{VQ-VAE:} Neural discrete representation learning \\
-    \href{https://arxiv.org/abs/1711.00937}{https://arxiv.org/abs/1711.00937} \\
-    \textbf{Summary:} Discrete latent representation for VAE. Nearest neighbor lookup table quantization is used. Learned powerful PixelCNN prior in the latent space.
-    
-    \item \textbf{VQ-VAE-2:} Generating Diverse High-Fidelity Images with VQ-VAE-2 \\
-    \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446} \\
-    \textbf{Summary:} The extension of VQ-VAE model for generating highly realistic images (comparable with sota gans). Use \\ hierarchical latent representation with PixelSnail prior. Comparison with BigGan.
-    
-    \item \textbf{FQ-VAE:} Feature Quantization Improves GAN Training \\
-    \href{https://arxiv.org/abs/2004.02088}{https://arxiv.org/abs/2004.02088} \\
-    \textbf{Summary:} Lots of "feature matching" techniques for GANN was introduced to stabilize training. Vector quantization has a proporty of implicit feature matching. Adding vector quantization module to GAN discriminator improves quality.
-\end{itemize}
-}
+\begin{frame}{Summary}
 \end{frame}
 \end{document} 
