@@ -35,20 +35,18 @@
         \label{fig:generative_models_zoo}
     \end{figure}
 \end{frame}
-\begin{frame}{Motivation}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\linewidth]{figs/unsupervised_cake.png}
-        \label{fig:unsupervised_cake}
-    \end{figure}
-\myfootnote{LeCun, NIPS 2016 Keynote}
+%=======
+\begin{frame}{Applications}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/applications}
+	\end{figure}
 \end{frame}
 %=======
 \begin{frame}{Applications: Image generation (VAE)}
     \begin{figure}
         \centering
-        \includegraphics[width=0.5\linewidth]{figs/vae.png}
-        \label{fig:vae}
+        \includegraphics[width=0.8\linewidth]{figs/vae.png}
     \end{figure}
 \myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D. P., Welling M. Auto-encoding variational bayes, 2013}
 \end{frame}
@@ -57,7 +55,6 @@
     \begin{figure}
         \centering
         \includegraphics[width=1.0\linewidth]{figs/dcgan.png}
-        \label{fig:dcgan}
     \end{figure}
 \myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised representation learning with deep convolutional generative adversarial networks, 2015}
 \end{frame}
@@ -71,69 +68,65 @@
 \myfootnotewithlink{https://arxiv.org/abs/1609.04802}{Ledig C. et al. Photo-realistic single image super-resolution using a generative adversarial network, 2016}
 \end{frame}
 %=======
-\begin{frame}{Applications: Domain translation (CycleGAN)}
-    \begin{figure}
-        \centering
-        \includegraphics[width=1.0\linewidth]{figs/cyclegan.png}
-        \label{fig:cyclegan}
-    \end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1703.10593}{Zhu J. Y. et al. Unpaired image-to-image translation using cycle-consistent adversarial networks, 2017}
-\end{frame}
-%=======
 \begin{frame}{Applications: Face generation (StyleGAN)}
-    \begin{figure}
-        \centering
-        \includegraphics[width=0.65\linewidth]{figs/stylegan.png}
-        \label{fig:stylegan}
-    \end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A style-based generator architecture for generative adversarial networks, 2018}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/gan_evolution}
+	\end{figure}
+	\vspace{-0.2cm}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\linewidth]{figs/stylegan}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A style-based generator architecture for generative adversarial networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{Applications: Face generation (VQ-VAE-2)}
     \begin{figure}
         \centering
-        \includegraphics[width=0.65\linewidth]{figs/vq_vae.png}
-        \label{fig:vq_vae}
+        \includegraphics[width=0.7\linewidth]{figs/vq_vae.png}
     \end{figure}
 \myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019}
 \end{frame}
 %=======
-\begin{frame}{Applications}
-\begin{itemize}
-    \item Audio Generation (WaveNet, ...)
-    \item Video Generation (DVD-GAN)
-    \item NLP (Transformer, BERT, GPT-3, ...)
-    \item Compression
-\end{itemize}
+\begin{frame}{Applications: Language Modelling}
+	\begin{figure}
+		\includegraphics[width=0.65\linewidth]{figs/gpt2-sizes}
+	\end{figure}
+	\vspace{-0.2cm}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/nlp_models}
+	\end{figure}
+\myfootnote{\href{http://jalammar.github.io/illustrated-gpt2}{image credit: http://jalammar.github.io/illustrated-gpt2} \\
+\href{https://arxiv.org/abs/1910.01108}{Sanh V. et al. DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter, 2019.}}
 \end{frame}
 %--------------------------------------------------------------------------------
 \section{Likelihood based models}
 \begin{frame}{Problem Statement}
-We are given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\bx)$.
+We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from unknown distribution $\pi(\bx)$.
 
 \begin{block}{Goal}
 	We would like to learn a distribution $\pi(\bx)$ for 
 	\begin{itemize}
-	    \item evaluating $\pi(\bx)$ for new samples;
-	    \item sampling from $\pi(\bx)$.
+	    \item evaluating $\pi(\bx)$ for new samples (how likely to get object $\bx$?);
+	    \item sampling from $\pi(\bx)$ (to get new objects $\bx \sim \pi(\bx)$).
 	\end{itemize}
 \end{block}
 \begin{block}{Challenge}
-	 Data is complex and high-dimensional (curse of dimensionality).
+	 Data is complex and high-dimensional. Imagine the dataset of images which lies in the space $X \subset \bbR^{\text{width} \times \text{height}}$.
 \end{block}
 \end{frame}
 %=======
 \begin{frame}{Histogram as a generative model}
 
 \begin{minipage}[t]{0.6\columnwidth}
-    The histogram is totally defined by
+    Let $x \sim \text{Categorical}$. The histogram is totally defined by
 	\[
-	    p_k = p(x = k) = \frac{\sum_{i=1}^k [x_i = k]}{n}.
+	    \pi_k = \pi(x = k) = \frac{\sum_{i=1}^k [x_i = k]}{n}.
 	\]
-	\textbf{Problem:} curse of dimensionality. \\
-	\vspace{0.05cm} \\
 	MNIST: 28x28 gray-scaled images \\
-	$2^{28\times28} - 1$ parameters to specify $p(\bx)$ 
+	each image is $\bx = (x_1, \dots, x_{784})$, where $x_i \sim \text{Be}(p_i)$. \\
+	$2^{28\times28} - 1$ parameters to specify $\pi(\bx)$ 
 	\end{minipage}%
 	\begin{minipage}[t]{0.4\columnwidth}
     \begin{figure}[h]
@@ -142,16 +135,15 @@ We are given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\b
     \end{figure}
 \end{minipage}
 \[
-    p(\bx) = p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}, \dots, x_1).
+    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
 \]
 \textbf{Question:} How many parameters do we need in these cases?
 \[
-    p(\bx) = p(x_1) \cdot p(x_2)\cdot \dots \cdot p(x_m).
+    \pi(\bx) = \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m).
 \]
 \[
-    p(\bx) = p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}).
+    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).
 \]
-\myfootnotewithlink{https://sites.google.com/view/berkeley-cs294-158-sp20/home}{image credit: https://sites.google.com/view/berkeley-cs294-158-sp20/home}
 \end{frame}
 %=======
 \begin{frame}{Maximum likelihood}
@@ -176,11 +168,11 @@ We are given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\b
 \end{frame}
 \begin{frame}{Autoregressive model}
     \begin{block}{MLE problem}
-    \vspace{-0.3cm}
+    \vspace{-0.5cm}
     \[
         \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
     \]
-    \vspace{-0.1cm}
+    \vspace{-0.5cm}
     \end{block}
     \begin{block}{Challenge}
     $p(\bx | \btheta)$ could be intractable.
@@ -192,6 +184,7 @@ We are given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $\pi(\b
         \log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
     \]
     \end{block}
+	\textbf{Example:} $p(x_1, x_2, x_3) = p(x_2) \cdot p(x_1 | x_2) \cdot p(x_3 | x_1, x_2)$.
 \end{frame}
 %=======
 \begin{frame}{Autoregressive models}
