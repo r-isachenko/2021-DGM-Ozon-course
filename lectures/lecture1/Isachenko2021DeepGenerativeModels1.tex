@@ -89,7 +89,7 @@
 \myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019}
 \end{frame}
 %=======
-\begin{frame}{Applications: Language Modelling}
+\begin{frame}{Applications: Language modelling}
 	\begin{figure}
 		\includegraphics[width=0.65\linewidth]{figs/gpt2-sizes}
 	\end{figure}
@@ -100,8 +100,17 @@
 \myfootnote{\href{http://jalammar.github.io/illustrated-gpt2}{image credit: http://jalammar.github.io/illustrated-gpt2} \\
 \href{https://arxiv.org/abs/1910.01108}{Sanh V. et al. DistilBERT, a distilled version of BERT: smaller, faster, cheaper and lighter, 2019.}}
 \end{frame}
-%--------------------------------------------------------------------------------
-\section{Likelihood based models}
+%=======
+\begin{frame}{Applications: Image generation, new era}
+	\begin{figure}
+		\includegraphics[width=0.8\linewidth]{figs/taming_transformers_1}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/taming_transformers_2}
+	\end{figure}
+\myfootnotewithlink{https://arxiv.org/abs/2012.09841}{Esser P., Rombach R., Ommer B. Taming Transformers for High-Resolution Image Synthesis, 2020}
+\end{frame}
+%=======
 \begin{frame}{Problem Statement}
 We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from unknown distribution $\pi(\bx)$.
 
@@ -118,32 +127,32 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 \end{frame}
 %=======
 \begin{frame}{Histogram as a generative model}
-
-\begin{minipage}[t]{0.6\columnwidth}
-    Let $x \sim \text{Categorical}$. The histogram is totally defined by
+	
+	\begin{minipage}[t]{0.6\columnwidth}
+	    Let $x \sim \text{Categorical}$. The histogram is totally defined by
+		\[
+		    \pi_k = \pi(x = k) = \frac{\sum_{i=1}^k [x_i = k]}{n}.
+		\]
+		MNIST: 28x28 gray-scaled images \\
+		each image is $\bx = (x_1, \dots, x_{784})$, where $x_i \sim \text{Be}(p_i)$. \\
+		$2^{28\times28} - 1$ parameters to specify $\pi(\bx)$ 
+		\end{minipage}%
+		\begin{minipage}[t]{0.4\columnwidth}
+	    \begin{figure}[h]
+	        \centering
+	        \includegraphics[width=\linewidth]{figs/histogram.png}
+	    \end{figure}
+	\end{minipage}
 	\[
-	    \pi_k = \pi(x = k) = \frac{\sum_{i=1}^k [x_i = k]}{n}.
+	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
 	\]
-	MNIST: 28x28 gray-scaled images \\
-	each image is $\bx = (x_1, \dots, x_{784})$, where $x_i \sim \text{Be}(p_i)$. \\
-	$2^{28\times28} - 1$ parameters to specify $\pi(\bx)$ 
-	\end{minipage}%
-	\begin{minipage}[t]{0.4\columnwidth}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=\linewidth]{figs/histogram.png}
-    \end{figure}
-\end{minipage}
-\[
-    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
-\]
-\textbf{Question:} How many parameters do we need in these cases?
-\[
-    \pi(\bx) = \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m).
-\]
-\[
-    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).
-\]
+	\textbf{Question:} How many parameters do we need in these cases?
+	\[
+	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m).
+	\]
+	\[
+	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).
+	\]
 \end{frame}
 %=======
 \begin{frame}{Maximum likelihood}
@@ -192,39 +201,111 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
     \log p(\bx| \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta)
     \]
     \begin{itemize}
-        \item Each conditional could be modelled by neural network.
-        \item To extend to high dimensions share parameters across conditionals.
-        \item Sampling is sequential.
+	    \item Sampling is sequential:
+	    \begin{itemize}
+    		\item sample $\hat{x}_0 \sim p(x_1 | \btheta)$;
+    		\item sample $\hat{x}_1 \sim p(x_2 | x_1, \btheta)$;
+    		\item \dots
+    		\item sample $\hat{x}_n \sim p(x_n | \bx_{1:n-1}, \btheta)$;
+    		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_n)$.
+    	\end{itemize}
+        \item Each conditional $p(x_i | \bx_{1:i - 1}, \btheta)$ could be modelled by neural network.
+        \item Modelling all conditional distributions separately is infeasible and we would obtain separate models. To extend to high dimensions we could share parameters $\btheta$ across conditionals.
+
     \end{itemize}
-    
+\end{frame}
+%=======
+\begin{frame}{Autoregressive models}
+		For large $i$ the conditional distribution $p(x_i | \bx_{1:i - 1}, \btheta)$ could be infeasible. Moreover, the history $\bx_{1:i-1}$ has non-fixed length.
+		\begin{block}{Markov assumption}
+			\vspace{-0.5cm}
+			\[
+				p(x_i | \bx_{1:i - 1}, \btheta) = p(x_i | \bx_{i - d:i - 1}, \btheta), \quad d \text{ is a fixed model parameter}.
+			\]
+		\end{block}
+		\begin{block}{Example}
+			\begin{minipage}[t]{0.39\columnwidth}
+				{\small
+				\begin{itemize}
+					\item $d = 2$;
+					\item $x_i \in \{0, 255\}$;
+					\item $\bh_i = \text{MLP}_{\btheta}(x_{i - 1}, x_{i - 2})$;
+					\item $\bp_i = \text{softmax}(\bh_i)$;
+					\item $p(x_i | x_{i - 1}, x_{i - 2}, \btheta) = \text{Categorical}(\bp_i)$.
+				\end{itemize}
+				}
+			\end{minipage}%
+			\begin{minipage}[t]{0.61\columnwidth}
+			    \begin{figure}
+			        \centering
+			        \includegraphics[width=1.0\linewidth]{figs/sequential_MLP}
+			    \end{figure}
+			\end{minipage}
+		\end{block}
+	    \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive models}
+	\begin{itemize}
+		\item Previous model has \textbf{limited} memory $d$. It is insufficient for many modalities (e.g. for images and text). 
+		\item Recurrent NN fixes this problem and potentially could learn long-range dependencies:
+		\[
+			p(x_i | \bx_{1:i - 1}, \btheta) = p(x_i | \bh_i, \btheta), \quad \bh_i = \text{RNN}(\bx_{i - 1}, \bh_{i - 1})
+		\]
+		 \begin{figure}
+	    \centering
+	    \includegraphics[width=0.7\linewidth]{figs/sequential_RNN}
+		 \end{figure}
+		\item Sequential computation of all conditionals $p(x_i | \bx_{1:i-1}, \btheta)$, hence, the training is slow.
+		\item RNN suffers from vanishing and exploding gradients.
+	\end{itemize}
+	 \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 \end{frame}
 %=======
 \begin{frame}{Char RNN}
+	Model tries to predict the next token (single letter) from previous context.
 	\begin{minipage}[t]{0.55\columnwidth}
-		\begin{figure}[h]
+		\begin{figure}
 			\centering
 			\includegraphics[width=1.0\linewidth]{figs/char_rnn.png}
 		\end{figure}
 	\end{minipage}%
 	\begin{minipage}[t]{0.44\columnwidth}
-		\begin{figure}[h]
+		\begin{figure}
 			\centering
 			\includegraphics[width=1.0\linewidth]{figs/char_rnn_output.png}
 		\end{figure}
 	\end{minipage}
-	\begin{block}{Drawback}
-	Sequential computation of all conditionals $p(x_i | \bx_{1:i-1}, \btheta)$.
-	\end{block}
 \myfootnotewithlink{http://karpathy.github.io/2015/05/21/rnn-effectiveness/}{image credit: http://karpathy.github.io/2015/05/21/rnn-effectiveness}
 \end{frame}
 %=======
+\begin{frame}{Autoregressive models}
+		\begin{itemize}
+			\item Convolutions could be used for autoregressive models, but they have to be \textbf{causal}. \\
+			\item Try to find and understand the difference between Conv A/B.
+		    \begin{figure}
+		        \centering
+		        \includegraphics[width=0.7\linewidth]{figs/sequential_CNN}
+		    \end{figure}
+		    \item Could learn long-range dependecies.
+		    \item Do not suffer from gradient issues.
+		    \item Easy to estimate probability for given input, but hard generation of new samples (the sequential process).
+	   	\end{itemize}
+	    \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
+\end{frame}
+%=======
 \begin{frame}{MADE}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figs/made.png}
-    \label{fig:made}
-\end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
+	\begin{itemize}
+		\item Vanila autoencoder is not a generative model. Why?
+		\item Let mask the weight matrices to make the model generative: $\bW_M = \bW \cdot \bM$.
+		\begin{figure}
+		    \centering
+		    \includegraphics[width=0.7\linewidth]{figs/made.png}
+		    \label{fig:made}
+		\end{figure}
+		\item The question is how to create matrices $\bM$ which produce the autoregressive property?
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
 \end{frame}
 %=======
 %=======
@@ -318,9 +399,6 @@ Autoregressive model
         \item Work on both continuous and discrete data.
         \item There is no natural way to do unsupervised learning.
     \end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Summary}
 \end{frame}
 
 \end{document} 
