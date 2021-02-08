@@ -300,62 +300,87 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 		\item Let mask the weight matrices to make the model generative: $\bW_M = \bW \cdot \bM$.
 		\begin{figure}
 		    \centering
-		    \includegraphics[width=0.7\linewidth]{figs/made.png}
-		    \label{fig:made}
+		    \includegraphics[width=0.7\linewidth]{figs/made}
 		\end{figure}
 		\item The question is how to create matrices $\bM$ which produce the autoregressive property?
 	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
 \end{frame}
 %=======
+\begin{frame}{MADE}
+		\begin{minipage}[t]{0.65\columnwidth}
+		    \vspace{-0.5cm}
+			\begin{block}{Masks generation}
+				\begin{itemize}
+					\item Define the ordering of input elements from 1 to $n$.
+					\item Assign the random number $m$ from 1 to $n - 1$ to each hidden unit. The number gives the
+					maximum number of input units to which the unit can be connected.
+					\item Connect each hidden unit with number $m$ with the previous layer units which has the number is \textbf{less or equal} than~$m$.
+					\item Connect each output unit with number $m$ with the previous layer units which has the number is \textbf{less} than $m$.
+				\end{itemize}
+			\end{block}
+		\end{minipage}%
+		\begin{minipage}[t]{0.33\columnwidth}
+			\vspace{2cm}
+			\begin{figure}
+				\centering
+				\includegraphics[width=1.0\linewidth]{figs/made2}
+			\end{figure}
+		\end{minipage}
+	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
+\end{frame}
 %=======
 \begin{frame}{WaveNet}
-\begin{block}{Goal}
-Efficient generation of raw audio waveforms with natural sounds.
-\end{block}
-\begin{block}{Solution}
-Autoregressive model
-\[
-    p(\bx| \btheta) = \prod_{t=1}^T p(x_t|\bx_{1:t-1}, \btheta).
-\]
-\end{block}
-The model uses causal dilated convolutions.
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figs/wavenet_ex.png}
-\end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
+	\begin{block}{Goal}
+	Efficient generation of raw audio waveforms with natural sounds.
+	\end{block}
+	\begin{figure}
+	  \centering
+	  \includegraphics[width=0.9\linewidth]{figs/wavenet_ex.png}
+	\end{figure}
+	\begin{block}{Solution}
+		Autoregressive model
+		\vspace{-0.3cm}
+		\[
+		    p(\bx| \btheta) = \prod_{t=1}^T p(x_t|\bx_{1:t-1}, \btheta).
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{itemize}
+		\item Each conditional $p(x_t|\bx_{1:t-1}, \btheta)$ models the distribution for the timestamp $t$.
+		\item The model uses \textbf{causal} dilated convolutions.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
 \end{frame}
 %=======
 \begin{frame}{WaveNet (2016)}
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figs/wavenet1.png}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.9\linewidth]{figs/wavenet2.png}
-\end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.9\linewidth]{figs/wavenet1.png}
+	\end{figure}
+	
+	\begin{figure}
+	    \centering
+	    \includegraphics[width=0.9\linewidth]{figs/wavenet2.png}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
 \end{frame}
-
 %=======
 \begin{frame}{PixelCNN}
-\begin{block}{Goal}
-Model a distribution of natural images.
-\end{block}
-\begin{block}{Solution}
-Autoregressive model
-\[
-    p(\bx | \btheta) = \prod_{i=1}^{n^2} p(x_i|\bx_{1:i-1}, \btheta).
-\]
-\begin{itemize}
-    \item masked convolutions;
-    \item dependencies over RGB channels.
-\end{itemize}
-\end{block}
-\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel recurrent neural networks, 2016}
+	\begin{block}{Goal}
+	Model a distribution of natural images.
+	\end{block}
+	\begin{block}{Solution}
+	Autoregressive model
+	\[
+	    p(\bx | \btheta) = \prod_{i=1}^{n^2} p(x_i|\bx_{1:i-1}, \btheta).
+	\]
+	\begin{itemize}
+	    \item \textbf{masked} convolutions;
+	    \item dependencies over RGB channels.
+	\end{itemize}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel recurrent neural networks, 2016}
 \end{frame}
 %=======
 \begin{frame}{PixelCNN (2016)}
