@@ -11,19 +11,25 @@
 \section{Logistics}
 %=======
 \begin{frame}{Logistics}
+	\begin{block}{How to win?}
     \begin{itemize}
-        \item homeworks: 30 points
+        \item homeworks: 78 points
         \begin{itemize}
-            \item hw1: autoregressive models
-            \item hw2: latent variable models
-            \item hw3: flow models
-            \item hw4: adversarial models
+            \item hw1 - practice (13 points): autoregressive models 
+            \item hw2 - theory (13 points): autoregressive + latent variable models 
+            \item hw3 - practice (13 points): latent variable models 
+            \item hw4 - theory (13 points): flow + adversarial models 
+            \item hw5 - practice (13 points): flow models
+            \item hw6 - practice (13 points): adversarial models
         \end{itemize}
-        \item exam: 30 points
-        \item final project: 40 points
+        \item presentation: 26 points
     \end{itemize}
-    Last year course page: \href{http://bit.ly/IS_B2}{link} \\
-    Admission: \href{https://docs.google.com/spreadsheets/d/1FpTneCfkYNIG1FMxG7ALTwMCGDngkqc_OJC6SDqeG0Q/edit?usp=sharing}{link}
+    Total: 104 points. Mark = $\text{relu}\left(\frac{\# \text{points}}{8} - 2 \right)$.
+    \end{block}
+    \begin{itemize}
+    	\item Repo: \href{https://github.com/r-isachenko/2021-DGM-Ozon-course}{https://github.com/r-isachenko/2021-DGM-Ozon-course} \\
+    	\item \textbf{(!) Anonymous feedback:} \href{https://forms.gle/Nzxedo6Vrp28p1717}{https://forms.gle/Nzxedo6Vrp28p1717}
+    \end{itemize}
 \end{frame}
 %--------------------------------------------------------------------------------
 \section{Intro}
@@ -328,9 +334,29 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
 \end{frame}
 %=======
+\begin{frame}{MADE}
+	\begin{block}{Possible variations}
+		\begin{itemize}
+			\item Order agnostic training (missing values in partially observed input vectors can be imputed efficiently);
+			\item Connectivity-agnostic training (cheap ensembling).
+		\end{itemize}
+	\end{block}
+	\begin{minipage}[t]{0.59\columnwidth}
+		\begin{figure}
+			  \includegraphics[width=\linewidth]{figs/made_nmasks}
+		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.41\columnwidth}
+		\begin{figure}
+	  		\includegraphics[width=\linewidth]{figs/made_results}
+		\end{figure}
+	\end{minipage}
+	\myfootnotewithlink{https://arxiv.org/abs/1502.03509}{Germain M. et al. Made: Masked autoencoder for distribution estimation, 2015}
+\end{frame}
+%=======
 \begin{frame}{WaveNet}
 	\begin{block}{Goal}
-	Efficient generation of raw audio waveforms with natural sounds.
+		Efficient generation of raw audio waveforms with natural sounds.
 	\end{block}
 	\begin{figure}
 	  \centering
@@ -366,18 +392,18 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 %=======
 \begin{frame}{PixelCNN}
 	\begin{block}{Goal}
-	Model a distribution of natural images.
+		Model a distribution of natural images.
 	\end{block}
 	\begin{block}{Solution}
-	Autoregressive model on 2D pixels
-	\[
-	    p(\bx | \btheta) = \prod_{i=1}^{n^2} p(x_i|\bx_{1:i-1}, \btheta).
-	\]
-	\begin{itemize}
-		\item We need to introduce the ordering of image pixels.
-	    \item The convolution should be \textbf{masked} to make them causal.
-	    \item The image has RGB channels, these dependencies could be addressed.
-	\end{itemize}
+		Autoregressive model on 2D pixels
+		\[
+		    p(\bx | \btheta) = \prod_{i=1}^{n^2} p(x_i|\bx_{1:i-1}, \btheta).
+		\]
+		\begin{itemize}
+			\item We need to introduce the ordering of image pixels.
+		    \item The convolution should be \textbf{masked} to make them causal.
+		    \item The image has RGB channels, these dependencies could be addressed.
+		\end{itemize}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel recurrent neural networks, 2016}
 \end{frame}
