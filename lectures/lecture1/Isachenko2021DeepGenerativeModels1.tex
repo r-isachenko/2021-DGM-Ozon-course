@@ -210,8 +210,8 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
     		\item sample $\hat{x}_0 \sim p(x_1 | \btheta)$;
     		\item sample $\hat{x}_1 \sim p(x_2 | x_1, \btheta)$;
     		\item \dots
-    		\item sample $\hat{x}_n \sim p(x_n | \bx_{1:n-1}, \btheta)$;
-    		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_n)$.
+    		\item sample $\hat{x}_m \sim p(x_n | \bx_{1:m-1}, \btheta)$;
+    		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
     	\end{itemize}
         \item Each conditional $p(x_i | \bx_{1:i - 1}, \btheta)$ could be modelled by neural network.
         \item Modelling all conditional distributions separately is infeasible and we would obtain separate models. To extend to high dimensions we could share parameters $\btheta$ across conditionals.
@@ -316,11 +316,11 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 		    \vspace{-0.5cm}
 			\begin{block}{Masks generation}
 				\begin{itemize}
-					\item Define the ordering of input elements from 1 to $n$.
-					\item Assign the random number $m$ from 1 to $n - 1$ to each hidden unit. The number gives the
+					\item Define the ordering of input elements from 1 to $m$.
+					\item Assign the random number $k$ from 1 to $m - 1$ to each hidden unit. The number gives the
 					maximum number of input units to which the unit can be connected.
-					\item Connect each hidden unit with number $m$ with the previous layer units which has the number is \textbf{less or equal} than~$m$.
-					\item Connect each output unit with number $m$ with the previous layer units which has the number is \textbf{less} than $m$.
+					\item Connect each hidden unit with number $k$ with the previous layer units which has the number is \textbf{less or equal} than~$k$.
+					\item Connect each output unit with number $k$ with the previous layer units which has the number is \textbf{less} than $k$.
 				\end{itemize}
 			\end{block}
 		\end{minipage}%
@@ -397,7 +397,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 	\begin{block}{Solution}
 		Autoregressive model on 2D pixels
 		\[
-		    p(\bx | \btheta) = \prod_{i=1}^{n^2} p(x_i|\bx_{1:i-1}, \btheta).
+		    p(\bx | \btheta) = \prod_{i=1}^{\text{width} \times \text{height}} p(x_i|\bx_{1:i-1}, \btheta).
 		\]
 		\begin{itemize}
 			\item We need to introduce the ordering of image pixels.
@@ -455,6 +455,62 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 		\end{figure}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel recurrent neural networks, 2016}
+\end{frame}
+%=======
+\begin{frame}{PixelCNN++}
+	\begin{block}{CIFAR-10 pixel values distribution}
+		\begin{figure}
+			\includegraphics[width=0.3\linewidth]{figs/pixelcnn++_pixels_distr}
+		\end{figure}
+	\end{block}
+	\vspace{-0.5cm}
+	\begin{itemize}
+		\item Standard PixelCNN outputs softmax probabilities for values $\{0, 255\}$ (256 outputs feature maps). 
+		\item Categorical distribution do not know anything about numerical relationships (220 is close to 221 and far from 15).
+		\item If pixel value is not presented in the training dataset , it won't be predicted.
+		\item (Look at the edges of the distributions: they have higher probability mass).
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
+\end{frame}
+%=======
+\begin{frame}{PixelCNN++}
+		\begin{minipage}[t]{0.55\columnwidth}
+		\begin{block}{Mixture of logistic distributions}
+			\begin{align*}
+				p(\nu | \mu, s) &= \frac{\exp^{-(\nu - \mu) / s}}{s (1 + \exp^{-(\nu - \mu) / s})^2}; \\
+				p(\nu | \bmu, \bs, \bpi) &= \sum_{i=1}^K \pi_k p(\nu | \mu_k, s_k);
+			\end{align*}
+		\end{block}
+		\end{minipage}%
+		\begin{minipage}[t]{0.45\columnwidth}
+				\begin{figure}
+					\includegraphics[width=\linewidth]{figs/picelcnn++logistic}
+				\end{figure}
+		\end{minipage}
+	To adopt probability calculation to discrete values:
+	\[
+		P(x | \bmu, \bs, \bpi) = P(x + 0.5 | \bmu, \bs, \bpi) - P(x - 0.5 | \bmu, \bs, \bpi)
+	\]
+	For the edge case of 0, replace $x - 0.5$ by $-\infty$, and for 255 replace $x + 0.5$ by $+\infty$.
+	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
+\end{frame}
+%=======
+\begin{frame}{PixelCNN++}
+	\begin{block}{CIFAR-10 generated samples}
+		\begin{figure}
+			\centering
+	  		\includegraphics[width=0.7\linewidth]{figs/pixelcnn++samples}
+		\end{figure}
+	\end{block}
+	\vspace{-0.2cm}
+	\begin{block}{CIFAR-10 perfomance}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\centering
+	  		\includegraphics[width=0.5\linewidth]{figs/pixelcnn++results}
+		\end{figure}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.05517}{Salimans T. et al. PixelCNN++: Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications, 2017}
 \end{frame}
 %=======
 \begin{frame}{Summary}
