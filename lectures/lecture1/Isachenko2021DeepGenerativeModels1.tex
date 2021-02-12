@@ -47,6 +47,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/applications}
 	\end{figure}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/1/1\_introduction.html}{image credit: https://jmtomczak.github.io/blog/1/1\_introduction.html}
 \end{frame}
 %=======
 \begin{frame}{Applications: Image generation (VAE)}
@@ -128,7 +129,7 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
 	\end{itemize}
 \end{block}
 \begin{block}{Challenge}
-	 Data is complex and high-dimensional. Imagine the dataset of images which lies in the space $X \subset \bbR^{\text{width} \times \text{height}}$.
+	 Data is complex and high-dimensional. Imagine the dataset of images which live in the space $X \subset \bbR^{\text{width} \times \text{height}}$.
 \end{block}
 \end{frame}
 %=======
@@ -207,10 +208,10 @@ We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from u
     \begin{itemize}
 	    \item Sampling is sequential:
 	    \begin{itemize}
-    		\item sample $\hat{x}_0 \sim p(x_1 | \btheta)$;
-    		\item sample $\hat{x}_1 \sim p(x_2 | x_1, \btheta)$;
+    		\item sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
+    		\item sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
     		\item \dots
-    		\item sample $\hat{x}_m \sim p(x_n | \bx_{1:m-1}, \btheta)$;
+    		\item sample $\hat{x}_m \sim p(x_n | \hat{\bx}_{1:m-1}, \btheta)$;
     		\item new generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
     	\end{itemize}
         \item Each conditional $p(x_i | \bx_{1:i - 1}, \btheta)$ could be modelled by neural network.
