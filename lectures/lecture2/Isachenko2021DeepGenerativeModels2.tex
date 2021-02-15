@@ -119,19 +119,40 @@
 		\]
 	\end{block}
 	If evidence $p(\bX)$ is intractable (due to multidimensional integral), we can't get posterior distribution and make the honest inference.
-    \begin{block}{Maximum a posteriori (MAP)}
+    \begin{block}{Maximum a posteriori (MAP) estimation}
     \vspace{-0.2cm}
     \[
         \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
     \]
-    \vspace{-0.2cm}
-    \[
-    p(\bx | \bX) = \int p(\bx| \btheta) p(\btheta | \bX ) d \btheta \approx p(\bx | \btheta^*).
-    \]
     \end{block}
 \end{frame}
 %=======
-\begin{frame}{Latent variable models}
+\begin{frame}{Bayesian framework}
+	\begin{block}{MAP estimation}
+		\vspace{-0.2cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
+		\]
+	\end{block}
+	Now $\btheta^*$ is a deterministic variable, but we could treat it as a random variable with density $p(\btheta | \bX) = \delta(\btheta - \btheta^*)$.
+	\begin{block}{Dirac delta function}
+		\[
+			\delta(x) = 
+			\begin{cases}
+				+\infty, \quad x = 0; \\
+				0, \quad x \neq 0;
+			\end{cases} \quad 
+			\int f(x) \delta (x - y) dx = f(y).
+		\]
+	\end{block}
+	\begin{block}{MAP inference}
+		\[
+			p(\bx | \bX) = \int p(\bx| \btheta) p(\btheta | \bX ) d \btheta \approx p(\bx | \btheta^*).
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Latent variable models (LVM)}
     \begin{block}{MLE problem}
     \vspace{-0.5cm}
     \[
@@ -158,7 +179,7 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Latent variable models}
+\begin{frame}{Latent variable models (LVM)}
     \[
     \log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
     \]
@@ -194,7 +215,7 @@
 \myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
 \end{frame}
 %=======
-\begin{frame}{Latent variable models}
+\begin{frame}{Latent variable models (LVM)}
     \[
     \log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
     \]
@@ -436,10 +457,10 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	
 	\begin{block}{Variational assumption}
 		\[
-		q(\bz| \bx, \bphi) = \mathcal{N} (\bmu(\bx), \boldsymbol{\Sigma}(\bx)).
+		q(\bz| \bx, \bphi) = \mathcal{N} (\bmu(\bx), \bsigma(\bx)).
 		\]
 		\[
-		\bz = g(\bx, \bepsilon, \bphi) = \sqrt{\bSigma(\bx)} \cdot \bepsilon + \bmu(\bx).
+		\bz = g(\bx, \bepsilon, \bphi) = \bsigma(\bx) \cdot \bepsilon + \bmu(\bx).
 		\]
 	\end{block}
 	$\nabla_{\bphi} KL (q(\bz | \bx, \bphi) || p(\bz))$ has an analytical solution.
@@ -463,7 +484,10 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 \end{frame}
 %=======
 \begin{frame}{Variational autoencoder (VAE)}
-	
+	\begin{itemize}
+		\item Encoder $q(\bz | \bx, \bphi) = \text{NN}_e(\bx, \bphi)$ outputs $\bmu(\bx)$ and $\bsigma(\bx)$.
+		\item Decoder $p(\bx | \bz, \btheta) = \text{NN}_d(\bz, \btheta)$ outputs parameters of the sample distribution.
+	\end{itemize}
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
@@ -490,7 +514,12 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 \end{frame}
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item 
+		\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
+		\item Latent variable models introduce latent representation of observed samples to make model more interpretable.
+		\item To find MLE of model parameters LVM maximizes variational evidence lower bound.
+		\item Maximization of ELBO is performed by general variational EM algorithm.
+		\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and use deep neural network for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz_i, \btheta)$.
+		\item VAE model is a LVM model with encoder network for $q(\bz | \bx, \bphi)$ and decoder network for $p(\bx | \bz_i, \btheta)$.
 	\end{itemize}
 \end{frame}
 \end{document} 
