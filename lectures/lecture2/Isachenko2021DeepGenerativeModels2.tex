@@ -8,6 +8,53 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{Recap of previous lecture}
+	We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in X$ (e.g. $X = \bbR^m$) from unknown distribution $\pi(\bx)$.
+	\begin{block}{Goal}
+		We would like to learn a distribution $\pi(\bx)$ for 
+		\begin{itemize}
+			\item evaluating $\pi(\bx)$ for new samples (how likely to get object $\bx$?);
+			\item sampling from $\pi(\bx)$ (to get new objects $\bx \sim \pi(\bx)$).
+		\end{itemize}
+	\end{block}
+	\begin{block}{Challenge}
+		Data is complex and high-dimensional.
+	\end{block}
+	\begin{block}{MLE problem}
+	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions, such that $p(\bx | \btheta) \approx \pi(\bx)$.
+	
+		\vspace{-0.3cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+		\]
+		\vspace{-0.1cm}
+	\end{block}
+\end{frame}
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Likelihood as product of conditionals}
+		Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:i} = (x_1, \dots, x_i)$. Then 
+		\[
+		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta); \quad 
+		\log p(\bx | \btheta) = \sum_{i=1}^m \log p(x_i | \bx_{1:i - 1}, \btheta).
+		\]
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{MLE problem for autoregressive model}
+		\vspace{-0.5cm}
+		\[
+		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Sampling}
+		\vspace{-0.5cm}
+		\[
+			\hat{x}_1 \sim p(x_1 | \btheta), \quad \hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta), \dots, \quad \hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)
+		\]
+		New generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
+	\end{block}
+\end{frame}
+%=======
 \begin{frame}{Generative models zoo}
     \begin{figure}
         \centering
@@ -17,104 +64,69 @@
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
-\begin{itemize}
-    \item $\bx$ -- samples;
-    \item $\by$ -- target variables;
-    \item $\btheta$ -- model parameters.
-\end{itemize}
-\begin{minipage}[t]{0.5\columnwidth}
-\begin{block}{Discriminative}
-    \[
-        p(\by, \btheta | \bx) = p(\by | \bx, \btheta) p(\btheta)
-    \]
-    \begin{itemize}
-        \item Find conditional probability of $\by$ given $\bx$. \\
-        \item Samples $\bx$ are given. \\
-        \item Used for classification, regression.
-    \end{itemize}
-\end{block}
-\end{minipage}%
-\begin{minipage}[t]{0.5\columnwidth}
-\begin{block}{Generative}
-    \[
-        p(\by, \bx, \btheta) = p(\by, \bx | \btheta) p(\btheta)
-    \]
-    \begin{itemize}
-        \item Find joint probability of $(\bx, \by)$.
-        \item Samples $\bx$ should be modelled. \\
-        \item Generation of new samples $(\bx, \by)$.
-    \end{itemize}
-\end{block}
-\end{minipage}
-\end{frame}
-%=======
-\begin{frame}{Generative models}
-    We age given samples $\{\bx_i\}_{i=1}^n \in X$ from unknown distribution $p(\bx)$.
-    
-    \begin{block}{Goal}
-    	We would like to learn a distribution $p(\bx)$ for 
-    	\begin{itemize}
-    	    \item evaluating $p(\bx)$ for new samples;
-    	    \item sampling from $p(\bx)$.
-    	\end{itemize}
-    \end{block}
-    \begin{block}{Challenge}
-    	 Data is complex and high-dimensional (curse of dimensionality).
-    \end{block}
-    \begin{block}{Solution}
-        Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions . \\
-        Instead of searching true $p(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx p(\bx)$.
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Latent variable models (LVM)}
-    Suppose that our probabilistic model is $p(\bx, \bz | \btheta)$ instead of $p(\bx | \btheta)$.
-    \begin{itemize}
-        \item Here $\bz$ are latent variables.
-        \item We observe only samples $\bx$. 
-        \item Latent variables $\bz$ are unknown.
-        \item Parameters $\btheta$ are not random.
-    \end{itemize}
-    \begin{block}{MLE problem for LVM}
-    \vspace{-0.3cm}
-    \begin{multline*}
-        \btheta^* = \argmax_{\btheta} p(\bX, \bZ | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i, \bz_i | \btheta) = \\ = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i, \bz_i | \btheta).
-    \end{multline*}
-    \vspace{-0.1cm}
-    \end{block}
-    What if $\btheta$ are random variables with distribution $p(\btheta)$?
+	\begin{block}{Bayes theorem}
+		\[
+			p(\bt | \bx) = \frac{p(\bx | \bt) p(\bt)}{p(\bx)} = \frac{p(\bx | \bt) p(\bt)}{\int p(\bx | \bt) p(\bt) d \bt} 
+		\]
+		\begin{itemize}
+			\item $\bx$ -- observed variables, $\bt$ -- unobserved variables (latent variables/parameters);
+			\item $p(\bx | \bt)$ -- likelihood;
+			\item $p(\bx) = \int p(\bx | \bt) p(\bt) d \bt$ -- evidence;
+			\item $p(\bt)$ -- prior distribution, $p(\bt | \bx)$ -- posterior distribution.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Meaning}
+		We have the prior knowledge $p(\bt)$ of our unobserved variables $\bt$. We have got the observed data $\bx$. 
+		Posterior distribution $p(\bt | \bx)$ summarizes what you know after the data has been observed.
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
-    What if $\btheta$ are random variables with distribution $p(\btheta)$? \\
-    Before we get any data, we do not know anything about $\btheta$ except the \textbf{prior}  distribution $p(\btheta)$. \\
-    When we get data, we could change the \textbf{prior} distribution to the \textbf{posterior}. 
-    \begin{block}{Bayes theorem}
-    \[
-        p(\btheta | \bX, \bZ) = \frac{p(\bX, \bZ | \btheta) p(\btheta)}{p(\bX, \bZ)} = \frac{p(\bX, \bZ | \btheta) p(\btheta)}{\int p(\bX , \bZ | \btheta) p(\btheta) d \btheta} 
-    \]
-    \end{block}
-    \begin{block}{Full Bayesian inference}
-    \[
-        p(\bx^* | \bX, \bZ) = \int p(\bx^* | \btheta) p(\btheta | \bX, \bZ) d \btheta
-    \]
-    \end{block}
+	Let consider the case, where the unobserved variables $\bt$ is our model parameters $\btheta$.
+	\begin{itemize}
+		\item $\bX = \{\bx_i\}_{i=1}^n$ -- observed samples;
+		\item $p(\btheta)$ -- prior parameters distribution (we treat model parameters $\btheta$ as random variable).
+	\end{itemize}
+	\begin{block}{Posterior distribution}
+		\[
+			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{Bayesian inference}
+		\vspace{-0.2cm}
+		\[
+			p(\bx | \bX) = \int p(\bx | \btheta) p(\btheta | \bX) d \btheta
+		\]
+	\end{block}
+ 	Note the difference from
+	 	\[
+	 		p(\bx) = \int p(\bx | \btheta) p(\btheta) d \btheta.
+	 	\]
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
-    \begin{block}{Full Bayesian inference}
-    \[
-        p(\bx^* | \bX, \bZ) = \int p(\bx^* | \btheta) p(\btheta | \bX, \bZ) d \btheta
-    \]
-    \end{block}
+	\begin{block}{Posterior distribution}
+		\[
+		p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{Bayesian inference}
+		\vspace{-0.2cm}
+		\[
+		p(\bx | \bX) = \int p(\bx | \btheta) p(\btheta | \bX) d \btheta
+		\]
+	\end{block}
+	If evidence $p(\bX)$ is intractable (due to multidimensional integral), we can't get posterior distribution and make the honest inference.
     \begin{block}{Maximum a posteriori (MAP)}
     \vspace{-0.2cm}
     \[
-        \btheta^* = \argmax_{\btheta} p(\btheta | \bX, \bZ) = \argmax_{\btheta} \bigl(\log p(\bX, \bZ | \btheta) + \log p(\btheta) \bigr)
+        \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
     \]
     \vspace{-0.2cm}
     \[
-    p(\bx^* | \bX, \bZ) = \int p(\bx^* | \btheta) p(\btheta | \bX, \bZ) d \btheta \approx p(\bx^* | \btheta^*).
+    p(\bx | \bX) = \int p(\bx| \btheta) p(\btheta | \bX ) d \btheta \approx p(\bx | \btheta^*).
     \]
     \end{block}
 \end{frame}
@@ -288,7 +300,10 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 		q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
 		 p(\bz| \bx, \btheta^*).
 	\]
-	could be \textbf{intractable}.
+	\begin{itemize}
+		\item $p(\bz| \bx, \btheta^*)$ could be \textbf{intractable};
+		\item $q(\bz)$ is different for each object $\bx$.
+	\end{itemize}
     \end{block}
 	\begin{block}{Idea}
 	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class conditioned on sample: $q(\bz|\bx, \bphi)$.
@@ -324,70 +339,71 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 		\[
 		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
 		\]
-		where $\btheta$~-- parameters of likelihood $p(\bx | \bz, \btheta)$.
+		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
 	\end{itemize}
 	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
 	\textbf{Difficulty:} number of samples $n$.
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (M-step, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$)}
-\vspace{-0.3cm}
-\[
-\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz| \bx, \phi) || p(\bz)) \rightarrow \max_{\bphi, \btheta}.
-\]
-Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
-\begin{align*}
-	\nabla_{\btheta} \mathcal{L} (\bphi, \btheta)
-	&= \sum_{i=1}^n \int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta)  d \bz_i \\
-	&\mathrel{\stackrel{\rm (1)}\approx} n\int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta) d \bz_i , \quad i \sim U[1, n] \\
-	&\mathrel{\stackrel{\rm (2)}\approx}  n \nabla_{\btheta}\log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi).
-\end{align*}
-\textbf{Monte-Carlo} estimation (2):
-\[
-\int q(\bz) f(\bz) d\bz \approx f(\bz^*), \text{where } \bz^* \sim q(\bz).
-\]
-\end{frame}
-%=======
-\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-\vspace{-0.3cm}
-\[
-\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz| \bx, \phi) || p(\bz)) \rightarrow \max_{\bphi, \btheta}.
-\]
-Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
-\[
-\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
-\]
-
-\begin{block}{Log-derivative trick}
+	\vspace{-0.3cm}
 	\[
-	\nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
+		\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
 	\]
-\end{block}
-\[
-\nabla_{\bphi} q(\bz| \bx, \bphi) = q(\bz| \bx, \bphi) \nabla_{\bphi} \log q(\bz| \bx, \bphi).
-\]
+	Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
+	\begin{align*}
+		\nabla_{\btheta} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)
+		&= \sum_{i=1}^n \int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta)  d \bz_i \\
+		&\mathrel{\stackrel{\rm (1)}\approx} n\int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta) d \bz_i , \quad i \sim U[1, n] \\
+		&\mathrel{\stackrel{\rm (2)}\approx}  n \nabla_{\btheta}\log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi).
+	\end{align*}
+	\textbf{Monte-Carlo} estimation (2):
+	\[
+		\bbE_q f(\bz) = \int q(\bz) f(\bz) d\bz \approx f(\bz^*), \text{where } \bz^* \sim q(\bz).
+	\]
+	\end{frame}
+%=======
+\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
+	\vspace{-0.3cm}
+	\[
+	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
+	\]
+	Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
+	\[
+	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
+	\]
+	
+	First step is not an expectation due to the gradient.
+	
+	\begin{block}{Possible solutions}
+		\begin{itemize}
+			\item log-derivative trick;
+			\item reparametrization trick.
+		\end{itemize}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-
-\begin{multline*}
-	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz  - \nabla_{\bphi} KL = \\ 
-	=  \int q(\bz| \bx, \bphi) \bigl[  \nabla_{\bphi} \log q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) \bigr] d\bz - \nabla_{\bphi} KL
-\end{multline*}
-After applying the log-reparametrization trick, we are able to use the Monte-Carlo estimation:
-\[
-\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL,
-\]
-\[
-\bz_i^* \sim q(\bz_i| \bx_i, \bphi).
-\]
-\vspace{-0.2cm}
-\begin{block}{Problem} 
-	Unstable solution with huge variance.
-\end{block}
-\begin{block}{Solution}
-	Reparametrization trick
-\end{block}
+	\begin{block}{Log-derivative trick}
+		\vspace{-0.3cm}
+		\[
+		\nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
+		\]
+		\[
+		\nabla_{\bphi} q(\bz| \bx, \bphi) = q(\bz| \bx, \bphi) \nabla_{\bphi} \log q(\bz| \bx, \bphi).
+		\]
+	\end{block}
+	\begin{block}{ELBO}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) = \sum_{i=1}^n \int \nabla_{\bphi} q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) d\bz_i  - \nabla_{\bphi} KL \\ 
+			= \sum_{i=1}^n \int q(\bz_i | \bx_i, \bphi) \bigl[  \nabla_{\bphi} \log q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) \bigr] d\bz_i - \nabla_{\bphi} KL \\ \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL, \quad \bz_i^* \sim q(\bz_i| \bx_i, \bphi).
+		\end{multline*}
+	\end{block}
+	\vspace{-0.2cm}
+	\begin{block}{Problem} 
+		Unstable solution with huge variance.
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
@@ -414,7 +430,7 @@ After applying the log-reparametrization trick, we are able to use the Monte-Car
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 	\vspace{-0.3cm}
 	\begin{multline*}
-		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \nabla_{\bphi}\int q(\bz|\bx, \bphi) \log p(\bx| \bz, \btheta)d\bz  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL  \\ \approx
+		\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) =  \sum_{i=1}^n \nabla_{\bphi}\int q(\bz_i|\bx_i, \bphi) \log p(\bx_i| \bz_i, \btheta)d\bz_i  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL,\quad i \sim U[1, n]   \\ \approx
 		n \nabla_{\bphi} \log p(\bx_i| g(\bx_i, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} KL , \quad \bepsilon^* \sim r(\bepsilon).
 	\end{multline*}
 	
@@ -472,23 +488,9 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 \end{figure}
 \myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
 \end{frame}
-%=======
-\begin{frame}{Bayesian framework}
-\begin{block}{Bayes theorem}
-	\[
-	p(\bt | \bx) = \frac{p(\bx | \bt) p(\bt)}{p(\bx)} = \frac{p(\bx | \bt) p(\bt)}{\int p(\bx | \bt) p(\bt) d \bt} 
-	\]
-	\begin{itemize}
-		\item $\bx$ -- observed variables;
-		\item $\bt$ -- unobserved variables (latent variables/parameters);
-		\item $p(\bx | \bt)$ -- likelihood;
-		\item $p(\bx)$ -- evidence;
-		\item $p(\bt)$ -- prior;
-		\item $p(\bt | \bx)$ -- posterior.
-	\end{itemize}
-\end{block}
-\end{frame}
-%=======
 \begin{frame}{Summary}
+	\begin{itemize}
+		\item 
+	\end{itemize}
 \end{frame}
 \end{document} 
