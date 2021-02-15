@@ -121,11 +121,11 @@
 %=======
 \begin{frame}{Latent variable models}
     \begin{block}{MLE problem}
-    \vspace{-0.3cm}
+    \vspace{-0.5cm}
     \[
         \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
     \]
-    \vspace{-0.3cm}
+    \vspace{-0.5cm}
     \end{block}
     \begin{block}{Challenge}
     $p(\bx | \btheta)$ could be intractable.
@@ -140,6 +140,10 @@
         p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
     \]
     \end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Motivation}
+		The distributions $p(\bx | \bz, \btheta)$ and $p(\bz)$ could be quite simple.
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Latent variable models}
@@ -158,7 +162,7 @@
 		\vspace{-0.5cm}
 	    \begin{itemize}
 	        \item $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \boldsymbol{\mu}_\bz, \boldsymbol{\Sigma}_\bz)$
-	        \item $p(\bz) = \text{Cat}(\bz | \boldsymbol{\pi})$
+	        \item $p(\bz) = \text{Categorical}(\bz | \boldsymbol{\pi})$
 	    \end{itemize}
 	\end{minipage}%
 	\begin{minipage}[t]{0.53\columnwidth}
@@ -198,36 +202,37 @@
 \end{frame}
 %=======
 \begin{frame}{Incomplete likelihood}
-        \begin{block}{MLE problem}
-            \vspace{-0.3cm}
+        \begin{block}{MLE}
+            \vspace{-0.7cm}
             \begin{multline*}
-                \vspace{-0.3cm}
+                \vspace{-0.5cm}
                 \btheta^* = \argmax_{\btheta} p(\bX, \bZ | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i, \bz_i | \btheta) = \\ = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i, \bz_i | \btheta).
             \end{multline*}
-            \vspace{-0.3cm}
+            \vspace{-0.5cm}
         \end{block}
 	Since $\bZ$ is unknown, maximize \textbf{incomplete likelihood}.
     \begin{block}{MILE problem}
-        \vspace{-0.3cm}
+        \vspace{-0.7cm}
     	\begin{multline*}
-        	\btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \log \int p(\bX, \bZ | \btheta) d \bZ = \\ = \argmax_{\btheta} \log \int p(\bX| \bZ, \btheta) p(\bZ) d\bZ.
+        	\btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) = \\ =  \argmax_{\btheta}  \sum_{i=1}^n \log \int p(\bx_i, \bz_i | \btheta) d \bz_i = \\ = \argmax_{\btheta} \log \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i.
     	\end{multline*}
-        \vspace{-0.3cm}
 	\end{block}
 	
 \end{frame}
 %=======
 \begin{frame}{Variational lower bound}
 	\begin{multline*}
-		\log p(\bX| \btheta) 
-		= \log \frac{p(\bX, \bZ| \btheta)}{p(\bZ|\bX, \btheta)} = \\ 
-		= \int q(\bZ) \log \frac{p(\bX, \bZ| \btheta)}{p(\bZ|\bX, \btheta)}d\bZ
-		= \int q(\bZ) \log \frac{p(\bX, \bZ| \btheta) q(\bZ)}{p(\bZ|\bX, \btheta) q(\bZ)} d\bZ = \\
-		= \int q(\bZ) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ)}d\bZ + \int q(\bZ) \log \frac{q(\bZ)}{p(\bZ|\bX, \btheta)}d\bZ = \\ 
-		= \mathcal{L} (q, \btheta) + KL(q(\bZ) || p(\bZ|\bX, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\log p(\bx| \btheta) 
+		= \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)} = \\ 
+		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta)}{p(\bz|\bx, \btheta)}d\bz
+		= \int q(\bz) \log \frac{p(\bx, \bz| \btheta) q(\bz)}{p(\bz|\bx, \btheta) q(\bz)} d\bz = \\
+		= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz + \int q(\bz) \log \frac{q(\bz)}{p(\bz|\bx, \btheta)}d\bz = \\ 
+		= \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
 	\end{multline*}
+	\vspace{-0.5cm}
 	\begin{block}{Kullback-Leibler divergence}
 	    \begin{itemize}
+	    	\item $KL(q || p) = \int q(\bz) \log \frac{q(\bz)}{p(\bz)} d \bz$;
 	        \item $KL(q || p) \geq 0$;
 	        \item $KL(q || p) = 0 \Leftrightarrow q \equiv p$.
 	    \end{itemize}
@@ -236,33 +241,33 @@
 %=======
 \begin{frame}{Variational lower bound}
 \[
-    \log p(\bX| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bZ) || p(\bZ|\bX, \btheta)) \geq \mathcal{L} (q, \btheta).
+    \log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
 \]
 \begin{block}{Evidence Lower Bound (ELBO)}
 \begin{align*}
-    \mathcal{L} (q, \btheta) &= \int q(\bZ) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ)}d\bZ = \\ 
-    &= \int q(\bZ) \log p(\bX | \bZ, \btheta) d\bZ + \int q(\bZ) \log \frac{p(\bZ)}{q(\bZ)}d\bZ \\ 
-    &= \mathbb{E}_{q} \log p(\bX | \bZ, \btheta) - KL (q(\bZ) || p(\bZ))
+    \mathcal{L} (q, \btheta) &= \int q(\bz) \log \frac{p(\bx, \bz | \btheta)}{q(\bz)}d\bz = \\ 
+    &= \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz \\ 
+    &= \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz))
 \end{align*}
 \end{block}
-Instead of maximizing incomplete likelihood, maximize ELBO
+Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
 \[
-    \max_{\theta} p(\bX | \btheta) \quad \rightarrow \quad \max_{q, \theta} \mathcal{L} (q, \btheta).
+    \max_{\theta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \theta} \mathcal{L} (q, \btheta) \equiv \min_{q, \theta} KL(q(\bz) || p(\bz|\bx, \btheta)).
 \]
     
 \end{frame}
 %=======
 \begin{frame}{EM-algorithm}
 	\[
-		\mathcal{L} (q, \btheta)  = \int q(\bZ) \log p(\bX | \bZ, \btheta) d\bZ + \int q(\bZ) \log \frac{p(\bZ)}{q(\bZ)}d\bZ.
+		\mathcal{L} (q, \btheta)  = \int q(\bz) \log p(\bx | \bz, \btheta) d\bz + \int q(\bz) \log \frac{p(\bz)}{q(\bz)}d\bz.
 	\]
 	\begin{block}{Block-coordinate optimization}
 	\begin{itemize}
 		\item Initialize $\btheta^*$;
 		\item E-step
 		\[
-			q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-			 p(\bZ| \bX, \btheta^*);
+			q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+			 p(\bz| \bx, \btheta^*);
 		\]
 		\item M-step
 		\[
@@ -273,12 +278,15 @@ Instead of maximizing incomplete likelihood, maximize ELBO
 	\end{block}
 \end{frame}
 %=======
+\begin{frame}{Ugly pic}
+\end{frame}
+%=======
 \begin{frame}{Amortized variational inference}
     \begin{block}{E-step}
     \vspace{-0.3cm}
     \[
-		q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-		 p(\bZ| \bX, \btheta^*).
+		q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+		 p(\bz| \bx, \btheta^*).
 	\]
 	could be \textbf{intractable}.
     \end{block}
@@ -297,6 +305,188 @@ Instead of maximizing incomplete likelihood, maximize ELBO
 		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}}
 		\]
 	\end{itemize}
+\end{frame}%=======
+\begin{frame}{Variational EM-algorithm}
+
+	\begin{block}{ELBO}
+		\vspace{-0.1cm}
+		\[
+		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\]
+	\end{block}
+	\begin{itemize}
+		\item E-step
+		\[
+		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}},
+		\]
+		where $\bphi$~-- parameters of variational distribution $q(\bz | \bx, \bphi)$.
+		\item M-step
+		\[
+		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
+		\]
+		where $\btheta$~-- parameters of likelihood $p(\bx | \bz, \btheta)$.
+	\end{itemize}
+	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
+	\textbf{Difficulty:} number of samples $n$.
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient (M-step, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$)}
+\vspace{-0.3cm}
+\[
+\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz| \bx, \phi) || p(\bz)) \rightarrow \max_{\bphi, \btheta}.
+\]
+Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
+\begin{align*}
+	\nabla_{\btheta} \mathcal{L} (\bphi, \btheta)
+	&= \sum_{i=1}^n \int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta)  d \bz_i \\
+	&\mathrel{\stackrel{\rm (1)}\approx} n\int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta) d \bz_i , \quad i \sim U[1, n] \\
+	&\mathrel{\stackrel{\rm (2)}\approx}  n \nabla_{\btheta}\log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi).
+\end{align*}
+\textbf{Monte-Carlo} estimation (2):
+\[
+\int q(\bz) f(\bz) d\bz \approx f(\bz^*), \text{where } \bz^* \sim q(\bz).
+\]
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
+\vspace{-0.3cm}
+\[
+\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz| \bx, \phi) || p(\bz)) \rightarrow \max_{\bphi, \btheta}.
+\]
+Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
+\[
+\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
+\]
+
+\begin{block}{Log-derivative trick}
+	\[
+	\nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
+	\]
+\end{block}
+\[
+\nabla_{\bphi} q(\bz| \bx, \bphi) = q(\bz| \bx, \bphi) \nabla_{\bphi} \log q(\bz| \bx, \bphi).
+\]
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
+
+\begin{multline*}
+	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz  - \nabla_{\bphi} KL = \\ 
+	=  \int q(\bz| \bx, \bphi) \bigl[  \nabla_{\bphi} \log q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) \bigr] d\bz - \nabla_{\bphi} KL
+\end{multline*}
+After applying the log-reparametrization trick, we are able to use the Monte-Carlo estimation:
+\[
+\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL,
+\]
+\[
+\bz_i^* \sim q(\bz_i| \bx_i, \bphi).
+\]
+\vspace{-0.2cm}
+\begin{block}{Problem} 
+	Unstable solution with huge variance.
+\end{block}
+\begin{block}{Solution}
+	Reparametrization trick
+\end{block}
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
+	\begin{block}{Reparametrization trick}
+		\vspace{-0.3cm}
+		\[
+		f(\xi) = \int q(\eta|\xi) h(\eta) d\eta
+		\]
+		Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$ is a random variable with a density function $r(\epsilon)$.
+		\begin{multline*}
+			\nabla_\xi \int q(\eta|\xi) h(\eta) d\eta = \nabla_\xi \int r(\epsilon) h(g(\xi, \epsilon)) d \epsilon \\
+			\approx \nabla_\xi h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
+		\end{multline*}
+	\end{block}
+	\vspace{-0.1cm}
+	\begin{block}{Example}
+		\vspace{-0.3cm}
+		\[
+		q(\eta|\xi) = \mathcal{N}(\eta| \mu, \sigma^2), \quad r(\epsilon) = \mathcal{N}(\epsilon|0, 1), \quad \eta = \sigma \cdot \epsilon + \mu, \quad \xi = [\mu, \sigma].
+		\]
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
+	\vspace{-0.3cm}
+	\begin{multline*}
+		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \nabla_{\bphi}\int q(\bz|\bx, \bphi) \log p(\bx| \bz, \btheta)d\bz  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL  \\ \approx
+		n \nabla_{\bphi} \log p(\bx_i| g(\bx_i, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} KL , \quad \bepsilon^* \sim r(\bepsilon).
+	\end{multline*}
+	
+	\begin{block}{Variational assumption}
+		\[
+		q(\bz| \bx, \bphi) = \mathcal{N} (\bmu(\bx), \boldsymbol{\Sigma}(\bx)).
+		\]
+		\[
+		\bz = g(\bx, \bepsilon, \bphi) = \sqrt{\bSigma(\bx)} \cdot \bepsilon + \bmu(\bx).
+		\]
+	\end{block}
+	$\nabla_{\bphi} KL (q(\bz | \bx, \bphi) || p(\bz))$ has an analytical solution.
+\end{frame}
+%=======
+\begin{frame}{Variational autoencoder (VAE)}
+	\begin{block}{Final algorithm}
+		\begin{itemize}
+			\item pick $i \sim U[1, n]$;
+			\item compute stochastic gradient w.r.t. $\bphi$
+			\begin{multline*}
+				\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = n \nabla_{\bphi} \log p(\bx_i | g(\bx_i, \bepsilon^*, \bphi), \btheta) - \\ - \nabla_{\bphi} KL (q(\bz_i|\bx_i, \bphi) || p(\bz_i)), \quad \bepsilon^* \sim r(\bepsilon);
+			\end{multline*}
+			\item compute stochastic gradient w.r.t. $\btheta$
+			\[
+			\nabla_{\btheta} \mathcal{L} (\bphi, \btheta) = n \nabla_{\btheta} \log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi);
+			\]
+			\item update $\btheta, \bphi$ according to the selected optimization method (SGD, Adam, RMSProp).
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Variational autoencoder (VAE)}
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
+	\end{figure}
+	
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
+\end{frame}
+%=======
+\begin{frame}{Variational Autoencoder}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.7\linewidth]{figs/VAE.png}
+	\end{figure}
+	\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
+\end{frame}
+%=======
+\begin{frame}{Variational Autoencoder}
+Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf{I})$
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=.5\linewidth]{figs/vae_0.png}
+\end{figure}
+\myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
+\end{frame}
+%=======
+\begin{frame}{Bayesian framework}
+\begin{block}{Bayes theorem}
+	\[
+	p(\bt | \bx) = \frac{p(\bx | \bt) p(\bt)}{p(\bx)} = \frac{p(\bx | \bt) p(\bt)}{\int p(\bx | \bt) p(\bt) d \bt} 
+	\]
+	\begin{itemize}
+		\item $\bx$ -- observed variables;
+		\item $\bt$ -- unobserved variables (latent variables/parameters);
+		\item $p(\bx | \bt)$ -- likelihood;
+		\item $p(\bx)$ -- evidence;
+		\item $p(\bt)$ -- prior;
+		\item $p(\bt | \bx)$ -- posterior.
+	\end{itemize}
+\end{block}
 \end{frame}
 %=======
 \begin{frame}{Summary}
