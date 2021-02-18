@@ -21,7 +21,7 @@
 		Data is complex and high-dimensional.
 	\end{block}
 	\begin{block}{MLE problem}
-	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions, such that $p(\bx | \btheta) \approx \pi(\bx)$.
+	Fix probabilistic model $p(\bx | \btheta)$~-- a set of parameterized distributions, such that $p(\bx | \btheta) \approx \pi(\bx)$.
 	
 		\vspace{-0.3cm}
 		\[
@@ -76,8 +76,8 @@
 		\end{itemize}
 	\end{block}
 	\begin{block}{Meaning}
-		We have the prior knowledge $p(\bt)$ of our unobserved variables $\bt$. We have got the observed data $\bx$. 
-		Posterior distribution $p(\bt | \bx)$ summarizes what you know after the data has been observed.
+		We have unobserved variables $\bt$ and some prior knowledge about them $p(\bt)$. Then, the data $\bx$ has been observed. 
+		Posterior distribution $p(\bt | \bx)$ summarizes the knoweldge after the obbservations.
 	\end{block}
 \end{frame}
 %=======
@@ -85,7 +85,7 @@
 	Let consider the case, where the unobserved variables $\bt$ is our model parameters $\btheta$.
 	\begin{itemize}
 		\item $\bX = \{\bx_i\}_{i=1}^n$ -- observed samples;
-		\item $p(\btheta)$ -- prior parameters distribution (we treat model parameters $\btheta$ as random variable).
+		\item $p(\btheta)$ -- prior parameters distribution (we treat model parameters $\btheta$ as random variables).
 	\end{itemize}
 	\begin{block}{Posterior distribution}
 		\[
@@ -118,7 +118,7 @@
 		p(\bx | \bX) = \int p(\bx | \btheta) p(\btheta | \bX) d \btheta
 		\]
 	\end{block}
-	If evidence $p(\bX)$ is intractable (due to multidimensional integral), we can't get posterior distribution and make the honest inference.
+	If evidence $p(\bX)$ is intractable (due to multidimensional integration), we can't get posterior distribution and perform the precise inference.
     \begin{block}{Maximum a posteriori (MAP) estimation}
     \vspace{-0.2cm}
     \[
@@ -134,7 +134,7 @@
 		\btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
 		\]
 	\end{block}
-	Now $\btheta^*$ is a deterministic variable, but we could treat it as a random variable with density $p(\btheta | \bX) = \delta(\btheta - \btheta^*)$.
+	Estimated $\btheta^*$ is a deterministic variable, but we could treat it as a random variable with density $p(\btheta | \bX) = \delta(\btheta - \btheta^*)$.
 	\begin{block}{Dirac delta function}
 		\[
 			\delta(x) = 
@@ -219,7 +219,7 @@
     \[
     \log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
     \]
-	\textbf{PCA goal:} Project original data $\bX$ onto low latent space while maximizing the variance of the projected data. 
+	\textbf{PCA goal:} Project original data $\bX$ onto a low dimensional latent space while maximizing the variance of the projected data. 
 	\begin{figure}
 		\centering
 		\includegraphics[width=.7\linewidth]{figs/bayesian_pca.png}
@@ -327,7 +327,7 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	\end{itemize}
     \end{block}
 	\begin{block}{Idea}
-	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class conditioned on sample: $q(\bz|\bx, \bphi)$.
+	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class $q(\bz|\bx, \bphi)$ conditioned on samples $\bx$ with parameters $\bphi$.
 	\end{block}
 	
 	\textbf{Variational Bayes}
@@ -394,7 +394,7 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
 	\]
 	
-	First step is not an expectation due to the gradient.
+	First term is not an expectation due to the gradient.
 	
 	\begin{block}{Possible solutions}
 		\begin{itemize}
@@ -470,11 +470,11 @@ Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimiz
 	\begin{block}{Final algorithm}
 		\begin{itemize}
 			\item pick $i \sim U[1, n]$;
-			\item compute stochastic gradient w.r.t. $\bphi$
+			\item compute a stochastic gradient w.r.t. $\bphi$
 			\begin{multline*}
 				\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = n \nabla_{\bphi} \log p(\bx_i | g(\bx_i, \bepsilon^*, \bphi), \btheta) - \\ - \nabla_{\bphi} KL (q(\bz_i|\bx_i, \bphi) || p(\bz_i)), \quad \bepsilon^* \sim r(\bepsilon);
 			\end{multline*}
-			\item compute stochastic gradient w.r.t. $\btheta$
+			\item compute a stochastic gradient w.r.t. $\btheta$
 			\[
 			\nabla_{\btheta} \mathcal{L} (\bphi, \btheta) = n \nabla_{\btheta} \log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi);
 			\]
@@ -515,11 +515,11 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
-		\item Latent variable models introduce latent representation of observed samples to make model more interpretable.
-		\item To find MLE of model parameters LVM maximizes variational evidence lower bound.
-		\item Maximization of ELBO is performed by general variational EM algorithm.
-		\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and use deep neural network for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz_i, \btheta)$.
-		\item VAE model is a LVM model with encoder network for $q(\bz | \bx, \bphi)$ and decoder network for $p(\bx | \bz_i, \btheta)$.
+		\item LVM introduce latent representation of observed samples to make model more interpretable.
+		\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
+		\item ELBO maximization is performed by the general variational EM algorithm.
+		\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and to use deep neural networks for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz, \btheta)$.
+		\item The VAE model is an LVM with an encoder network for $q(\bz | \bx, \bphi)$ and a decoder network for $p(\bx | \bz, \btheta)$.
 	\end{itemize}
 \end{frame}
 \end{document} 
