@@ -8,119 +8,12 @@
 \titlepage
 \end{frame}
 %=======
-\begin{frame}{Generative models zoo}
-    \begin{figure}
-        \centering
-        \includegraphics[width=1.0\linewidth]{figs/generative_models_zoo.pdf}
-        \label{fig:generative_models_zoo}
-    \end{figure}
-\end{frame}
-%=======
-\begin{frame}{Latent variable models}
-	\begin{block}{MLE problem}
-		\vspace{-0.3cm}
-		\[
-		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Challenge}
-		$p(\bx | \btheta)$ could be intractable.
-	\end{block}
-	\begin{block}{Extend probabilistic model}
-		Introduce latent variable $\bz$ for each sample $\bx$
-		\[
-		p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
-		\log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
-		\]
-		\[
-		p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
-		\]
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Incomplete likelihood}
-\begin{block}{MLE problem}
-	\vspace{-0.3cm}
-	\begin{multline*}
-		\vspace{-0.3cm}
-		\btheta^* = \argmax_{\btheta} p(\bX, \bZ | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i, \bz_i | \btheta) = \\ = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i, \bz_i | \btheta).
-	\end{multline*}
-	\vspace{-0.3cm}
-\end{block}
-Since $\bZ$ is unknown, maximize \textbf{incomplete likelihood}.
-\begin{block}{MILE problem}
-	\vspace{-0.3cm}
-	\begin{multline*}
-		\btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \log \int p(\bX, \bZ | \btheta) d \bZ = \\ = \argmax_{\btheta} \log \int p(\bX| \bZ, \btheta) p(\bZ) d\bZ.
-	\end{multline*}
-	\vspace{-0.3cm}
-\end{block}
-
-\end{frame}
-%=======
-\begin{frame}{Variational lower bound}
-	\begin{block}{ELBO}
-		\vspace{-0.1cm}
-		\[
-		\log p(\bX| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bZ) || p(\bZ|\bX, \btheta)) \geq \mathcal{L} (q, \btheta).
-		\]
-	\end{block}
-	Instead of maximizing incomplete likelihood, maximize ELBO
-	\[
-		\max_{\theta} p(\bX | \btheta) \quad \rightarrow \quad \max_{q, \theta} \mathcal{L} (q, \btheta).
-	\]
-	\vspace{-0.4cm}
-	\begin{block}{EM-algorithm}
-		\begin{itemize}
-			\item Initialize $\btheta^*$;
-			\item E-step
-			\[
-			q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-			p(\bZ| \bX, \btheta^*);
-			\]
-			\item M-step
-			\[
-			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
-			\]
-			\item Repeat E-step and M-step until convergence.
-		\end{itemize}
-	\end{block}
-
-\end{frame}
-%=======
-\begin{frame}{Amortized variational inference}
-	\begin{block}{E-step}
-		\vspace{-0.3cm}
-		\[
-		q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-		p(\bZ| \bX, \btheta^*).
-		\]
-		could be \textbf{intractable}.
-	\end{block}
-	\begin{block}{Idea}
-		Restrict the family of all possible distributions $q(\bz)$ to the particular parametric class conditioned of sample: $q(\bz|\bx, \bphi)$.
-	\end{block}
-	
-	\textbf{Variational EM-algorithm}
-	\begin{itemize}
-		\item E-step
-		\[
-		\bphi_k = \bphi_{k-1} + \left.\eta \nabla_{\bphi} \mathcal{L}(\bphi, \btheta_{k-1})\right|_{\bphi=\bphi_{k-1}}
-		\]
-		\item M-step
-		\[
-		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}}
-		\]
-	\end{itemize}
-\end{frame}
-%=======
 \begin{frame}{Variational EM-algorithm}
-
+	
 	\begin{block}{ELBO}
 		\vspace{-0.1cm}
 		\[
-		\log p(\bX| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bZ) || p(\bZ|\bX, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
 		\]
 	\end{block}
 	\begin{itemize}
@@ -133,120 +26,121 @@ Since $\bZ$ is unknown, maximize \textbf{incomplete likelihood}.
 		\[
 		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
 		\]
-		where $\btheta$~-- parameters of likelihood $p(\bx | \bz, \btheta)$.
+		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
 	\end{itemize}
 	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
 	\textbf{Difficulty:} number of samples $n$.
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (M-step, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$)}
-\vspace{-0.3cm}
-\[
-	\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bX | \bZ, \btheta) - KL (q(\bZ| \bX, \phi) || p(\bZ)) \rightarrow \max_{\bphi, \btheta}.
-\]
-Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
-\begin{align*}
-	\nabla_{\btheta} \mathcal{L} (\bphi, \btheta)
-	&= \sum_{i=1}^n \int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta)  d \bz_i \\
-	&\mathrel{\stackrel{\rm (1)}\approx} n\int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta) d \bz_i , \quad i \sim U[1, n] \\
-	&\mathrel{\stackrel{\rm (2)}\approx}  n \nabla_{\btheta}\log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi).
-\end{align*}
-\textbf{Monte-Carlo} estimation (2):
-\[
-	\int q(\bz) f(\bz) d\bz \approx f(\bz^*), \text{where } \bz^* \sim q(\bz).
-\]
+	\vspace{-0.3cm}
+	\[
+	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
+	\]
+	Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
+	\begin{align*}
+		\nabla_{\btheta} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)
+		&= \sum_{i=1}^n \int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta)  d \bz_i \\
+		&\mathrel{\stackrel{\rm (1)}\approx} n\int q(\bz_i|\bx_i, \bphi) \nabla_{\btheta}\log p(\bx_i|\bz_i, \btheta) d \bz_i , \quad i \sim U[1, n] \\
+		&\mathrel{\stackrel{\rm (2)}\approx}  n \nabla_{\btheta}\log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi).
+	\end{align*}
+	\textbf{Monte-Carlo} estimation (2):
+	\[
+	\bbE_q f(\bz) = \int q(\bz) f(\bz) d\bz \approx f(\bz^*), \text{where } \bz^* \sim q(\bz).
+	\]
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-\vspace{-0.3cm}
-\[
-	\mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \log p(\bX | \bZ, \btheta) - KL (q(\bZ| \bX, \phi) || p(\bZ)) \rightarrow \max_{\bphi, \btheta}.
-\]
+	\vspace{-0.3cm}
+	\[
+	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
+	\]
 	Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
 	\[
-		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) d\bZ - \nabla_{\bphi} KL
+	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
 	\]
 	
-	\begin{block}{Log-derivative trick}
-	    \[
-	    \nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
-	    \]
+	First term is not an expectation due to the gradient.
+	
+	\begin{block}{Possible solutions}
+		\begin{itemize}
+			\item log-derivative trick;
+			\item reparametrization trick.
+		\end{itemize}
 	\end{block}
-	\[
-		\nabla_{\bphi} q(\bZ| \bX, \bphi) = q(\bZ| \bX, \bphi) \nabla_{\bphi} \log q(\bZ| \bX, \bphi).
-	\]
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-
-	\begin{multline*}
-		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) d\bZ  - \nabla_{\bphi} KL = \\ 
-		=  \int q(\bZ| \bX, \bphi) \bigl[  \nabla_{\bphi} \log q(\bZ| \bX, \bphi) \log p(\bX |\bZ, \btheta) \bigr] d\bZ - \nabla_{\bphi} KL
-	\end{multline*}
-	After applying the log-reparametrization trick, we are able to use the Monte-Carlo estimation:
-	\[
-		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL,
-	\]
-	\[
-		\bz_i^* \sim q(\bz_i| \bx_i, \bphi).
-	\]
+	\begin{block}{Log-derivative trick}
+		\vspace{-0.3cm}
+		\[
+		\nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
+		\]
+		\[
+		\nabla_{\bphi} q(\bz| \bx, \bphi) = q(\bz| \bx, \bphi) \nabla_{\bphi} \log q(\bz| \bx, \bphi).
+		\]
+	\end{block}
+	\begin{block}{ELBO}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) = \sum_{i=1}^n \int \nabla_{\bphi} q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) d\bz_i  - \nabla_{\bphi} KL \\ 
+			= \sum_{i=1}^n \int q(\bz_i | \bx_i, \bphi) \bigl[  \nabla_{\bphi} \log q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) \bigr] d\bz_i - \nabla_{\bphi} KL \\ \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL, \quad \bz_i^* \sim q(\bz_i| \bx_i, \bphi).
+		\end{multline*}
+	\end{block}
 	\vspace{-0.2cm}
 	\begin{block}{Problem} 
-	Unstable solution with huge variance.
-	\end{block}
-	\begin{block}{Solution}
-	    Reparametrization trick
+		Unstable solution with huge variance.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-\begin{block}{Reparametrization trick}
-\vspace{-0.3cm}
-\[
-	f(\xi) = \int q(\eta|\xi) h(\eta) d\eta
-\]
-Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$ is a random variable with a density function $r(\epsilon)$.
-\begin{multline*}
-\nabla_\xi \int q(\eta|\xi) h(\eta) d\eta = \nabla_\xi \int r(\epsilon) h(g(\xi, \epsilon)) d \epsilon \\
-\approx \nabla_\xi h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
-\end{multline*}
-\end{block}
-\vspace{-0.1cm}
-\begin{block}{Example}
-\vspace{-0.3cm}
-\[
-	q(\eta|\xi) = \mathcal{N}(\eta| \mu, \sigma^2), \quad r(\epsilon) = \mathcal{N}(\epsilon|0, 1), \quad \eta = \sigma \cdot \epsilon + \mu, \quad \xi = [\mu, \sigma].
-\]
-\end{block}
+	\begin{block}{Reparametrization trick}
+		\vspace{-0.3cm}
+		\[
+		f(\xi) = \int q(\eta|\xi) h(\eta) d\eta
+		\]
+		Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$ is a random variable with a density function $r(\epsilon)$.
+		\begin{multline*}
+			\nabla_\xi \int q(\eta|\xi) h(\eta) d\eta = \nabla_\xi \int r(\epsilon) h(g(\xi, \epsilon)) d \epsilon \\
+			\approx \nabla_\xi h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
+		\end{multline*}
+	\end{block}
+	\vspace{-0.1cm}
+	\begin{block}{Example}
+		\vspace{-0.3cm}
+		\[
+		q(\eta|\xi) = \mathcal{N}(\eta| \mu, \sigma^2), \quad r(\epsilon) = \mathcal{N}(\epsilon|0, 1), \quad \eta = \sigma \cdot \epsilon + \mu, \quad \xi = [\mu, \sigma].
+		\]
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 	\vspace{-0.3cm}
 	\begin{multline*}
-		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \nabla_{\bphi}\int q(\bZ|\bX, \bphi) \log p(\bX| \bZ, \btheta)d\bZ  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL  \\ \approx
+		\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) =  \sum_{i=1}^n \nabla_{\bphi}\int q(\bz_i|\bx_i, \bphi) \log p(\bx_i| \bz_i, \btheta)d\bz_i  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL,\quad i \sim U[1, n]   \\ \approx
 		n \nabla_{\bphi} \log p(\bx_i| g(\bx_i, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} KL , \quad \bepsilon^* \sim r(\bepsilon).
 	\end{multline*}
 	
 	\begin{block}{Variational assumption}
-	\[
-	q(\bz| \bx, \bphi) = \mathcal{N} (\bmu(\bx), \boldsymbol{\Sigma}(\bx)).
-	\]
-	\[
-		\bz = g(\bx, \bepsilon, \bphi) = \sqrt{\bSigma(\bx)} \cdot \bepsilon + \bmu(\bx).
-	\]
+		\[
+		q(\bz| \bx, \bphi) = \mathcal{N} (\bmu(\bx), \bsigma(\bx)).
+		\]
+		\[
+		\bz = g(\bx, \bepsilon, \bphi) = \bsigma(\bx) \cdot \bepsilon + \bmu(\bx).
+		\]
 	\end{block}
-	$\nabla_{\bphi} KL (q(\bZ | \bX, \bphi) || p(\bZ))$ has an analytical solution.
+	$\nabla_{\bphi} KL (q(\bz | \bx, \bphi) || p(\bz))$ has an analytical solution.
 \end{frame}
 %=======
 \begin{frame}{Variational autoencoder (VAE)}
 	\begin{block}{Final algorithm}
 		\begin{itemize}
 			\item pick $i \sim U[1, n]$;
-			\item compute stochastic gradient w.r.t. $\bphi$
-				\begin{multline*}
-					\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = n \nabla_{\bphi} \log p(\bx_i | g(\bx_i, \bepsilon^*, \bphi), \btheta) - \\ - \nabla_{\bphi} KL (q(\bz_i|\bx_i, \bphi) || p(\bz_i)), \quad \bepsilon^* \sim r(\bepsilon);
-				\end{multline*}
-			\item compute stochastic gradient w.r.t. $\btheta$
+			\item compute a stochastic gradient w.r.t. $\bphi$
+			\begin{multline*}
+				\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = n \nabla_{\bphi} \log p(\bx_i | g(\bx_i, \bepsilon^*, \bphi), \btheta) - \\ - \nabla_{\bphi} KL (q(\bz_i|\bx_i, \bphi) || p(\bz_i)), \quad \bepsilon^* \sim r(\bepsilon);
+			\end{multline*}
+			\item compute a stochastic gradient w.r.t. $\btheta$
 			\[
 			\nabla_{\btheta} \mathcal{L} (\bphi, \btheta) = n \nabla_{\btheta} \log p(\bx_i|\bz^*_i, \btheta), \quad \bz^*_i \sim q(\bz_i|\bx_i, \bphi);
 			\]
@@ -256,30 +150,33 @@ Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$
 \end{frame}
 %=======
 \begin{frame}{Variational autoencoder (VAE)}
-
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
-\end{figure}
-
-\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
+	\begin{itemize}
+		\item Encoder $q(\bz | \bx, \bphi) = \text{NN}_e(\bx, \bphi)$ outputs $\bmu(\bx)$ and $\bsigma(\bx)$.
+		\item Decoder $p(\bx | \bz, \btheta) = \text{NN}_d(\bz, \btheta)$ outputs parameters of the sample distribution.
+	\end{itemize}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
+	\end{figure}
+	
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.7\linewidth]{figs/VAE.png}
-\end{figure}
-\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.7\linewidth]{figs/VAE.png}
+	\end{figure}
+	\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
-Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf{I})$
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=.5\linewidth]{figs/vae_0.png}
-\end{figure}
-\myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
+	Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf{I})$
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.5\linewidth]{figs/vae_0.png}
+	\end{figure}
+	\myfootnotewithlink{https://habr.com/ru/post/331664}{image credit: https://habr.com/ru/post/331664}
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
@@ -511,6 +408,17 @@ Generation objects by sampling the latent space $\bz \sim \mathcal{N}(0, \mathbf
 		\item Repeat E-step and M-step until convergence.
 	\end{itemize}
 	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+\begin{itemize}
+	\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
+	\item LVM introduce latent representation of observed samples to make model more interpretable.
+	\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
+	\item ELBO maximization is performed by the general variational EM algorithm.
+	\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and to use deep neural networks for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz, \btheta)$.
+	\item The VAE model is an LVM with an encoder network for $q(\bz | \bx, \bphi)$ and a decoder network for $p(\bx | \bz, \btheta)$.
+\end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Summary}
