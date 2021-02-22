@@ -8,8 +8,88 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{Recap of previous lecture}
+    \begin{block}{MLE problem}
+    \vspace{-0.5cm}
+    \[
+        \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+    \]
+    \vspace{-0.5cm}
+    \end{block}
+    \begin{block}{Challenge}
+    $p(\bx | \btheta)$ could be intractable.
+    \end{block}
+    \begin{block}{LVM}
+    Introduce latent variable $\bz$ for each sample $\bx$
+    \[
+        p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
+        \log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
+    \]
+    \[
+        p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
+    \]
+    \end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Motivation}
+		The distributions $p(\bx | \bz, \btheta)$ and $p(\bz)$ could be quite simple.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+        \begin{block}{Incomplete likelihood maximization}
+        \vspace{-0.7cm}
+    	\[
+    	        \btheta^* = \argmax_{\btheta} \log p(\bX| \btheta) = \argmax_{\btheta} \log \sum_{i=1}^n \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i.
+    	\]
+    	\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Variational lower bound}
+		\[
+		    \log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\]
+	\end{block}
+	\begin{block}{Evidence Lower Bound (ELBO)}
+	    \vspace{-0.3cm}
+		\[
+		    \mathcal{L} (q, \btheta) = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz))
+		\]
+	\end{block}
+	Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
+	\[
+	    \max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
+	\]
+	    
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{EM algorithm (block-coordinate optimization)}
+	\begin{itemize}
+		\item Initialize $\btheta^*$;
+		\item E-step
+			\vspace{-0.3cm}
+			\[
+				q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+				 p(\bz| \bx, \btheta^*);
+			\]
+			\vspace{-0.5cm}
+			\begin{itemize}
+				\item $p(\bz| \bx, \btheta^*)$ could be \textbf{intractable};
+				\item $q(\bz)$ is different for each object $\bx$.
+			\end{itemize}
+		\item M-step
+			\[
+				\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
+			\]
+		\item Repeat E-step and M-step until convergence.
+	\end{itemize}
+	\end{block}
+	\begin{block}{Amortized variational inference}
+	Restrict a family of all possible distributions $q(\bz)$ to a particular parametric class $q(\bz|\bx, \bphi)$ conditioned on samples $\bx$ with parameters $\bphi$.
+	\end{block}
+\end{frame}
+%=======
 \begin{frame}{Variational EM-algorithm}
-	
+
 	\begin{block}{ELBO}
 		\vspace{-0.1cm}
 		\[
@@ -26,16 +106,18 @@
 		\[
 		\btheta_k = \btheta_{k-1} + \left.\eta \nabla_{\btheta} \mathcal{L}(\bphi_k, \btheta)\right|_{\btheta=\btheta_{k-1}},
 		\]
-		where $\btheta$~-- parameters of the generation function $p(\bx | \bz, \btheta)$.
+		where $\btheta$~-- parameters of the generative distribution $p(\bx | \bz, \btheta)$.
 	\end{itemize}
 	Now all we have to do is to obtain two gradients $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$.  \\
-	\textbf{Difficulty:} number of samples $n$.
+	\begin{block}{Challenge}
+		Number of samples $n$ could be huge (we heed to derive unbiased stochastic gradients).
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (M-step, $\nabla_{\btheta} \mathcal{L}(\bphi, \btheta)$)}
 	\vspace{-0.3cm}
 	\[
-	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
+	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \left[\log p(\bx_i, \bz_i | \btheta) - \log q(\bz_i| \bx_i, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
 	\]
 	Optimization w.r.t. $\btheta$: \textbf{mini-batching} (1) + \textbf{Monte-Carlo} estimation (2)
 	\begin{align*}
@@ -53,46 +135,21 @@
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 	\vspace{-0.3cm}
 	\[
-	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \log p(\bx_i | \bz_i, \btheta) - KL (q(\bz_i| \bx_i, \phi) || p(\bz_i)) \rightarrow \max_{\bphi, \btheta}.
+	\sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta)  = \sum_{i=1}^n \mathbb{E}_{q} \left[\log p(\bx_i, \bz_i | \btheta) - \log q(\bz_i| \bx_i, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
 	\]
+	\begin{block}{Challenge}
 	Difference from M-step: density function $q(\bz| \bx, \bphi)$ depends on the parameters $\bphi$, it is impossible to use the Monte-Carlo estimation:
-	\[
-	\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) = \int \nabla_{\bphi} q(\bz| \bx, \bphi) \log p(\bx |\bz, \btheta) d\bz - \nabla_{\bphi} KL
-	\]
-	
-	First term is not an expectation due to the gradient.
-	
-	\begin{block}{Possible solutions}
-		\begin{itemize}
-			\item log-derivative trick;
-			\item reparametrization trick.
-		\end{itemize}
+	\begin{align*}
+		\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) &= \nabla_{\bphi} \int q(\bz | \bx, \bphi) \left[\log p(\bx_i, \bz_i | \btheta) - \log q(\bz_i| \bx_i, \bphi) \right] d \bz \\
+		& \neq  \int q(\bz | \bx, \bphi) \nabla_{\bphi} \left[\log p(\bx_i, \bz_i | \btheta) - \log q(\bz_i| \bx_i, \bphi) \right] d \bz \\
+	\end{align*}
+	\end{block}
+	\vspace{-0.8cm}
+	\begin{block}{Solution}
+		Reparametrization trick for $q(\bz | \bx, \bphi)$ to allow the expectation is independent of parameters~$\bphi$.
 	\end{block}
 \end{frame}
-%=======
-\begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
-	\begin{block}{Log-derivative trick}
-		\vspace{-0.3cm}
-		\[
-		\nabla_\xi q(\eta| \xi) = q(\eta | \xi) \left( \frac{\nabla_\xi q(\eta | \xi)}{q(\eta| \xi)} \right) = q(\eta | \xi) \nabla_\xi \log q(\eta| \xi).
-		\]
-		\[
-		\nabla_{\bphi} q(\bz| \bx, \bphi) = q(\bz| \bx, \bphi) \nabla_{\bphi} \log q(\bz| \bx, \bphi).
-		\]
-	\end{block}
-	\begin{block}{ELBO}
-		\vspace{-0.5cm}
-		\begin{multline*}
-			\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) = \sum_{i=1}^n \int \nabla_{\bphi} q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) d\bz_i  - \nabla_{\bphi} KL \\ 
-			= \sum_{i=1}^n \int q(\bz_i | \bx_i, \bphi) \bigl[  \nabla_{\bphi} \log q(\bz_i| \bx_i, \bphi) \log p(\bx_i |\bz_i, \btheta) \bigr] d\bz_i - \nabla_{\bphi} KL \\ \approx n \nabla_{\bphi} \log q(\bz_i^*| \bx_i, \bphi) \log p(\bx_i |\bz_i^*, \btheta) - \nabla_{\bphi} KL, \quad \bz_i^* \sim q(\bz_i| \bx_i, \bphi).
-		\end{multline*}
-	\end{block}
-	\vspace{-0.2cm}
-	\begin{block}{Problem} 
-		Unstable solution with huge variance.
-	\end{block}
-\end{frame}
-%=======
+%======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 	\begin{block}{Reparametrization trick}
 		\vspace{-0.3cm}
@@ -100,18 +157,30 @@
 		f(\xi) = \int q(\eta|\xi) h(\eta) d\eta
 		\]
 		Let $\eta = g(\xi, \epsilon)$, where $g$ is a deterministic function, $\epsilon$ is a random variable with a density function $r(\epsilon)$.
-		\begin{multline*}
-			\nabla_\xi \int q(\eta|\xi) h(\eta) d\eta = \nabla_\xi \int r(\epsilon) h(g(\xi, \epsilon)) d \epsilon \\
-			\approx \nabla_\xi h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
-		\end{multline*}
+		{\small
+		\[
+			f(\xi) = \int q(\eta|\xi) h(\eta) d\eta = \int r(\epsilon) h(g(\xi, \epsilon)) d \epsilon \approx h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
+		\]
+		\[
+			\nabla_\xi f(\xi) \approx \nabla_\xi h(g(\xi, \epsilon^*)), \quad \epsilon^* \sim r(\epsilon).
+		\]}
 	\end{block}
-	\vspace{-0.1cm}
+	\vspace{-0.5cm}
 	\begin{block}{Example}
-		\vspace{-0.3cm}
+		\vspace{-0.5cm}
 		\[
 		q(\eta|\xi) = \mathcal{N}(\eta| \mu, \sigma^2), \quad r(\epsilon) = \mathcal{N}(\epsilon|0, 1), \quad \eta = \sigma \cdot \epsilon + \mu, \quad \xi = [\mu, \sigma].
 		\]
 	\end{block}
+	\vspace{-0.5cm}
+	\[
+		\bepsilon \sim r(\bepsilon), \quad \bz = g(\bx, \bepsilon, \bphi), \quad \bz \sim q(\bz | \bx, \bphi).
+	\]
+	\begin{multline*}
+		\nabla_{\bphi} \sum_{i=1}^n \mathcal{L}_i (\bphi, \btheta) =  \sum_{i=1}^n \nabla_{\bphi}\int q(\bz_i|\bx_i, \bphi) \log p(\bx_i| \bz_i, \btheta)d\bz_i  - \nabla_{\bphi} KL \\ \approx  n \nabla_{\bphi}\int r(\bepsilon) \log p(\bx_i| g(\bx_i, \bepsilon, \bphi), \btheta)d\bepsilon  - \nabla_{\bphi} KL,\quad i \sim U[1, n]   \\ \approx
+		n \nabla_{\bphi} \log p(\bx_i| g(\bx_i, \bepsilon^*, \bphi), \btheta)  - \nabla_{\bphi} KL , \quad \bepsilon^* \sim r(\bepsilon).
+	\end{multline*}
+	
 \end{frame}
 %=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
