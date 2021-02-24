@@ -51,7 +51,7 @@
 	\begin{block}{Evidence Lower Bound (ELBO)}
 	    \vspace{-0.3cm}
 		\[
-		    \mathcal{L} (q, \btheta) = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz))
+		    \mathcal{L} (q, \btheta) = \mathbb{E}_{q} \log p(\bx | \bz, \btheta) - KL (q(\bz) || p(\bz)).
 		\]
 	\end{block}
 	Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
@@ -112,6 +112,34 @@
 	\begin{block}{Challenge}
 		Number of samples $n$ could be huge (we heed to derive unbiased stochastic gradients).
 	\end{block}
+\end{frame}
+%=======
+\begin{frame}{ELBO interpretations}
+	\[
+		p(\bx | \btheta) = \cL (q, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
+	\]
+	\[
+		\cL (q, \btheta) = \int q(\bz | \bx, \bphi) \log \frac{p(\bx, \bz | \btheta)}{q(\bz | \bx, \bphi)} d \bz.
+	\]
+	\begin{itemize}
+	    \item Evidence minus posterior KL
+	    \vspace{-0.1cm}
+	    \[
+	        \mathcal{L}(q, \btheta) = \log p(\bx | \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
+	    \]
+	    \item Average negative energy plus entropy
+	    \vspace{-0.1cm}
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx, \bz | \btheta) - \log q(\bz | \bx, \bphi)  \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx, \bz | \btheta) + \mathbb{H} \left[q(\bz | \bx, \bphi) \right].
+	    \end{align*}
+	    \item Average reconstruction minus KL to prior
+	    \vspace{-0.1cm}
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[ \log p(\bx | \bz, \btheta) + \log p(\bz) - \log q(\bz | \bx, \bphi) \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx | \bz, \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz)).
+	    \end{align*}
+	\end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Monte-Carlo estimation}
@@ -255,6 +283,32 @@
 \end{frame}
 %=======
 \begin{frame}{Variational autoencoder (VAE)}
+	\begin{minipage}[t]{0.55\columnwidth}
+	    \begin{itemize}
+	    \item VAE learns stochastic mapping between $\bx$-space, from complicated distribution $\pi(\bx)$, and a latent $\bz$-space, with simple distribution. 
+	    \item The generative model learns a joint distribution $p(\bx, \bz | \btheta) = p(\bz) p(\bx |\bz, \btheta)$, with a prior distribution $p(\bz)$, and a stochastic decoder $p(\bx|\bz, \btheta)$. 
+	    \item The stochastic encoder $q(\bz|\bx, \bphi)$ (inference model), approximates the true but intractable posterior $p(\bz|\bx, \btheta)$ of the generative model.
+	    \end{itemize}
+	\end{minipage}%
+	\begin{minipage}[t]{0.45\columnwidth}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=\linewidth]{figs/vae_scheme}
+		\end{figure}
+	\end{minipage}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M. An introduction to variational autoencoders, 2019}
+\end{frame}
+%=======
+\begin{frame}{Variational Autoencoder}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=.7\linewidth]{figs/VAE.png}
+	\end{figure}
+	\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
+\end{frame}
+%=======
+\begin{frame}{Variational autoencoder (VAE)}
 	\begin{itemize}
 		\item Encoder $q(\bz | \bx, \bphi) = \text{NN}_e(\bx, \bphi)$ outputs $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
 		\item Decoder $p(\bx | \bz, \btheta) = \text{NN}_d(\bz, \btheta)$ outputs parameters of the sample distribution.
@@ -268,14 +322,6 @@
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=.7\linewidth]{figs/VAE.png}
-	\end{figure}
-	\myfootnotewithlink{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html}
-\end{frame}
-%=======
-\begin{frame}{Variational Autoencoder}
 	Generated images for latent objects $\bz$ sampled from prior $\mathcal{N}(0, \mathbf{I})$
 	\begin{figure}[h]
 		\centering
@@ -285,256 +331,102 @@
 \end{frame}
 %=======
 \begin{frame}{Bayesian framework}
-    \begin{block}{Bayes theorem}
+	\begin{block}{Posterior distribution}
+		\vspace{-0.2cm}
+		\[
+			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{Bayesian inference}
+		\vspace{-0.3cm}
+		\[
+			p(\bx | \bX) = \int p(\bx | \btheta) p(\btheta | \bX) d \btheta
+		\]
+	\end{block}
+    \begin{block}{Maximum a posteriori (MAP) estimation}
+    \vspace{-0.2cm}
     \[
-        p(\bt | \bx) = \frac{p(\bx | \bt) p(\bt)}{p(\bx)} = \frac{p(\bx | \bt) p(\bt)}{\int p(\bx | \bt) p(\bt) d \bt} 
+        \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
     \]
-    \begin{itemize}
-        \item $\bx$ -- observed variables;
-        \item $\bt$ -- unobserved variables (latent variables/parameters);
-        \item $p(\bx | \bt)$ -- likelihood;
-        \item $p(\bx)$ -- evidence;
-        \item $p(\bt)$ -- prior;
-        \item $p(\bt | \bx)$ -- posterior.
-    \end{itemize}
     \end{block}
-\end{frame}
-%=======
-\begin{frame}{Variational Lower Bound}
-    We are given the set of objects $\bX = \{\bx_i\}_{i=1}^n$. 
-    The goal is to perform bayesian inference on the latent variables $\bT = \{\bt_i\}_{i=1}^n$.
-    \begin{block}{Evidence Lower Bound (ELBO)}
-    \vspace{-0.3cm}
-        \begin{multline*}
-    		\log p(\bX) 
-    		= \log \frac{p(\bX, \bT)}{p(\bT|\bX)} = \\ 
-    		= \int q(\bT) \log \frac{p(\bX, \bT)}{p(\bT|\bX)}d\bT
-    		= \int q(\bT) \log \frac{p(\bX, \bT) q(\bT)}{p(\bT|\bX) q(\bT)} d\bT = \\
-    		= \int q(\bT) \log \frac{p(\bX, \bT)}{q(\bT)}d\bT + \int q(\bT) \log \frac{q(\bT)}{p(\bT|\bX)}d\bT = \\ 
-    		= \mathcal{L} (q) + KL(q(\bT) || p(\bT|\bX)) \geq \mathcal{L} (q).
-    	\end{multline*}
-        \vspace{-0.3cm}
-    \end{block}
-	We would like to maximize lower bound $\mathcal{L}(q)$.
-\end{frame}
-%=======
-\begin{frame}{Mean field approximation}
-    \begin{block}{Independence assumption}
-    \vspace{-0.3cm}
-    \[
-    q(\bT) = \prod_{i=1}^k q_i(\bT_i), \quad \bT = [\bT_1, \dots, \bT_k], \, \bT_j = \{ \bt_{ij}\}_{i=1}^n, \, \bt_i = \{ \bT_{ij}\}_{j=1}^k.
-    \]
-    \vspace{-0.3cm}
-    \end{block}
-    \begin{block}{Block coordinate optimization of ELBO for $q_j(\bT_j)$}
-  
-    {\footnotesize
-    \vspace{-0.3cm}
-        \begin{multline*}
-    		\mathcal{L} (q)
-    		= \int q(\bT) \log \frac{p(\bX, \bT)}{q(\bT)}d\bT
-    		= \int \prod_{i=1}^k q_i(\bT_i) \log \frac{p(\bX, \bT)}{\prod_{i=1}^k q_i(\bT_i)}  \prod_{i=1}^k d \bT_i = \\
-    		= \int \prod_{i=1}^k q_i \log p(\bX, \bT) \prod_{i=1}^k d \bT_i  
-    		- \sum_{i=1}^k \int \prod_{j=1}^k q_j \log q_i \prod_{i=1}^k d \bT_i = \\
-    		= \int q_j \left[\int  \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i \right] d \bT_j - \\
-    		- \int q_j \log q_j d\bT_j + \text{const}(q_j) \rightarrow \max_{q_j}
-    	\end{multline*}
-        \vspace{-0.3cm}}
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Mean field approximation}
-	\footnotesize
-	\begin{block}{Block coordinate optimization of ELBO for $q_j(\bT_j)$}
+	\begin{block}{MAP inference}
 		\vspace{-0.4cm}
-	    \begin{multline*}
-			\mathcal{L} (q) 
-			= \int q_j \left[\int \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i \right] d \bT_j
-			- \int q_j \log q_j  d\bT_j + \text{const}(q_j) = \\
-			= \int q_j \log \hat{p}(\bX, \bT_j) d \bT_j 
-			- \int q_j \log q_j d\bT_j + \text{const}(q_j) \rightarrow \max_{q_j},
-		\end{multline*}
 		\[
-		    \text{where } \log \hat{p}(\bX, \bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}(q_j)
+			p(\bx | \bX) = \int p(\bx| \btheta) p(\btheta | \bX ) d \btheta =  \int p(\bx| \btheta) \delta (\btheta - \btheta^* ) d \btheta \approx p(\bx | \btheta^*).
 		\]
-		\[
-		    \mathbb{E}_{i \neq j} \log p(\bX, \bT) = \int \log p(\bX, \bT) \prod_{i \neq j} q_i d \bT_i.
-		\]
-		\vspace{-0.1cm}
-		\begin{multline*}
-    		\mathcal{L} (q)
-    		= \int q_j (\bT_j) \log \hat{p}(\bX, \bT_j) d \bT_j - \int q_j(\bT_j) \log q_j(\bT_j) d\bT_j + \text{const}(q_j) = \\
-    		 \int q_j (\bT_j) \log \frac{\hat{p}(\bX, \bT_j)}{q_j(\bT_j)} d\bT_j + \text{const}(q_j) = \\
-    		= - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j)) + \text{const}(q_j) \rightarrow \max_{q_j}.
-    	\end{multline*}
-    \end{block}
-\end{frame}
-%=======    
-\begin{frame}{Mean field approximation}   
-	 \begin{block}{Independence assumption}
-		\vspace{-0.3cm}
-		\[
-		q(\bT) = \prod_{i=1}^k q_i(\bT_i), \quad \bT = [\bT_1, \dots, \bT_k], \quad \bT_j = \{ \bt_{ij}\}_{i=1}^n.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{ELBO}
-		\vspace{-0.3cm}
-	    \[
-			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
-	    \]
-	    \vspace{-0.3cm}
-	\end{block}
-	 \begin{block}{Solution}
-	 	\vspace{-0.3cm}
-		 \[
-		    q_j(\bT_j) = \hat{p}(\bX, \bT_j)
-		 \]
-		 \[
-		 	\log \hat{p}(\bX, \bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-		 \]
-		 \[
-		     \log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-		 \]
-		 \vspace{-0.3cm}
-	 \end{block}
-\end{frame}
-%=======
-\begin{frame}{Mean field approximation}
-	\begin{block}{ELBO}
-		\[
-			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Solution}
-		\vspace{-0.3cm}
-		\[
-			\log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	Let assume the following factorization: $\bT = [\bT_1, \bT_2] = [\bZ, \btheta]$, and restrict the class of probability distribution for $\btheta$ to Dirac delta functions:
-	\[
-		q_2 = q(\bT_2) = q(\btheta) = \delta(\btheta - \btheta_0).
-	\]
-	
-	Under the restrictions the exact solution for $q_2$ is not reached.
-\end{frame}
-%=======
-\begin{frame}{Mean field approximation}
-	\begin{block}{General solution}
-		\vspace{-0.3cm}
-		\[
-		\log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Solution for $q_1 = q(\bZ)$}
-		\vspace{-0.3cm}
-		\begin{multline*}
-			\log q(\bZ) = \int q(\btheta) \log p(\bX, \bZ,  \btheta) d\btheta + \text{const} = \\
-			= \int \delta(\btheta - \btheta_0) \log p(\bX, \bZ,  \btheta) d\btheta + \text{const} = \\
-			= \log p (\bZ | \bX, \btheta_0) +  \text{const}.
-		\end{multline*}
-	\end{block}
-	\vspace{-0.3cm}
-	\begin{block}{EM-algorithm (E-step)}
-		\vspace{-0.3cm}
-	\[
-		q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) = p(\bZ| \bX, \btheta^*).
-	\]
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Mean field approximation}
-	\begin{block}{ELBO}
+\begin{frame}{VAE as Bayesian model}
+	\begin{block}{Posterior distribution}
+		\vspace{-0.2cm}
 		\[
-			\mathcal{L} (q) = - KL (q_j(\bT_j) || \hat{p}(\bX, \bT_j))  + \text{const}(q_j) \rightarrow \max_{q_j}.
+			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)}
 		\]
-	\vspace{-0.3cm}
+		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{ELBO maximization w.r.t. $q_2 \equiv \theta_0$}
-		\vspace{-0.3cm}
+	\begin{block}{ELBO}
+		\vspace{-0.5cm}
 		\begin{align*}
-			\mathcal{L} (q_2) &= - KL (q(\btheta) || \hat{p}(\bX, \btheta))  + \text{const}(\btheta_0) \\ 
-			&= \int q (\btheta) \log \frac{\hat{p}(\bX, \btheta)}{q(\btheta)} d\btheta + \text{const}(\btheta_0) \\
-			& = \int q (\btheta) \log \hat{p}(\bX, \btheta) d\btheta  - \int q (\btheta) \log q(\btheta) d\btheta + \text{const}(\btheta_0) \\
-			& = \int \delta(\btheta - \btheta_0) \log \hat{p}(\bX, \btheta) d\btheta  - \int \delta \log \delta d\btheta + \text{const}(\btheta_0) \\ 
-			& = \int \delta(\btheta - \btheta_0) \log \hat{p}(\bX, \btheta) d\btheta + \text{const}(\btheta_0) 
+			 \log p(\btheta | \bX) &= \log p(\bX | \btheta) + \log p(\btheta) - \log p(\bX) \\
+			 &= \cL(q, \btheta) + KL(q || p) + \log p(\btheta) - \log p(\bX) \\
+			 &\geq \left[ \cL(q, \btheta) + \log p(\btheta) \right] - \log p(\bX) .
 		\end{align*}
-		\vspace{-0.3cm}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{EM-algorithm}
+		\begin{itemize}
+			\item E-step
+				\vspace{-0.2cm}
+				\[
+					q(\bz) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
+				 p(\bz| \bx, \btheta^*);
+				\]
+				\vspace{-0.5cm}
+			\item M-step
+				\[
+					\btheta^* = \argmax_{\btheta} \left[ \mathcal{L} (q, \btheta) + \log p(\btheta) \right].
+				\]
+		\end{itemize}
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Mean field approximation}
-	
-	\begin{block}{ELBO maximization w.r.t. $q_2 \equiv \theta_0$}
-		\vspace{-0.3cm}
-		\[
-			\mathcal{L} (q_2) = \int \delta(\btheta - \btheta_0) \log \hat{p}(\bX, \btheta) d\btheta + \text{const}(\btheta_0) = \log \hat{p}(\bX, \btheta_0).
-		\]
-	\end{block}
-	\vspace{-0.3cm}
-	\[
-		\log \hat{p}(\bX, \bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-	\]
-	\begin{align*}
-		\log \hat{p}(\bX, \btheta) &= \mathbb{E}_{q_1} \log p(\bX, \bZ, \btheta) + \text{const} \\
-		&= \int q(\bZ) \log p(\bX, \bZ|  \btheta) d\bZ + \log p(\btheta)+ \text{const}
-	\end{align*}
-	\vspace{-0.3cm}
-	\begin{block}{EM-algorithm (M-step)}
-		 \[
-		 	\mathcal{L}(q, \btheta) =	\int q(\bZ) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ)}d\bZ \rightarrow \max_{\btheta}
-		 \]
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Mean field approximation}
-    \begin{block}{Solution}
-    \[
-        \log q_j(\bT_j) = \mathbb{E}_{i \neq j} \log p(\bX, \bT) + \text{const}
-    \]
-    \end{block}
-
-	\begin{block}{EM algorithm (special case)}
+\begin{frame}{VAE limitations}
 	\begin{itemize}
-		\item Initialize $\btheta^*$;
-		\item E-step
+		\item Poor variational posterior distribution (inference model encoder)
 		\[
-			q(\bZ) = \argmax_q \mathcal{L} (q, \btheta^*) = \argmin_q KL(q || p) =
-			 p(\bZ| \bX, \btheta^*);
+		q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
 		\]
-		\item M-step
+		\item Poor prior distribution
 		\[
-			\btheta^* = \argmax_{\btheta} \mathcal{L} (q, \btheta);
+		p(\bz) = \mathcal{N}(0, \mathbf{I}).
 		\]
-		\item Repeat E-step and M-step until convergence.
+		\item Poor probabilistic model (generative model, decoder)
+		\[
+		p(\bx | \bz, \btheta) = \mathcal{N}(\bx| \bmu_{\btheta}(\bz), \bsigma^2_{\btheta}(\bz)).
+		\]
+		\item Loose lower bound
+		\[
+		p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
+		\]
 	\end{itemize}
-	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Summary}
-\begin{itemize}
-	\item Bayesian inference is a generalization of most common machine learning tasks. It allows to construct MLE, MAP and bayesian inference, to compare models complexity and many-many more cool stuff.
-	\item LVM introduce latent representation of observed samples to make model more interpretable.
-	\item LVM maximizes variational evidence lower bound to find MLE of model parameters.
-	\item ELBO maximization is performed by the general variational EM algorithm.
-	\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and to use deep neural networks for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz, \btheta)$.
-	\item The VAE model is an LVM with an encoder network for $q(\bz | \bx, \bphi)$ and a decoder network for $p(\bx | \bz, \btheta)$.
-\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Summary}
-
-\begin{itemize}
-	\item Latent variable models introduce latent variables to the initial probabilistic model to make distribution $p(\bx | \btheta)$ tractable.
-	\item To solve the MLE problem LVM optimizes the variational lower bound.
-	\item The EM-algorithm is an iterative algorithm which allows to optimize the variational lower bound.
-	\item VAE model is an LVM, where the encoder gives the variational distribution, the decoder defines the likelihood model.
-	\item The mean field approximation is a general form of variational inference (the EM-algorithm is just a special case).
-\end{itemize}
+	\begin{itemize}
+		\item Amortized inference allows to efficiently compute stochastic gradients for ELBO and to use deep neural networks for $q(\bz | \bx, \bphi)$ and $p(\bx | \bz, \btheta)$.
+		\vfill
+		\item ELBO gradients are computed using Monte-Carlo estimation.
+		\vfill
+		\item Reparametrization trick allows to get unbiased gradients w.r.t to variational posterior distribution.
+		\vfill
+		\item The VAE model is an LVM with an encoder network for $q(\bz | \bx, \bphi)$ and a decoder network for $p(\bx | \bz, \btheta)$.
+		\vfill
+		\item VAE is not a "true" bayesian model since parameters $\btheta$ do not have prior distribution.
+		\vfill
+		\item Standart VAE has several limitations that we will address later in the course.
+	\end{itemize}
 \end{frame}
 %=======
 \end{document} 
