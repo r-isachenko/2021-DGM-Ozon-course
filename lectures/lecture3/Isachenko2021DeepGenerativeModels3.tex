@@ -56,7 +56,7 @@
 	\end{block}
 	Instead of maximizing incomplete likelihood, maximize ELBO (equivalently minimize KL)
 	\[
-	    \max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
+	    \max_{\btheta} \log p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \mathcal{L} (q, \btheta) \equiv \min_{q, \btheta} KL(q(\bz) || p(\bz|\bx, \btheta)).
 	\]
 	    
 \end{frame}
@@ -93,7 +93,7 @@
 	\begin{block}{ELBO}
 		\vspace{-0.1cm}
 		\[
-		\log p(\bx| \btheta) = \mathcal{L} (q, \btheta) + KL(q(\bz) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (q, \btheta).
+		\log p(\bx| \btheta) = \mathcal{L} (\bphi, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz|\bx, \btheta)) \geq \mathcal{L} (\bphi, \btheta).
 		\]
 	\end{block}
 	\begin{itemize}
@@ -176,7 +176,7 @@
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 	\vspace{-0.3cm}
 	\[
-		 \mathcal{L}_i (\bphi, \btheta)  = \mathbb{E}_{q} \left[\log p(\bx, \bz | \btheta) - \log q(\bz| \bx, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
+		 \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q} \left[\log p(\bx, \bz | \btheta) - \log q(\bz| \bx, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
 	\]	
 	\vspace{-0.3cm}
 	\begin{block}{Challenge}
@@ -224,7 +224,7 @@
 	\vspace{-0.7cm}
 	\begin{block}{Variational assumption}
 		\[
-			r(\bepsilon) = \mathcal{N}(0, \bI); \quad  q(\bz| \bx, \bphi) = \mathcal{N} (\bmu_{\bphi}(\bx), \bsigma_{\bphi}(\bx)).
+			r(\bepsilon) = \mathcal{N}(0, \bI); \quad  q(\bz| \bx, \bphi) = \mathcal{N} (\bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
 		\]
 		\[
 			\bz = g(\bx, \bepsilon, \bphi) = \bsigma_{\bphi}(\bx) \cdot \bepsilon + \bmu_{\bphi}(\bx).
@@ -345,10 +345,11 @@
 		\]
 	\end{block}
     \begin{block}{Maximum a posteriori (MAP) estimation}
-    \vspace{-0.2cm}
-    \[
-        \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
-    \]
+	    \vspace{-0.3cm}
+	    \[
+	        \btheta^* = \argmax_{\btheta} \log p(\btheta | \bX) = \argmax_{\btheta} \bigl(\log p(\bX | \btheta) + \log p(\btheta) \bigr)
+	    \]
+        \vspace{-0.3cm}
     \end{block}
 	\begin{block}{MAP inference}
 		\vspace{-0.4cm}
@@ -408,7 +409,7 @@
 		\]
 		\item Loose lower bound
 		\[
-		p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
+		\log p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
 		\]
 	\end{itemize}
 \end{frame}
