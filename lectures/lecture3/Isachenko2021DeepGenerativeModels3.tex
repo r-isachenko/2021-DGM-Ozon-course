@@ -188,7 +188,7 @@
 	\end{block}
 	\vspace{-0.8cm}
 	\begin{block}{Solution}
-		Reparametrization trick for $q(\bz | \bx, \bphi)$ to allow the expectation is independent of parameters~$\bphi$.
+		Reparametrization trick for $q(\bz | \bx, \bphi)$ allows the expectation to become independent of parameters~$\bphi$.
 	\end{block}
 \end{frame}
 %======
@@ -248,7 +248,7 @@
 		\vspace{-0.3cm}
 		\begin{itemize}
 			\item $p(\bz)$ -- prior distribution on latent variables $\bz$. We could specify any distribution that we want. Let say $p(\bz) = \cN (0, \bI)$.
-			\item $p(\bx | \bz, \btheta)$ - generative distibution. Since it parameterized function let it be neural network with parameters $\btheta$.
+			\item $p(\bx | \bz, \btheta)$ - generative distibution. Since it is a parameterized function let it be neural network with parameters $\btheta$.
 		\end{itemize}
 	\end{block}
 	\begin{block}{Second term}
@@ -419,11 +419,11 @@
 		\vfill
 		\item ELBO gradients are computed using Monte-Carlo estimation.
 		\vfill
-		\item Reparametrization trick allows to get unbiased gradients w.r.t to variational posterior distribution.
+		\item The reparametrization trick allows to get unbiased gradients w.r.t to a variational posterior distribution.
 		\vfill
 		\item The VAE model is an LVM with an encoder network for $q(\bz | \bx, \bphi)$ and a decoder network for $p(\bx | \bz, \btheta)$.
 		\vfill
-		\item VAE is not a "true" bayesian model since parameters $\btheta$ do not have prior distribution.
+		\item VAE is not a "true" bayesian model since parameters $\btheta$ do not have a prior distribution.
 		\vfill
 		\item Standart VAE has several limitations that we will address later in the course.
 	\end{itemize}
