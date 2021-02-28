@@ -13,4 +13,4 @@
 | Homework | Date | Deadline | Description | Link |
 |---------|------|-------------|--------|-------|
 | 1 | February, 11 | February, 28 | Autoregressive models (practice). | [notebook](homeworks/homework1/hw1.ipynb) |
-| 1 | February, 28 | March, 14 | Autoregressive models + LVM (theory). | [pdf](homeworks/homework2/hw2.pdf) |
+| 2 | February, 28 | March, 14 | Autoregressive models + LVM (theory). | [pdf](homeworks/homework2/hw2.pdf) |
