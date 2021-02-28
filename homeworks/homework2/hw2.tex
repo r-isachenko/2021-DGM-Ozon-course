@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[russian]{babel}
+
+\usepackage{graphicx, epsfig}
+\usepackage{amsmath,mathrsfs,amsfonts,amssymb}
+
+\usepackage{geometry} % Простой способ задавать поля
+	\geometry{top=25mm}
+	\geometry{bottom=25mm}
+	\geometry{left=25mm}
+	\geometry{right=20mm}
+
+\input{../../lectures/utils/newcommands}
+
+\begin{document}
+\begin{center}
+    {\Large \textbf{Homework 2}} \\
+\end{center}
+
+{\large \textbf{Autoregressive models}}
+\begin{enumerate}
+    \item Рассмотрим модель MADE с одним скрытым слоем. Обозначим за $\bW$ матрицу весов между входным и скрытым слоем, а за $\bV$ матрицу весов между скрытым и выходным слоем. Пусть мы сгенерировали корректные авторегрессионные маски $\bM_{\bW}$ и $\bM_{\bV}$ (алгоритм генерации приведен в лекции 1) для прямого порядка переменных ($p(\bx) = p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}, \dots, x_1)$). Каждая маска является бинарной матрицей из 0 и 1. Введем матрицу $\bM = \bM_{\bW} \bM_{\bV}$. Докажите, что:
+    \begin{enumerate}
+    	\item  \textbf{(2 pt)} $\bM$ строго верхняя треугольная (имеет нули на диагонали и ниже диагонали);
+    	\item  \textbf{(2 pt)} $\bM_{ij}$ равно числу путей в графе сети между выходным нейроном $\hat{x}_i$ и входным нейроном $x_j$.
+    \end{enumerate}
+    \item Пусть у нас есть 2 генеративные модели для изображений размера $W \times H \times C$, где $W$ - ширина изображения, $H$ - высота, $C$ - число каналов. Первая модель $p_1(\bx | \btheta)$ выдает дискретное распределение для каждого пикселя $\text{Categorical}(\bpi)$, где $\bpi = (\pi_1, \dots,  \pi_{256})$. Вторая модель $p_2(\bx | \btheta)$ моделирует дискретное распределение непрерывной смесью логистических функций
+   		\[
+  				p(\nu | \bmu, \bs, \bpi) = \sum_{i=1}^K \pi_k p(\nu | \mu_k, s_k).
+		\]
+    	\[
+    		P(x | \bmu, \bs, \bpi) = P(x + 0.5 | \bmu, \bs, \bpi) - P(x - 0.5 | \bmu, \bs, \bpi).
+    	\]
+    Каждая из моделей выдает параметры распределений пикселей.
+    	\begin{enumerate}
+    		\item \textbf{(1 pt)} Посчитайте размерность выходного тензора для модели $p_1(\bx | \btheta)$ и для модели $p_2(\bx | \btheta)$. 
+    		\item \textbf{(1 pt)} При каком числе компонент смеси $K$ число элементов выходного тензора для $p_2(\bx | \btheta)$ становится больше, чем для $p_1(\bx | \btheta)$.
+    	\end{enumerate}
+\end{enumerate}
+
+{\large \textbf{Latent Variable models}}
+\begin{enumerate}
+	\item \textbf{(2 pt)} Пусть имеется два распределения $p_1(\bx | \bmu_1, \bSigma_1) = \cN(\bmu_1, \bSigma_1)$, $p_2(\bx | \bmu_2, \bSigma_2) = \cN(\bmu_2, \bSigma_2)$. Выведите формулу для $KL(p_1 || p_2)$.
+	\item На лекции 3 при выводе градиента ELBO на E-шаге мы столкнулись с проблемой при Монте-Карло оценивании, так как функция распределения зависела от параметров дифференцирования.
+		\begin{align*}
+			\nabla_{\bphi} \mathcal{L} (\bphi, \btheta) &= \nabla_{\bphi} \int q(\bz | \bx, \bphi) \left[\log p(\bx, \bz | \btheta) - \log q(\bz| \bx, \bphi) \right] d \bz \\
+			& \neq  \int q(\bz | \bx, \bphi) \nabla_{\bphi} \left[\log p(\bx, \bz | \btheta) - \log q(\bz| \bx, \bphi) \right] d \bz \\
+		\end{align*}
+	 Reparametrization trick позволил пробросить градиент и получить Монте-Карло оценку. Но есть и другой способ, который использует log-derivative trick:
+	 \[
+	 	  \nabla_\xi  \log q(\eta| \xi) = \frac{\nabla_\xi q(\eta| \xi)}{q(\eta| \xi)}.
+	 \] 
+	 \begin{enumerate}
+	 \item \textbf{(2 pt)} Используя формулу для производной логарифма получите Монте-Карло оценку градиента.
+	 \item \textbf{(2 pt)} Полученная оценка работает существенно хуже, чем reparametrization trick. А именно обладает огромной дисперсий. Попробуйте описать интуицию, почему оценка обладает высоким разбросом (для этого нужно подумать какого порядка и знака будут иметь члены, участвующие в оценке).
+	 \end{enumerate}
+	 
+	  \item \textbf{(3 pt)} В курсе нам встретятся дивергенции, отличные от $KL$. Поэтому давайте познакомимся с целым классом $\alpha$-дивергенций:
+	  \[
+	 	  	D_{\alpha}(p || q) = \frac{4}{1 - \alpha^2} \left( 1 - \int p(x)^{\frac{1 + \alpha}{2}}q(x)^{\frac{1 - \alpha}{2}}dx\right).
+	  \]
+	  Для любого значения $\alpha \in [-\infty; +\infty]$ функция $D_{\alpha} (p || q)$ будет задавать некоторую меру схожести двух распределений, обладающую свои свойствами.
+	  
+	  Докажите, что при $\alpha \rightarrow 1$ дивергенция $D_{\alpha}(p || q) \rightarrow KL(p || q)$, а при $\alpha \rightarrow -1$ дивергенция $D_{\alpha}(p || q) \rightarrow KL(q || p)$. При доказательстве используйте факт, что $t^\epsilon = \exp(\epsilon \ln t) = 1 + \epsilon \ln t + O(\epsilon^2)$.
+\end{enumerate}
+
+\end{document}
