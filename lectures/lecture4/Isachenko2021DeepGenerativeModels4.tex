@@ -355,12 +355,59 @@
 	\vspace{-0.3cm}
 	\begin{block}{Computational requirement}
 		\begin{itemize}	
-			\item Evaluating model density $p(\bx | \btheta)$, we  requires computing the transformation $\bz = f(\bx,  \btheta)$ and its Jacobian determinant $\left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|$,
+			\item Evaluating model density $p(\bx | \btheta)$ requires computing the transformation $\bz = f(\bx,  \btheta)$ and its Jacobian determinant $\left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|$,
 			and evaluating the density $p(\bz)$.
 			\item Sampling $\bx$ from the model requires the ability to sample from $p(\bz)$ and to compute the transformation $\bx = g(\bz, \btheta) = f^{-1}(\bz, \btheta)$. 
 		\end{itemize}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL}
+	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions . \\
+	Instead of searching true $\pi(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	\begin{block}{Forward KL}
+		\vspace{-0.2cm}
+		\[
+			KL(\pi || p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+	\begin{block}{Reverse KL}
+		\vspace{-0.2cm}
+		\[
+			KL(p || \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
+	\end{block}
+	\begin{itemize}
+		\item What is the difference between these two formulations?
+		\item What do we get in these two cases if $p(\bx | \btheta)$ is a flow model?
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL}
+	\begin{block}{Forward KL}
+		    \vspace{-0.5cm}
+		\begin{align*}
+			KL(\pi || p) &= \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \\
+			&= \int \pi (\bx) \log \pi(\bx) d \bx - \int \pi (\bx) \log p(\bx | \btheta) d \bx \\
+			&= - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \rightarrow \min_{\btheta}
+		\end{align*}
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Monte-Carlo estimation}
+		\vspace{-0.5cm}
+		\[
+			KL(\pi || p) = - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \approx - \sum_{i=1}^n \log p(\bx_i | \btheta) \rightarrow \min_{\btheta}.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	    \begin{block}{MLE problem}
+	    \vspace{-0.5cm}
+	    \[
+	        \btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+	    \]
+	    \vspace{-0.1cm}
+	    \end{block}
 \end{frame}
 %=======
 \begin{frame}{Composition of flows}
@@ -400,9 +447,20 @@
 \end{frame}
 %=======
 \begin{frame}{Flows}
-	\[
-	\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
-	\]
+	\begin{block}{Example of a 4-step flow}
+	\vspace{-0.2cm}
+	\begin{figure}
+			\includegraphics[width=\linewidth]{figs/flow_4_steps_example.png}
+	\end{figure}
+	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Flow likelihood}
+		\vspace{-0.3cm}
+		\[
+		\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+		\vspace{-0.3cm}
+	\end{block}
 	What is the complexity of the determinant computation?
 	\begin{block}{What we want}
 		\begin{itemize}
@@ -412,7 +470,7 @@
 		\end{itemize}
 		
 	\end{block}
-	
+		\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing flows for probabilistic modeling and inference, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Planar Flows}
@@ -433,21 +491,37 @@
 	\[
 	h = \tanh; \quad h'(\bw^T \bz + b) \bu^T \bw \geq -1.
 	\]
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
+	\vspace{-0.3cm}
+	\begin{block}{Sylvester flow: planar flow extension}
+	\vspace{-0.3cm}
+		\[
+			g(\bz, \btheta) = \bz + \bA \, h(\bB\bz + \mathbf{b}).
+		\]
+	\end{block}
+	\myfootnote{\href{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015}\\
+	\href{https://arxiv.org/abs/1803.05649}{Berg R. et al. Sylvester normalizing flows for variational inference, 2018}}
 \end{frame}
 %=======
 \begin{frame}{Planar Flows}
 	\[
-	\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
+		\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
 	\]
+	\begin{block}{Expressiveness of planar flows}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.9\linewidth]{figs/planar_flows.png}
+		\includegraphics[width=0.8\linewidth]{figs/planar_flows.png}
 	\end{figure}
+	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
 \begin{frame}{Jacobian structure}
+
+	\begin{block}{Flow likelihood}
+		\[
+		\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+	\end{block}
 	\begin{itemize}
 		\item What is a determinant of a diagonal matrix?
 		\[
@@ -672,5 +746,16 @@
 \end{frame}
 %=======
 \begin{frame}{Summary}
+	\begin{itemize}
+	\item Mean field approximation is a general form of approximate variational inference.
+	\vfill
+	\item EM-algorithm and VAE model could be presented as a special case of mean field approximation.
+	\vfill
+	\item Flow models transform a simple base distribution to the complex one via a sequence of invertible transformations.
+	\vfill
+	\item Flow models has a tractable likelihood that is given by change of variable theorem.
+	\vfill
+	\item Planar flows is a simple form of invertible flow model (Sylvester flows are their extension). NICE model is a more powerful kind of flow.
+	\end{itemize}
 \end{frame}
 \end{document} 
