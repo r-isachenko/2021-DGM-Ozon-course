@@ -307,24 +307,23 @@
 %=======
 \begin{frame}{Change of variables}
 	\begin{block}{Theorem}
-		Let 
 		\begin{itemize}
 			\item $\bx$ is a random variable with density function $p(\bx)$;
 			\item $f: \mathbb{R}^m \rightarrow \mathbb{R}^m$ is a differentiable, invertible function (diffeomorphism);
 			\item $\bz = f(\bx)$, $\bx = f^{-1}(\bz) = g(\bz)$ (here $g = f^{-1}$).
 		\end{itemize}
 		Then
-		\[
-		p(\bx) = p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(f(\bx)) \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right) \right|.
-		\]
+		\vspace{-0.3cm}
+		\begin{align*}
+			p(\bx) &= p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(f(\bx)) \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right) \right| \\
+			p(\bz) &= p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| = p(g(\bz)) \left|\det \left(  \frac{\partial g(\bz)}{\partial \bz} \right) \right|.
+		\end{align*}
 	\end{block}
-	\begin{block}{Note}
 		\begin{itemize}
 			\item $\bx$ and $\bz$ have the same dimensionality (lies in $\bbR^m$);
 			\item $ \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g^{-1}(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g(\bz)}{\partial \bz} \right)\right|^{-1}$;
 			\item $f(\bx, \btheta)$ could be parametric function.
 		\end{itemize}
-	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Fitting flows}
@@ -408,6 +407,52 @@
 	    \]
 	    \vspace{-0.1cm}
 	    \end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL}
+	\begin{block}{Forward KL}
+	    \vspace{-0.3cm}
+		\[
+			\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) \approx  \argmin_{\btheta} KL(\pi || p)
+		\]
+		Maximum likelihood estimation is equivalent of minimization of Monte-Carlo estimation of forward KL.
+	\end{block}
+	\begin{block}{Forward KL for flow model}
+	    \vspace{-0.3cm}
+		\[
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+		\begin{itemize}
+		\item We need to be able to compute $f(\bx, \btheta)$ and its Jacobian.
+		\item We need to be able to compute the density $p(\bz)$.
+		\item Until we do not want to sample from the flow, we could be not even able to compute $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Forward KL vs Reverse KL}
+	\begin{block}{Reverse KL}
+	  	\vspace{-0.5cm}
+			\begin{align*}
+				KL(p || \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
+				&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}
+			\end{align*}
+		\vspace{-0.7cm}
+	\end{block}
+	\begin{block}{Reverse KL for flow model}
+  		\vspace{-0.3cm}
+		\[
+			\log p(\bz) = \log p(\bx | \btheta) + \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right|
+		\]
+		\[
+			KL(p || \pi)  = \bbE_{p(\bz)} \left[  \log p(\bz) - \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| - \log \pi(g(\bz, \btheta)) \right]
+		\]
+		\begin{itemize}
+		\item We need to be able to compute $g(\bz, \btheta)$ and its Jacobian.
+		\item We need to be able to sample from the density $p(\bz)$ (do not need to evaluate it).
+		\item We could be not even able to compute $f(\bx, \btheta)$.
+		\end{itemize}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Composition of flows}
@@ -585,14 +630,16 @@
 \end{frame}
 %=======
 \begin{frame}{NICE}
-	\[
-	\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
-	\begin{pmatrix}
-		\bI_d & 0_{d \times m - d} \\
-		\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
-	\end{pmatrix} = 
-	\det \left( \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}} \right)
-	\]
+	\begin{block}{Jacobian}
+		\[
+		\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
+		\begin{pmatrix}
+			\bI_d & 0_{d \times m - d} \\
+			\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
+		\end{pmatrix} = 
+		\det \left( \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}} \right)
+		\]
+	\end{block}
 	What is the Jacobian for the additive coupling law $\tau(x + c) = x + c$? \\
 	In this case the transformation is \textit{volume preserving}. \\
 	The last layer is rescaling:
@@ -606,7 +653,7 @@
 \begin{frame}{NICE}
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{figs/nice.png}
+		\includegraphics[width=\linewidth]{figs/nice_results.png}
 	\end{figure}
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
@@ -636,6 +683,12 @@
 \end{frame}
 %=======
 \begin{frame}{RealNVP}
+	\begin{block}{Affine coupling law}
+		\[
+		\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \bx_{d:m} \odot \exp \left(c_1(\bx_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).\end{cases} 
+		\]
+	\end{block}
+	How to choose variable partitioning for images?
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/realnvp_masking.png}
@@ -653,103 +706,13 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
-\begin{frame}{RevNets, 2017}
-	\begin{minipage}[t]{0.6\columnwidth}
-		\begin{itemize}
-			\item Modern neural networks are trained via backpropagation.
-			\item Residual networks are state of the art in image classification.
-			\item Backpropagation requires storing the network activations.
-		\end{itemize}
-	\end{minipage}%
-	\begin{minipage}[t]{0.4\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/resnet_block.png}
-		\end{figure}
-	\end{minipage}
-	\vspace{0.1cm}
-	\begin{block}{Problem}
-		Storing the activations imposes an increasing memory burden. GPUs have limited memory capacity, leading to constraints often exceeded by state-of-the-art architectures (with thousand layers).
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{RevNets, 2017}
-	\begin{block}{NICE}
-		\vspace{-0.2cm}
-		\begin{equation*}
-			\begin{cases} \bz_1 = \bx_1; \\ \bz_2 = \bx_2 + \mathcal{F}(\bx_1, \btheta);\end{cases}  \quad \Leftrightarrow \quad 
-			\begin{cases} \bx_1 = \bz_1; \\ \bx_2 = \bz_2 - \mathcal{F}(\bz_1, \btheta).\end{cases} 
-		\end{equation*}
-		\vspace{-0.2cm}
-	\end{block}
-	\begin{block}{RevNet}
-		\begin{equation*}
-			\begin{cases} \by_1 = \bx_1 + \mathcal{F}(\bx_2, \btheta); \\ \by_2 = \bx_2 + \mathcal{G}(\by_1, \btheta);\end{cases} \quad \Leftrightarrow \quad 
-			\begin{cases} \bx_2 = \by_2 - \mathcal{F}(\by_1, \btheta); \\ \bx_1 = \by_1 - \mathcal{G}(\bx_2, \btheta).\end{cases} 
-		\end{equation*}
-	\end{block}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/revnet.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{RevNets, 2017}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/revnet_results.png}
-	\end{figure}
-	\begin{itemize}
-		\item If the network contains non-reversible blocks (poolings, strides), activations for these blocks should be stored.
-		\item To avoid storing activations in the modern frameworks, the backward pass should be manually redefined.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	\begin{block}{Hypothesis}
-		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
-	\end{block}
-	\begin{itemize}
-		\item It is difficult to recover images from their hidden representations. 
-		\item Information bottleneck principle: an optimal representation must reduce the MI between an input and its representation to reduce uninformative variability + maximize the MI between the output and its representation to preserve each class from collapsing onto other classes.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	\begin{block}{Hypothesis}
-		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
-	\end{block}
-	
-	\begin{block}{Idea}
-		Build a cascade of homeomorphic layers (i-RevNet), a network that can be fully inverted up to the final projection onto the classes, i.e. no information is discarded.
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/i-revnet.png}
-	\end{figure}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/i-revnet_block.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 	\item Mean field approximation is a general form of approximate variational inference.
 	\vfill
 	\item EM-algorithm and VAE model could be presented as a special case of mean field approximation.
+	\vfill
+	\item Forward KL minimization is equivalent to MLE. Reverse KL is used in variational inference.
 	\vfill
 	\item Flow models transform a simple base distribution to the complex one via a sequence of invertible transformations.
 	\vfill

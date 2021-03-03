@@ -8,6 +8,98 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{RevNets, 2017}
+	\begin{minipage}[t]{0.6\columnwidth}
+		\begin{itemize}
+			\item Modern neural networks are trained via backpropagation.
+			\item Residual networks are state of the art in image classification.
+			\item Backpropagation requires storing the network activations.
+		\end{itemize}
+	\end{minipage}%
+	\begin{minipage}[t]{0.4\columnwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/resnet_block.png}
+		\end{figure}
+	\end{minipage}
+	\vspace{0.1cm}
+	\begin{block}{Problem}
+		Storing the activations imposes an increasing memory burden. GPUs have limited memory capacity, leading to constraints often exceeded by state-of-the-art architectures (with thousand layers).
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
+\end{frame}
+%=======
+\begin{frame}{RevNets, 2017}
+	\begin{block}{NICE}
+		\vspace{-0.2cm}
+		\begin{equation*}
+			\begin{cases} \bz_1 = \bx_1; \\ \bz_2 = \bx_2 + \mathcal{F}(\bx_1, \btheta);\end{cases}  \quad \Leftrightarrow \quad 
+			\begin{cases} \bx_1 = \bz_1; \\ \bx_2 = \bz_2 - \mathcal{F}(\bz_1, \btheta).\end{cases} 
+		\end{equation*}
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{block}{RevNet}
+		\begin{equation*}
+			\begin{cases} \by_1 = \bx_1 + \mathcal{F}(\bx_2, \btheta); \\ \by_2 = \bx_2 + \mathcal{G}(\by_1, \btheta);\end{cases} \quad \Leftrightarrow \quad 
+			\begin{cases} \bx_2 = \by_2 - \mathcal{F}(\by_1, \btheta); \\ \bx_1 = \by_1 - \mathcal{G}(\bx_2, \btheta).\end{cases} 
+		\end{equation*}
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/revnet.png}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
+\end{frame}
+%=======
+\begin{frame}{RevNets, 2017}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/revnet_results.png}
+	\end{figure}
+	\begin{itemize}
+		\item If the network contains non-reversible blocks (poolings, strides), activations for these blocks should be stored.
+		\item To avoid storing activations in the modern frameworks, the backward pass should be manually redefined.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
+\end{frame}
+%=======
+\begin{frame}{i-RevNet, 2018}
+	\begin{block}{Hypothesis}
+		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
+	\end{block}
+	\begin{itemize}
+		\item It is difficult to recover images from their hidden representations. 
+		\item Information bottleneck principle: an optimal representation must reduce the MI between an input and its representation to reduce uninformative variability + maximize the MI between the output and its representation to preserve each class from collapsing onto other classes.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{i-RevNet, 2018}
+	\begin{block}{Hypothesis}
+		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
+	\end{block}
+	
+	\begin{block}{Idea}
+		Build a cascade of homeomorphic layers (i-RevNet), a network that can be fully inverted up to the final projection onto the classes, i.e. no information is discarded.
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{i-RevNet, 2018}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/i-revnet.png}
+	\end{figure}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/i-revnet_block.png}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
+\end{frame}
+%=======
 \begin{frame}{Glow, 2018}
 	\begin{figure}
 		\centering
