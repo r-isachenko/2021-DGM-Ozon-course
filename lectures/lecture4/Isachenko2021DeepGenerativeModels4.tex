@@ -22,13 +22,13 @@
 	\end{block}
 	\begin{block}{Meaning}
 		We have unobserved variables $\bt$ and some prior knowledge about them $p(\bt)$. Then, the data $\bx$ has been observed. 
-		Posterior distribution $p(\bt | \bx)$ summarizes the knoweldge after the obbservations.
+		Posterior distribution $p(\bt | \bx)$ summarizes the knoweldge after the observations.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Variational Lower Bound}
-    We are given the set of objects $\bX = \{\bx_i\}_{i=1}^n$. 
-    The goal is to perform bayesian inference on the unobserved variables $\bT = \{\bt_i\}_{i=1}^n$.
+    We have set of objects $\bX = \{\bx_i\}_{i=1}^n$. 
+    The goal is to perform Bayesian inference on the unobserved variables $\bT = \{\bt_i\}_{i=1}^n$.
     \begin{block}{Evidence Lower Bound (ELBO)}
     \vspace{-0.3cm}
         \begin{multline*}
@@ -140,15 +140,15 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	Let assume 
+	Assumptions: 
 	\begin{itemize}
 		\item $\bT = [\bT_1, \bT_2] = [\bZ, \btheta]$, $q(\bT) = q(\bT_1) \cdot q(\bT_2) = q(\bZ) \cdot q(\btheta)$.
-		\item restrict the class of probability distribution for $\btheta$ to Dirac delta functions:
+		\item restrict a class of probability distributions for $\btheta$ to Dirac delta functions:
 		\[
 			q_2 = q(\bT_2) = q(\btheta) = \delta(\btheta - \btheta^*).
 		\]
 		
-		Under the restrictions the exact solution for $q_2$ is not reached (KL could be greater than 0).
+		Under the restrictions the exact solution for $q_2$ is not reached (KL can be greater than 0).
 	\end{itemize}
 \end{frame}
 %=======
@@ -294,14 +294,14 @@
 	\begin{itemize}
 		\item Let $\bz \sim p(\bz)$ is a random variable with base distribution $p(\bz) = U[0, 1]^m$. 
 		\item Let $\bx \sim p(\bx)$ is a random variable with complex distribution $p(\bx)$ and cdf $F(\bx)$. 
-		\item Then noise variable $\bz$ could be transformed to $\bx$ using inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz)$).
+		\item Then noise variable $\bz$ can be transformed to $\bx$ using inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz)$).
 	\end{itemize}
-	How to transform random variable $\bz$  which have distribution different from uniform to $\bx$?
+	How to transform random variable $\bz$  which has a distribution different from uniform to $\bx$?
 		\begin{itemize}
 			\item Let $\bz \sim p(\bz)$ is a random variable with base distribution $p(\bz)$ and cdf $G(\bz)$.
 			\item Then $\bz_0 = G(\bz)$ has base distribution $p(\bz_0) = U[0, 1]^m$.
 			\item Let $\bx \sim p(\bx)$ is a random variable with complex distribution $p(\bx)$ and cdf $F(\bx)$. 
-			\item Then noise variable $\bz$ could be transformed to $\bx$ using cdf $G$ and inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz_0) = F^{-1}(G(\bz))$).
+			\item Then noise variable $\bz$ can be transformed to $\bx$ using cdf $G$ and inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz_0) = F^{-1}(G(\bz))$).
 		\end{itemize}
 \end{frame}
 %=======
@@ -335,7 +335,7 @@
 		\vspace{-0.3cm}
 	\end{block}
 	\begin{block}{Challenge}
-		$p(\bx | \btheta)$ could be intractable.
+		$p(\bx | \btheta)$ can be intractable.
 	\end{block}
 	\begin{block}{Fitting flow to solve MLE}
 		\[
@@ -415,7 +415,7 @@
 		\[
 			\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) \approx  \argmin_{\btheta} KL(\pi || p)
 		\]
-		Maximum likelihood estimation is equivalent of minimization of Monte-Carlo estimation of forward KL.
+		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
 	\end{block}
 	\begin{block}{Forward KL for flow model}
 	    \vspace{-0.3cm}
@@ -425,7 +425,7 @@
 		\begin{itemize}
 		\item We need to be able to compute $f(\bx, \btheta)$ and its Jacobian.
 		\item We need to be able to compute the density $p(\bz)$.
-		\item Until we do not want to sample from the flow, we could be not even able to compute $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$.
+		\item We don’t need to think about computing the function $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$ until we want to sample from the flow.
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -450,14 +450,14 @@
 		\begin{itemize}
 		\item We need to be able to compute $g(\bz, \btheta)$ and its Jacobian.
 		\item We need to be able to sample from the density $p(\bz)$ (do not need to evaluate it).
-		\item We could be not even able to compute $f(\bx, \btheta)$.
+		\item We don’t need to think about computing the function $f(\bx, \btheta)$.
 		\end{itemize}
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Composition of flows}
 	\begin{block}{Theorem}
-		Diffeomorphisms are \textbf{composable} (If Let $f_1, f_2$ satisfy conditions of the change of variable theorem (differentiable and invertible), then $\bz = f(\bx) = f_2 \circ f_1(\bx)$ also satisfy it).
+		Diffeomorphisms are \textbf{composable} (If $f_1, f_2$ satisfy conditions of the change of variable theorem (differentiable and invertible), then $\bz = f(\bx) = f_2 \circ f_1(\bx)$ also satisfies it).
 	\end{block}
 	\begin{multline*}
 		p(\bx) = p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(f(\bx)) \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right) \right| = \\
@@ -532,7 +532,7 @@
 		\left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right)\right| &= \left| \det \left( \bI +  h'(\bw^T \bz + b) \bw\bu^T\right) \right| \\
 		&= \left| 1 + h'(\bw^T \bz + b) \bw^T \bu \right|
 	\end{align*}
-	The transformation is invertible if (just one of example)
+	The transformation is invertible, for example, if
 	\[
 	h = \tanh; \quad h'(\bw^T \bz + b) \bu^T \bw \geq -1.
 	\]
@@ -577,7 +577,7 @@
 		\]
 		\item What is a determinant of a triangular matrix? \\
 		Let $z_i$ depends only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
-		What is the inverse of such a transformation?
+		What is the Jacobian of such a transformation?
 	\end{itemize}
 \end{frame}
 %=======
@@ -588,7 +588,7 @@
 			\begin{cases} \bx_{1:d} = \bz_{1:d} \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d}))\end{cases}
 		\end{equation*}
 		\begin{itemize}
-			\item $c: \mathbb{R}^d \rightarrow \mathbb{R}^{k}$ -- coupling function;
+			\item $c: \mathbb{R}^d \rightarrow \mathbb{R}^{k}$ -- coupling function (do not need to be invertible);
 			\item $\tau : \mathbb{R}^{m - d} \times c(\mathbb{R}^d) \rightarrow \mathbb{R}^{m - d}$ -- coupling law.
 			\item 
 			\[
@@ -630,7 +630,17 @@
 \end{frame}
 %=======
 \begin{frame}{NICE}
+	\begin{block}{Coupling layer}
+		\vspace{-0.6cm}
+		\begin{equation*}
+			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
+			\quad \Rightarrow \quad 
+			\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d})).\end{cases}
+		\end{equation*}
+		\vspace{-0.5cm}
+	\end{block}
 	\begin{block}{Jacobian}
+			\vspace{-0.3cm}
 		\[
 		\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
 		\begin{pmatrix}
@@ -642,10 +652,7 @@
 	\end{block}
 	What is the Jacobian for the additive coupling law $\tau(x + c) = x + c$? \\
 	In this case the transformation is \textit{volume preserving}. \\
-	The last layer is rescaling:
-	\[
-	z_i = s_i x_i; \quad x_i = z_i / s_i.
-	\]
+	The last layer is rescaling $z_i = s_i x_i$ ($x_i = z_i / s_i$). \\
 	What is the Jacobian of the last layer?
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
@@ -708,17 +715,17 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-	\item Mean field approximation is a general form of approximate variational inference.
+	\item Mean-field approximation is a general form of approximate variational inference.
 	\vfill
-	\item EM-algorithm and VAE model could be presented as a special case of mean field approximation.
+	\item The EM-algorithm and VAE model can be presented as a special case of the mean-field approximation.
 	\vfill
 	\item Forward KL minimization is equivalent to MLE. Reverse KL is used in variational inference.
 	\vfill
-	\item Flow models transform a simple base distribution to the complex one via a sequence of invertible transformations.
+	\item Flow models transform a simple base distribution to a complex one via a sequence of invertible transformations.
 	\vfill
-	\item Flow models has a tractable likelihood that is given by change of variable theorem.
+	\item Flow models have a tractable likelihood that is given by the change of variable theorem.
 	\vfill
-	\item Planar flows is a simple form of invertible flow model (Sylvester flows are their extension). NICE model is a more powerful kind of flow.
+	\item Planar flows is a simple form of an invertible flow model (Sylvester flows are their extension). The NICE model is a more powerful type of flow.
 	\end{itemize}
 \end{frame}
 \end{document} 
