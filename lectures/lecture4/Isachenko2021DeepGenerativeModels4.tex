@@ -22,7 +22,7 @@
 	\end{block}
 	\begin{block}{Meaning}
 		We have unobserved variables $\bt$ and some prior knowledge about them $p(\bt)$. Then, the data $\bx$ has been observed. 
-		Posterior distribution $p(\bt | \bx)$ summarizes the knoweldge after the observations.
+		Posterior distribution $p(\bt | \bx)$ summarizes the knowledge after the observations.
 	\end{block}
 \end{frame}
 %=======
@@ -274,14 +274,14 @@
 \begin{frame}{Flows intuition}
 	Let $\xi$ be a random variable with density $p(\xi)$. Then
 	\[
-	\eta = F(\xi) = P(\xi < x) = \int_{-\infty}^\xi p(t)dt \sim U[0, 1].
+	\eta = F(\xi) = \int_{-\infty}^\xi p(t)dt \sim U[0, 1].
 	\]
 	\[
 		P(\eta < y) = P(F(\xi) < y) = P(\xi < F^{-1}(y)) = F(F^{-1}(y)) = y
 	\]
 	Hence
 	\[
-	\eta \sim U[0, 1]; \quad \xi = F^{-1}(\eta) \quad \xi \sim p(\xi).
+	\eta \sim U[0, 1]; \quad \xi = F^{-1}(\eta) \quad \Rightarrow \quad \xi \sim p(\xi).
 	\]
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/flows_1d}
@@ -480,7 +480,7 @@
 	\end{block}
 	\begin{itemize}
 		\item "Normalizing" means that the inverse flow takes samples from $p(\bx)$ and normalizes them into samples from density $p(\bz)$.
-		\item "Flow" refers to the trajectory that samples from $p(\bz)$ follow as they are transformed by the sequence of transformations
+		\item "Flow" refers to the trajectory followed by samples from $p(\bz)$ as they are transformed by the sequence of transformations
 		\[
 		\bz = f_K \circ \dots \circ f_1(\bx); \quad \bx = f_1^{-1} \circ \dots \circ f_K^{-1} (\bz) = g_1 \circ \dots \circ g_K(\bz) 
 		\] 
@@ -518,201 +518,6 @@
 		\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing flows for probabilistic modeling and inference, 2019} 
 \end{frame}
 %=======
-\begin{frame}{Planar Flows}
-	\vspace{-0.2cm}
-	\[
-	g(\bz, \btheta) = \bz + \mathbf{u} \, h(\bw^T\bz + b).
-	\]
-	\vspace{-0.2cm}
-	\begin{itemize}
-		\item $\btheta = \{\bu, \bw, b\}$;
-		\item $h$ is a smooth element-wise non-linearity.
-	\end{itemize}
-	\begin{align*}
-		\left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right)\right| &= \left| \det \left( \bI +  h'(\bw^T \bz + b) \bw\bu^T\right) \right| \\
-		&= \left| 1 + h'(\bw^T \bz + b) \bw^T \bu \right|
-	\end{align*}
-	The transformation is invertible, for example, if
-	\[
-	h = \tanh; \quad h'(\bw^T \bz + b) \bu^T \bw \geq -1.
-	\]
-	\vspace{-0.3cm}
-	\begin{block}{Sylvester flow: planar flow extension}
-	\vspace{-0.3cm}
-		\[
-			g(\bz, \btheta) = \bz + \bA \, h(\bB\bz + \mathbf{b}).
-		\]
-	\end{block}
-	\myfootnote{\href{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015}\\
-	\href{https://arxiv.org/abs/1803.05649}{Berg R. et al. Sylvester normalizing flows for variational inference, 2018}}
-\end{frame}
-%=======
-\begin{frame}{Planar Flows}
-	\[
-		\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
-	\]
-	\begin{block}{Expressiveness of planar flows}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/planar_flows.png}
-	\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
-\end{frame}
-%=======
-\begin{frame}{Jacobian structure}
-
-	\begin{block}{Flow likelihood}
-		\[
-		\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
-		\]
-	\end{block}
-	\begin{itemize}
-		\item What is a determinant of a diagonal matrix?
-		\[
-		\bz = f(\bx, \btheta) = (f_1(x_1, \btheta), \dots, f_m(x_m, \btheta)).
-		\]
-		\[
-		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = \log \left| \prod_{i=1}^m f_i'(x_i, \btheta) \right| = \sum_{i=1}^m \log \left| f_i'(x_i, \btheta) \right|.
-		\]
-		\item What is a determinant of a triangular matrix? \\
-		Let $z_i$ depends only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
-		What is the Jacobian of such a transformation?
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{NICE}
-	\begin{block}{Coupling layer}
-		\begin{equation*}
-			\begin{cases} \bz_{1:d} = \bx_{1:d} \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}))\end{cases} \quad 
-			\begin{cases} \bx_{1:d} = \bz_{1:d} \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d}))\end{cases}
-		\end{equation*}
-		\begin{itemize}
-			\item $c: \mathbb{R}^d \rightarrow \mathbb{R}^{k}$ -- coupling function (do not need to be invertible);
-			\item $\tau : \mathbb{R}^{m - d} \times c(\mathbb{R}^d) \rightarrow \mathbb{R}^{m - d}$ -- coupling law.
-			\item 
-			\[
-			\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
-			\begin{pmatrix}
-				\bI_d & 0_{d \times m - d} \\
-				\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
-			\end{pmatrix} = 
-			\det \left( \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}} \right)
-			\]
-		\end{itemize}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
-\end{frame}
-%=======
-\begin{frame}{NICE}
-	\begin{block}{Coupling layer}
-		\vspace{-0.8cm}
-		\begin{equation*}
-			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
-			\quad \Rightarrow \quad 
-			\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d})).\end{cases}
-		\end{equation*}
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Coupling function $c(\cdot)$}
-		Any complex function (without restrictions). For example, neural network.
-	\end{block}
-	\begin{block}{Coupling law $\tau(\cdot, \cdot)$}
-		\begin{itemize}
-			\item $\tau(x, c) = x + c$ -- \textit{additive};
-			\item $\tau(x, c) = x \odot c, \, c \neq 0$ -- multiplicative;
-			\item $\tau(x, c) = x \odot c_1 + c_2, \, c_1 \neq 0$ -- affine.
-		\end{itemize}
-	\end{block}
-	To obtain more flexible class of dictributions, stack more coupling layers (with different ordering of components!). \\
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
-\end{frame}
-%=======
-\begin{frame}{NICE}
-	\begin{block}{Coupling layer}
-		\vspace{-0.6cm}
-		\begin{equation*}
-			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
-			\quad \Rightarrow \quad 
-			\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d})).\end{cases}
-		\end{equation*}
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Jacobian}
-			\vspace{-0.3cm}
-		\[
-		\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
-		\begin{pmatrix}
-			\bI_d & 0_{d \times m - d} \\
-			\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
-		\end{pmatrix} = 
-		\det \left( \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}} \right)
-		\]
-	\end{block}
-	What is the Jacobian for the additive coupling law $\tau(x + c) = x + c$? \\
-	In this case the transformation is \textit{volume preserving}. \\
-	The last layer is rescaling $z_i = s_i x_i$ ($x_i = z_i / s_i$). \\
-	What is the Jacobian of the last layer?
-	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
-\end{frame}
-%=======
-\begin{frame}{NICE}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/nice_results.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
-\end{frame}
-%=======
-\begin{frame}{RealNVP}
-	\begin{block}{Affine coupling law}
-		\[
-		\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \bx_{d:m} \odot \exp \left(c_1(\bx_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).\end{cases} 
-		\]
-		\[
-		\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \left(\bz_{d:m} - c_2(\bx_{1:d}, \btheta) \right) \odot \exp(-c_1(\bx_{1:d}, \btheta)).\end{cases}
-		\]
-	\end{block}
-	\begin{block}{Jacobian}
-		\vspace{-0.3cm}
-		\[
-		\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
-		\begin{pmatrix}
-			\bI_d & 0_{d \times m - d} \\
-			\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
-		\end{pmatrix} = \prod_{i=1}^{m - d} \exp (c_1(\bx_{1:d}, \btheta)_i).
-		\]
-		Non-Volume Preserving.
-	\end{block}
-	
-		\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{RealNVP}
-	\begin{block}{Affine coupling law}
-		\[
-		\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \bx_{d:m} \odot \exp \left(c_1(\bx_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).\end{cases} 
-		\]
-	\end{block}
-	How to choose variable partitioning for images?
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/realnvp_masking.png}
-	\end{figure}
-	Masked convolutions are used to define ordering.
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{RealNVP}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/realnvp_output.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 	\item Mean-field approximation is a general form of approximate variational inference.
@@ -724,8 +529,6 @@
 	\item Flow models transform a simple base distribution to a complex one via a sequence of invertible transformations.
 	\vfill
 	\item Flow models have a tractable likelihood that is given by the change of variable theorem.
-	\vfill
-	\item Planar flows is a simple form of an invertible flow model (Sylvester flows are their extension). The NICE model is a more powerful type of flow.
 	\end{itemize}
 \end{frame}
 \end{document} 
