@@ -8,6 +8,123 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{Recap of previous lecture}
+	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions . \\
+	Instead of searching true $\pi(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	\begin{block}{Forward KL}
+		\vspace{-0.2cm}
+		\[
+			KL(\pi || p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+		\]
+		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
+	\end{block}
+	\begin{block}{Reverse KL}
+		\vspace{-0.2cm}
+		\[
+			KL(p || \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
+		Used for variational inference.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Likelihood-based models so far...}
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{block}{Autoregressive models}
+			\vspace{-0.5cm}
+			\[
+			p(\bx|\btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta)
+			\]
+			\vspace{-0.2cm}
+			\begin{itemize}
+				\item tractable likelihood, 
+				\item no inferred latent factors.
+			\end{itemize}
+		\end{block}
+	\end{minipage}%
+	\begin{minipage}[t]{0.5\columnwidth}
+		\begin{block}{Latent variable models}
+			\[
+			p(\bx| \btheta) = \int p(\bx, \bz | \btheta) d \bz
+			\]
+			\begin{itemize}
+				\item latent feature representation, 
+				\item intractable likelihood.
+			\end{itemize}
+		\end{block}
+	\end{minipage}
+	\end{block}
+	
+	\vspace{1cm } 
+	How to build model with latent variables and tractable likelihood?
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Change of variable theorem}
+		\begin{itemize}
+			\item $\bx$ is a random variable with density function $p(\bx)$;
+			\item $f: \mathbb{R}^m \rightarrow \mathbb{R}^m$ is a differentiable, invertible function (diffeomorphism);
+			\item $\bz = f(\bx)$, $\bx = f^{-1}(\bz) = g(\bz)$ (here $g = f^{-1}$).
+		\end{itemize}
+		Then
+		\vspace{-0.3cm}
+		\begin{align*}
+			p(\bx) &= p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(f(\bx)) \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right) \right| \\
+			p(\bz) &= p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| = p(g(\bz)) \left|\det \left(  \frac{\partial g(\bz)}{\partial \bz} \right) \right|.
+		\end{align*}
+	\end{block}
+		\begin{itemize}
+			\item $\bx$ and $\bz$ have the same dimensionality (lies in $\bbR^m$);
+			\item $ \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g^{-1}(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g(\bz)}{\partial \bz} \right)\right|^{-1}$;
+			\item $f(\bx, \btheta)$ could be parametric function.
+		\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\vspace{-0.3cm}
+	\[
+		\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+	\]
+	\vspace{-0.3cm}
+	\begin{block}{Flow definition}
+		Normalizing flow is a \textit{differentiable, invertible} mapping from data $\bx$ to the noise $\bz$. 
+	\end{block}
+	\begin{itemize}
+		\item "Normalizing" means that the inverse flow takes samples from $p(\bx)$ and normalizes them into samples from density $p(\bz)$.
+		\item "Flow" refers to the trajectory followed by samples from $p(\bz)$ as they are transformed by the sequence of transformations
+		\[
+		\bz = f_K \circ \dots \circ f_1(\bx); \quad \bx = f_1^{-1} \circ \dots \circ f_K^{-1} (\bz) = g_1 \circ \dots \circ g_K(\bz) 
+		\] 
+		\begin{multline*}
+			p(\bx) = p(f_K \circ \dots \circ f_1(\bx)) \left|\det \left(\frac{\partial f_K \circ \dots \circ f_1(\bx)}{\partial \bx} \right) \right| = \\
+			= p(f_K \circ \dots \circ f_1(\bx)) \prod_{k=1}^K \left|\det \left(\frac{\partial \mathbf{f}_k}{\partial \mathbf{f}_{k-1}} \right) \right|.
+		\end{multline*}
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Recap of previous lecture}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/flows_how2.png}
+	\end{figure}
+	\vspace{-0.3cm}
+		\begin{block}{Flow likelihood}
+			\vspace{-0.3cm}
+			\[
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+			\]
+			\vspace{-0.5cm}
+		\end{block}
+		\begin{block}{What we want}
+			\begin{itemize}
+				\item Efficient computation of Jacobian $\frac{\partial f(\bx, \btheta)}{\partial \bx}$;
+				\item Efficient sampling from the base distribution $p(\bz)$;
+				\item Efficient inversion of $f(\bx, \btheta)$.
+			\end{itemize}
+			
+		\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
+\end{frame}
+%=======
 \begin{frame}{Planar Flows}
 	\vspace{-0.2cm}
 	\[
@@ -38,9 +155,11 @@
 \end{frame}
 %=======
 \begin{frame}{Planar Flows}
+	\begin{block}{Composition of planar layers}
 	\[
 		\bz_K = g_1 \circ \dots \circ g_K (\bz); \quad g_k = g(\bz_k, \btheta_k).
 	\]
+	\end{block}
 	\begin{block}{Expressiveness of planar flows}
 	\begin{figure}
 		\centering
@@ -73,10 +192,12 @@
 %=======
 \begin{frame}{NICE}
 	\begin{block}{Coupling layer}
+		\vspace{-0.5cm}
 		\begin{equation*}
 			\begin{cases} \bz_{1:d} = \bx_{1:d} \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}))\end{cases} \quad 
 			\begin{cases} \bx_{1:d} = \bz_{1:d} \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d}))\end{cases}
 		\end{equation*}
+		\vspace{-0.3cm}
 		\begin{itemize}
 			\item $c: \mathbb{R}^d \rightarrow \mathbb{R}^{k}$ -- coupling function (do not need to be invertible);
 			\item $\tau : \mathbb{R}^{m - d} \times c(\mathbb{R}^d) \rightarrow \mathbb{R}^{m - d}$ -- coupling law.
@@ -91,6 +212,10 @@
 			\]
 		\end{itemize}
 	\end{block}
+	\vspace{-0.3cm}
+	\begin{block}{Coupling function $c(\cdot)$}
+		Any complex function (without restrictions). For example, neural network.
+	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
@@ -104,31 +229,13 @@
 		\end{equation*}
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Coupling function $c(\cdot)$}
-		Any complex function (without restrictions). For example, neural network.
-	\end{block}
 	\begin{block}{Coupling law $\tau(\cdot, \cdot)$}
 		\begin{itemize}
 			\item $\tau(x, c) = x + c$ -- \textit{additive};
-			\item $\tau(x, c) = x \odot c, \, c \neq 0$ -- multiplicative;
-			\item $\tau(x, c) = x \odot c_1 + c_2, \, c_1 \neq 0$ -- affine.
+			\item $\tau(x, c) = x \odot \exp{c_1} + c_2, \, c_1 \neq 0$ -- affine.
 		\end{itemize}
 	\end{block}
-	To obtain more flexible class of dictributions, stack more coupling layers (with different ordering of components!). \\
 	
-	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
-\end{frame}
-%=======
-\begin{frame}{NICE}
-	\begin{block}{Coupling layer}
-		\vspace{-0.6cm}
-		\begin{equation*}
-			\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \tau (\bx_{d:m}, c(\bx_{1:d}));\end{cases} 
-			\quad \Rightarrow \quad 
-			\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \tau^{-1} (\bz_{d:m}, c(\bz_{1:d})).\end{cases}
-		\end{equation*}
-		\vspace{-0.5cm}
-	\end{block}
 	\begin{block}{Jacobian}
 			\vspace{-0.3cm}
 		\[
@@ -140,18 +247,20 @@
 		\det \left( \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}} \right)
 		\]
 	\end{block}
-	What is the Jacobian for the additive coupling law $\tau(x + c) = x + c$? \\
-	In this case the transformation is \textit{volume preserving}. \\
-	The last layer is rescaling $z_i = s_i x_i$ ($x_i = z_i / s_i$). \\
-	What is the Jacobian of the last layer?
+	What is the Jacobian for the additive coupling law? \\
+	In this case the transformation is \textit{volume preserving}.
+	
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
 \begin{frame}{NICE}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/nice_results.png}
-	\end{figure}
+	To obtain more flexible class of dictributions, stack more coupling layers (with different ordering of components!). \\
+	\begin{block}{Flow samples}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/nice_results.png}
+		\end{figure}
+	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
@@ -173,7 +282,7 @@
 			\frac{\partial \bz_{d:m}}{\partial \bx_{1:d}} & \frac{\partial \bz_{d:m}}{\partial \bx_{d:m}}
 		\end{pmatrix} = \prod_{i=1}^{m - d} \exp (c_1(\bx_{1:d}, \btheta)_i).
 		\]
-		Non-Volume Preserving.
+		Non-Volume Preserving (the determinant of Jacobian $\neq 0$).
 	\end{block}
 	
 		\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
@@ -196,103 +305,13 @@
 \end{frame}
 %=======
 \begin{frame}{RealNVP}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/realnvp_output.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{RevNets, 2017}
-	\begin{minipage}[t]{0.6\columnwidth}
-		\begin{itemize}
-			\item Modern neural networks are trained via backpropagation.
-			\item Residual networks are state of the art in image classification.
-			\item Backpropagation requires storing the network activations.
-		\end{itemize}
-	\end{minipage}%
-	\begin{minipage}[t]{0.4\columnwidth}
+	\begin{block}{Flow samples}
 		\begin{figure}
 			\centering
-			\includegraphics[width=\linewidth]{figs/resnet_block.png}
+			\includegraphics[width=\linewidth]{figs/realnvp_output.png}
 		\end{figure}
-	\end{minipage}
-	\vspace{0.1cm}
-	\begin{block}{Problem}
-		Storing the activations imposes an increasing memory burden. GPUs have limited memory capacity, leading to constraints often exceeded by state-of-the-art architectures (with thousand layers).
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{RevNets, 2017}
-	\begin{block}{NICE}
-		\vspace{-0.2cm}
-		\begin{equation*}
-			\begin{cases} \bz_1 = \bx_1; \\ \bz_2 = \bx_2 + \mathcal{F}(\bx_1, \btheta);\end{cases}  \quad \Leftrightarrow \quad 
-			\begin{cases} \bx_1 = \bz_1; \\ \bx_2 = \bz_2 - \mathcal{F}(\bz_1, \btheta).\end{cases} 
-		\end{equation*}
-		\vspace{-0.2cm}
-	\end{block}
-	\begin{block}{RevNet}
-		\begin{equation*}
-			\begin{cases} \by_1 = \bx_1 + \mathcal{F}(\bx_2, \btheta); \\ \by_2 = \bx_2 + \mathcal{G}(\by_1, \btheta);\end{cases} \quad \Leftrightarrow \quad 
-			\begin{cases} \bx_2 = \by_2 - \mathcal{F}(\by_1, \btheta); \\ \bx_1 = \by_1 - \mathcal{G}(\bx_2, \btheta).\end{cases} 
-		\end{equation*}
-	\end{block}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/revnet.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{RevNets, 2017}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/revnet_results.png}
-	\end{figure}
-	\begin{itemize}
-		\item If the network contains non-reversible blocks (poolings, strides), activations for these blocks should be stored.
-		\item To avoid storing activations in the modern frameworks, the backward pass should be manually redefined.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1707.04585}{Gomez A. N. et al. The Reversible Residual Network: Backpropagation Without Storing Activations, 2017}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	\begin{block}{Hypothesis}
-		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
-	\end{block}
-	\begin{itemize}
-		\item It is difficult to recover images from their hidden representations. 
-		\item Information bottleneck principle: an optimal representation must reduce the MI between an input and its representation to reduce uninformative variability + maximize the MI between the output and its representation to preserve each class from collapsing onto other classes.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	\begin{block}{Hypothesis}
-		The success of deep convolutional networks is based on progressively discarding uninformative variability about the input with respect to the problem at hand. 
-	\end{block}
-	
-	\begin{block}{Idea}
-		Build a cascade of homeomorphic layers (i-RevNet), a network that can be fully inverted up to the final projection onto the classes, i.e. no information is discarded.
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
-\end{frame}
-%=======
-\begin{frame}{i-RevNet, 2018}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/i-revnet.png}
-	\end{figure}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/i-revnet_block.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
@@ -307,9 +326,15 @@
 	\begin{block}{Model architecture}
 		\begin{figure}
 			\centering
-			\includegraphics[width=\linewidth]{figs/glow_block.png}
+			\includegraphics[width=0.8\linewidth]{figs/glow_block.png}
 		\end{figure}
 	\end{block}
+	\vspace{-0.5cm}
+	\begin{itemize}
+	\item Affine coupling layer (already known).
+	\item Invertible 1x1 conv (contribution).
+	\item Actnorm (architectural detail).
+	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
@@ -323,27 +348,27 @@
 		\end{equation*}
 		\vspace{-0.2cm}
 	\end{block}
-	
-	First step is \textbf{split} operator which decouples a variable into 2 subparts (usualy channel-wise).
+	\begin{itemize}
+	\item First step is \textbf{split} operator which decouples a variable into 2 subparts: $\bx_1$ and $\bx_2$ (usualy channel-wise).
 	The order of decoupling should be manually changed between layers.
-	
-	Could we use more general operator?
-	
-	Let use rotation matrix via 1x1 invertible convolution.
+	\item Could we use more general operator?
+	\item Let use rotation matrix via 1x1 invertible convolution.
 	
 	$\mathbf{W} \in \mathbb{R}^{c \times c}$ - kernel of 1x1 convolution with $c$ input and output channels.
 	
 	The cost of computing or differentiating $\det (\mathbf{W})$ is $O(c^3)$.
+	\end{itemize}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Glow, 2018}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/glow_ops.png}
-	\end{figure}
-
+	\begin{block}{Basic flow operations}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/glow_ops.png}
+		\end{figure}
+	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
@@ -367,16 +392,13 @@
 %=======
 \begin{frame}{Glow, 2018}
 	\begin{block}{Face interpolation}
+		\vspace{-0.3cm}
 		\begin{figure}
 			\centering
 			\includegraphics[width=\linewidth]{figs/glow_interpolation.png}
 		\end{figure}
+		\vspace{-0.3cm}
 	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
-\end{frame}
-%=======
-\begin{frame}{Glow, 2018}
 	\begin{block}{Face attributes manipulation}
 		\begin{figure}
 			\centering
@@ -384,14 +406,7 @@
 		\end{figure}
 	\end{block}
 
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018} 
-\end{frame}
-\begin{frame}{Summary}
-	\begin{itemize}
-		\item Flows are generative models with tractable likelihood and latent representation.
-		\item Flows transform simple distributions into the complex ones via sequences of invertible transformations.
-		\item The goal is to achieve tractable Jacobian for efficient learning and density estimation.
-	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Dequantization}
@@ -556,11 +571,11 @@
 		\]
 		\item Poor probabilistic model (decoder)
 		\[
-		p(\bx | \bz, \btheta) = \mathcal{N}(\bx| \bmu_{\btheta}(\bz), \bsigma^2_{\btheta}(\bz)).
+		p(\bx | \bz, \btheta) = \mathcal{N}(\bx| \bmu_{\btheta}(\bz), \bsigma^2_{\btheta}(\bz)) \quad (\text{or } \text{Softmax}(\pi(\bz))).
 		\]
 		\item Loose lower bound
 		\[
-		p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
+		\log p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
 		\]
 	\end{itemize}
 \end{frame}
@@ -638,124 +653,11 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
-\begin{frame}{Gaussian autoregressive model}
-	Consider autoregressive model
-	\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta),
-	\]
-	with conditionals
-	\[
-	p(x_i | \bx_{1:i - 1}, \btheta) = \mathcal{N} \left(\hat{\mu}_i(\bx_{1:i-1}), \hat{\sigma}^2_i (\bx_{1:i-1})\right).
-	\]
-	\vspace{-0.5cm}
-	\begin{block}{Sampling}
-		\[
-		x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
-		\]
-	\end{block}
-	Sampling from autoregressive model is sequential. \\
-	Note that we could interpret this sampling as a transformation $\bx = g(\bz, \btheta)$, where $\bz$ comes from base distribution $\mathcal{N}(0, 1)$.
-\end{frame}
-%=======
-\begin{frame}{Gaussian autoregressive model}
-	\begin{block}{Sampling}
-		\vspace{-0.5cm}
-		\[
-		x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Jacobian}
-		\vspace{-0.5cm}
-		\[
-		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = -\log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| = - \sum_{i = 1}^m \log \hat{\sigma}_i (\bx_{1:i-1}).
-		\]
-		\vspace{-0.5cm}
-	\end{block} 
-	\begin{block}{Inverse transform}
-		\vspace{-0.5cm}
-		\[
-		z_i = \left(x_i - \hat{\mu}_i(\bx_{1:i-1}) \right) \cdot \frac{1}{\hat{\sigma}_i (\bx_{1:i-1}) }.
-		\]
-	\end{block}
-	We get an autoregressive model with tractable (triangular) Jacobian, which is easily invertible. It is a flow!
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	
-	\begin{block}{Gaussian autoregressive model ($\bz \rightarrow \bx$)}
-		\vspace{-0.2cm}
-		\[
-			x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}).
-		\]
-		\[
-			z_i = \left(x_i - \hat{\mu}_i(\bx_{1:i-1}) \right) \cdot \frac{1}{ \hat{\sigma}_i (\bx_{1:i-1})}.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	This process is sequential. \\
-	Let use the following reparametrization:
-	$\bsigma = \frac{1}{\hat{\bsigma}}; \quad \bmu = - \frac{\hat{\bmu}}{\hat{\bsigma}}.$
-	
-	\begin{block}{Inverse transform ($\bx \rightarrow \bz$)}
-		\vspace{-0.2cm}
-		\[
-			z_i = \sigma_i (\bx_{1:i-1}) \cdot x_i + \mu_i(\bx_{1:i-1}).
-		\]
-		\[
-			x_i = \left( z_i - \mu_i(\bx_{1:i-1})\right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1}) }.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	This process is \textbf{not} sequential.
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	
-	\begin{block}{Inverse transform ($\bx \rightarrow \bz$)}
-		\vspace{-0.2cm}
-		\[
-			z_i = \sigma_i (\bx_{1:i-1}) \cdot x_i + \mu_i(\bx_{1:i-1}).
-		\]
-		\[
-			x_i = \left( z_i - \mu_i(\bx_{1:i-1})\right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1})}.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	Inverse autoregressive flow use such inverted autoregressive model as a flow in VAE:
-	\begin{align*}
-		\bz_0 &= \bsigma(\bx) \cdot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz_0 | \bx, \bphi). \\
-		\bz_k &= \bsigma_k(\bz_{k - 1}) \cdot \bz_{k-1} + \bmu_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\bphi_j\}_{j=1}^k).
-	\end{align*}
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Flows}
-	\begin{figure}
-		\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
-	\end{figure}
-	\begin{itemize}	
-		\item Inference mode in autoregressive flows is used for density estimation tasks.
-		\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get a more flexible posterior distribution.
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/iaf2.png}
-	\end{figure}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/iaf1.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
 \begin{frame}{Summary}
 \begin{itemize}
+	\item Flows are generative models with tractable likelihood and latent representation.
+	\item Flows transform simple distributions into the complex ones via sequences of invertible transformations.
+	\item The goal is to achieve tractable Jacobian for efficient learning and density estimation.
 	\item Planar flows is a simple form of an invertible flow model (Sylvester flows are their extension). The NICE model is a more powerful type of flow.
 \end{itemize}
 \end{frame}
