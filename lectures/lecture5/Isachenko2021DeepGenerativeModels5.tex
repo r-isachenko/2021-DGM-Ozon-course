@@ -9,8 +9,8 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
-	Fix probabilistic model $p(\bx | \btheta)$~-- the set of parameterized distributions . \\
-	Instead of searching true $\pi(\bx)$ over all probability distributions, learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	Fix probabilistic model $p(\bx | \btheta)$~-- a set of parametrised distributions. \\
+	Instead of searching true $\pi(\bx)$ over all probability distributions, we learn function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
 	\begin{block}{Forward KL}
 		\vspace{-0.2cm}
 		\[
@@ -56,7 +56,7 @@
 	\end{block}
 	
 	\vspace{1cm } 
-	How to build model with latent variables and tractable likelihood?
+	How to build a model with latent variables and tractable likelihood?
 \end{frame}
 %=======
 \begin{frame}{Recap of previous lecture}
@@ -76,7 +76,7 @@
 		\begin{itemize}
 			\item $\bx$ and $\bz$ have the same dimensionality (lies in $\bbR^m$);
 			\item $ \left|\det \left(  \frac{\partial f(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g^{-1}(\bx)}{\partial \bx} \right)\right| = \left|\det \left(  \frac{\partial g(\bz)}{\partial \bz} \right)\right|^{-1}$;
-			\item $f(\bx, \btheta)$ could be parametric function.
+			\item $f(\bx, \btheta)$ can be a parametric function.
 		\end{itemize}
 \end{frame}
 %=======
@@ -185,7 +185,7 @@
 		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = \log \left| \prod_{i=1}^m f_i'(x_i, \btheta) \right| = \sum_{i=1}^m \log \left| f_i'(x_i, \btheta) \right|.
 		\]
 		\item What is a determinant of a triangular matrix? \\
-		Let $z_i$ depends only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
+		Let $z_i$ depend only on $\bx_{1:i}$ (or without loss of generality $x_i$ depends on $\bz_{1:i}$). \\
 		What is the Jacobian of such a transformation?
 	\end{itemize}
 \end{frame}
@@ -231,8 +231,8 @@
 	\end{block}
 	\begin{block}{Coupling law $\tau(\cdot, \cdot)$}
 		\begin{itemize}
-			\item $\tau(x, c) = x + c$ -- \textit{additive};
-			\item $\tau(x, c) = x \odot \exp{c_1} + c_2, \, c_1 \neq 0$ -- affine.
+			\item $\tau(x, c) = x + c$ -- additive;
+			\item $\tau(x, c) = x \odot \exp{c_1} + c_2$ -- affine.
 		\end{itemize}
 	\end{block}
 	
@@ -248,13 +248,13 @@
 		\]
 	\end{block}
 	What is the Jacobian for the additive coupling law? \\
-	In this case the transformation is \textit{volume preserving}.
+	In this case, the transformation is \textit{volume preserving}.
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1410.8516}{Dinh L., Krueger D., Bengio Y. NICE: Non-linear Independent Components Estimation, 2014}
 \end{frame}
 %=======
 \begin{frame}{NICE}
-	To obtain more flexible class of dictributions, stack more coupling layers (with different ordering of components!). \\
+	To obtain a more flexible class of distributions, stack more coupling layers (with different ordering of components!). \\
 	\begin{block}{Flow samples}
 		\begin{figure}
 			\centering
@@ -270,7 +270,7 @@
 		\begin{cases} \bz_{1:d} = \bx_{1:d}; \\ \bz_{d:m} = \bx_{d:m} \odot \exp \left(c_1(\bx_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).\end{cases} 
 		\]
 		\[
-		\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \left(\bz_{d:m} - c_2(\bx_{1:d}, \btheta) \right) \odot \exp(-c_1(\bx_{1:d}, \btheta)).\end{cases}
+		\begin{cases} \bx_{1:d} = \bz_{1:d}; \\ \bx_{d:m} = \left(\bz_{d:m} - c_2(\bz_{1:d}, \btheta) \right) \odot \exp(-c_1(\bz_{1:d}, \btheta)).\end{cases}
 		\]
 	\end{block}
 	\begin{block}{Jacobian}
@@ -349,14 +349,14 @@
 		\vspace{-0.2cm}
 	\end{block}
 	\begin{itemize}
-	\item First step is \textbf{split} operator which decouples a variable into 2 subparts: $\bx_1$ and $\bx_2$ (usualy channel-wise).
+	\item First step is a \textbf{split} operator which decouples a variable into 2 subparts: $\bx_1$ and $\bx_2$ (usualy channel-wise).
 	The order of decoupling should be manually changed between layers.
-	\item Could we use more general operator?
-	\item Let use rotation matrix via 1x1 invertible convolution.
+	\item Could we use a more general operator?
+	\item Let use a rotation matrix via 1x1 invertible convolution.
 	
-	$\mathbf{W} \in \mathbb{R}^{c \times c}$ - kernel of 1x1 convolution with $c$ input and output channels.
+	$\mathbf{W} \in \mathbb{R}^{c \times c}$ - kernel of 1x1 convolution with $c$ input and $c$ output channels.
 	
-	The cost of computing or differentiating $\det (\mathbf{W})$ is $O(c^3)$.
+	The computational complexity of computing or differentiating $\det (\mathbf{W})$ is $O(c^3)$.
 	\end{itemize}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
