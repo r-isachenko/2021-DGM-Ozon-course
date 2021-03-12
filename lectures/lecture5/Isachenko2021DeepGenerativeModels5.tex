@@ -429,7 +429,7 @@
 	\begin{block}{ELBO}
 	\vspace{-0.3cm}
 	\[
-	p(\bx | \btheta) \geq \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx, \bphi)} \rightarrow \max_{\bphi, \btheta}.
+	\log p(\bx | \btheta) \geq \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx, \bphi)} \rightarrow \max_{\bphi, \btheta}.
 	\]
 	\vspace{-0.5cm}
 	\end{block}
@@ -512,7 +512,7 @@
 	
 	\begin{itemize}
 		\item Encoder outputs base distribution $q(\bz_0 | \bx, \bphi)$.
-		\item Flow model $\bz_K = g(\bz_0 \{\bphi_k\}_{k=1}^K)$ transforms the base distribution $q(\bz_0 | \bx, \bphi)$ to the distribution $q_K(\bz_K | \bx, \bphi_*)$.
+		\item Flow model $\bz_K = g(\bz_0, \{\bphi_k\}_{k=1}^K)$ transforms the base distribution $q(\bz_0 | \bx, \bphi)$ to the distribution $q_K(\bz_K | \bx, \bphi_*)$.
 		\item Distribution $q_K(\bz_K | \bx, \bphi_*)$ is used as a variational distribution for ELBO maximization.
 	\end{itemize}
 	
@@ -584,157 +584,17 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
-\begin{frame}{Dequantization}
-	\begin{itemize}
-		\item Images are discrete data, pixels lies in the [0, 255] integer domain (the model is $P(\bx | \btheta) = \text{Categorical}(\bpi(\btheta))$).
-		\item Flow is a continuous model (it works with continuous data $\bx$).
-	\end{itemize}
-	Fitting a continuous density model to discrete data, could produce a degenerate solution with all probability mass on discrete values. \\
-	How to convert discrete data distribution to the continuous one?
-	
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{block}{Uniform dequantization}
-		\vspace{-0.5cm}
-			\begin{align*}
-				\bx &\sim \text{Categorical}(\bpi) \\
-				 \bu &\sim U[0, 1]
-			\end{align*}
-			\[
-			\by = \bx + \bu \sim \text{Continuous} 
-			\]
-		\end{block}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/uniform_dequantization.png}
-		\end{figure}
-	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A note on the evaluation of generative models. 2015}
-\end{frame}
-%=======
-\begin{frame}{Uniform dequantization}
-	\begin{block}{Statement}
-		Fitting continious model $p(\by | \btheta)$ on uniformly dequantized data $\by = \bx + \bu, \, \bu \sim U[0, 1]$ is equivalent to maximization of a lower bound on the log-likelihood for a discrete model:
-		\[
-		P(\bx | \btheta) = \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu
-		\]
-		\vspace{-0.2cm} \\
-		Thus, maximizing the log-likelihood of the continuous model on $\by$ cannot lead to the collapsing onto the discrete data (objective is bounded above by the log-likelihood of a discrete model).
-	\end{block}
-	\begin{block}{Proof}
-		\vspace{-1cm}
-		\begin{multline*}
-			 \log P(\bx | \btheta) = \log \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu \geq \\ \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu = \log p(\by | \btheta).
-		\end{multline*}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Variational dequantization}
-	\begin{minipage}[t]{0.5\columnwidth}
-			\begin{figure}
-				\centering
-				\includegraphics[width=1.0\linewidth]{figs/uniform_dequantization.png}
-			\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/variational_dequantization.png}
-		\end{figure}
-	\end{minipage}
-	\begin{itemize}
-		\item $p(\by | \btheta)$ assign unifrom density to unit hypercubes $\bx + U[0, 1]$ (left fig).
-		\item Neural network density models is a smooth function approximator (right fig).
-		\item Smooth dequantization is more natural.
-	\end{itemize}
-	How to make the smooth dequantization? \\
-\end{frame}
-%=======
-\begin{frame}{Flow++}
-	\begin{block}{Variational dequantization}
-		Introduce variational dequantization noise distribution $q(\bu | \bx)$ and treat it as an approximate posterior. 
-	\end{block}
-	\begin{block}{Variational lower bound}
-		\vspace{-0.7cm}
-		\begin{multline*}
-		 \log P(\bx | \btheta) = \left[ \log \int q(\bu | \bx) \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu \right] \geq \\ 
-			\geq  \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu = \mathcal{L}(q, \btheta).
-		\end{multline*}
-	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{Uniform dequantization bound}
-		\vspace{-0.7cm}
-		\begin{multline*}
-		 \log P(\bx | \btheta) = \log \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu \geq \\ \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu = \log p(\by | \btheta).
-		\end{multline*}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
-\begin{frame}{Flow++}
-	\begin{block}{Variational lower bound}
-		\[
-		\mathcal{L}(q, \btheta) = \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu.
-		\]
-	\end{block}
-	Let $\bu = h(\bepsilon, \bphi)$ is a flow model with base distribution $\bepsilon \sim p(\bepsilon) = \mathcal{N}(0, \mathbf{I})$:
-	\vspace{-0.3cm}
-	\[
-		q(\bu | \bx) = p(h^{-1}(\bu, \bphi)) \cdot \left| \det \frac{\partial h^{-1}(\bu, \bphi)}{\partial \bu}\right|.
-	\]
-	\vspace{-0.3cm}
-	Then
-	\[
-		\log P(\bx | \btheta) \geq \cL(\bphi, \btheta) = \int p(\bepsilon) \log \left( \frac{p(\bx + h(\bepsilon, \bphi) | \btheta)}{p(\bepsilon) \cdot \left| \det \frac{\partial h(\bepsilon, \bphi)}{\partial \bepsilon}\right|^{-1}} \right) d\bepsilon.
-	\]
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
-\begin{frame}{Flow++}
-	\begin{block}{Variational lower}
-	\vspace{-0.3cm}
-	\[
-		\log P(\bx | \btheta) \geq \int p(\bepsilon)\log \left( \frac{p(\bx + h(\bepsilon, \bphi))}{p(\bepsilon) \cdot \left| \det \frac{\partial h(\bepsilon, \bphi)}{\partial \bepsilon}\right|^{-1}} \right) d\bepsilon.
-	\]
-	\end{block}
-	\begin{itemize}
-	\item If $p(\bx + \bu | \btheta)$ is also a flow model, it is straightforward to calculate stochastic gradient of this ELBO.
-	
-	\item Uniform dequantization is a special case of variational dequantization ($q(\bu | \bx) = U[0, 1]$).
-	The gap between $\log P(\bx | \btheta)$ and the derived ELBO is 
-	$ KL(q(\bu | \bx) || p(\bu | \bx))$.
-	\item In the case of uniform dequantization the model unnaturally places uniform density over each hypercube $\bx + U[0, 1]$ due to inexpressive distribution $q$.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
-\begin{frame}{Flow++}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/flow++1.png}
-	\end{figure}
-	\vspace{-0.1cm}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/flow++2.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 \begin{itemize}
-	\item Flow models requires tractable Jacobian.
+	\item Flow models require tractable Jacobian.
 	\vfill
-	\item Planar flows is a simple form of an invertible flow model (Sylvester flows are their extension). The NICE/RealNVP model is a more powerful type of flow.
+	\item Planar flow is a simple form of an invertible flow model (Sylvester flows are their extension). 
 	\vfill
-	\item Glow model is first flow model with superior results.
+	\item The NICE/RealNVP model is a more powerful type of flow that use coupling layers.
+	\vfill
+	\item Glow model is a first flow model with superior results.
 	\vfill
 	\item Flows could be used in variational inference to create powerful variational distribution.
-	\vfill
-	\item To apply continuous model to discrete distribution the standart practice is to dequantize data at first.
-	\vfill
-	\item Uniform dequantization is the simplest form of dequantization. Variational dequantization is more natural type that was proposed in Flow++ model.
 
 \end{itemize}
 \end{frame}
