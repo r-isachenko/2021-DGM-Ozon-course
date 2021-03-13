@@ -16,3 +16,4 @@
 |---------|------|-------------|--------|-------|
 | 1 | February, 11 | February, 28 | Autoregressive models (practice). | [notebook](homeworks/homework1/hw1.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-Ozon-course/blob/main/homeworks/homework1/hw1.ipynb)|
 | 2 | February, 28 | March, 14 | Autoregressive models + LVM (theory). | [pdf](homeworks/homework2/hw2.pdf) |
+| 3 | March, 14 | March, 28 | VAE + Flows (practice). | [notebook](homeworks/homework3/hw3.ipynb) or [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/r-isachenko/2021-DGM-Ozon-course/blob/main/homeworks/homework3/hw3.ipynb)|
