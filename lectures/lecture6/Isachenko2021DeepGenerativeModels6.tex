@@ -116,6 +116,458 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
+\begin{frame}{Gaussian autoregressive model}
+	Consider autoregressive model
+	\[
+		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta),
+	\]
+	with conditionals
+	\[
+	p(x_i | \bx_{1:i - 1}, \btheta) = \mathcal{N} \left(\mu_i(\bx_{1:i-1}), \sigma^2_i (\bx_{1:i-1})\right).
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{Sampling: reparametrization trick}
+		\[
+		x_i = \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
+		\]
+	\end{block}
+	Sampling from autoregressive model is \textbf{sequential}. \\
+	Note that we could interpret this sampling as a transformation $\bx = g(\bz, \btheta)$, where $\bz$ comes from base distribution $\mathcal{N}(0, 1)$.
+\end{frame}
+%=======
+\begin{frame}{Gaussian autoregressive model}
+	\begin{block}{Sampling: reparametrization trick}
+		\vspace{-0.2cm}
+		\[
+			x_i = \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Inverse transform}
+		\vspace{-0.3cm}
+		\[
+		z_i = \left(x_i - \mu_i(\bx_{1:i-1}) \right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1}) }.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Jacobian}
+		Autoregressive model has triangular Jacobian
+		\vspace{-0.2cm}
+		\[
+		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = -\log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| = - \sum_{i = 1}^m \log \sigma_i (\bx_{1:i-1}).
+		\]
+		\vspace{-0.3cm}
+	\end{block} 
+	We get an autoregressive model with tractable (triangular) Jacobian, which is easily invertible. It is a flow!
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
+\end{frame}
+%=======
+\begin{frame}{Gaussian autoregressive flow}
+		\vspace{-0.2cm}
+		\begin{align*}
+			\bx &= g(\bz, \btheta) \quad \Rightarrow \quad x_i = \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}). \\
+			\bz &= f(\bx, \btheta) \quad \Rightarrow \quad z_i = \left(x_i - \mu_i(\bx_{1:i-1}) \right) \cdot \frac{1}{ \sigma_i (\bx_{1:i-1})}.
+		\end{align*}
+	Generation function $g(\bz, \btheta)$ is \textbf{sequential}. Inference function $f(\bx, \btheta)$ is \textbf{not sequential}.
+	\begin{block}{Forward KL for flow model}
+  		\vspace{-0.2cm}
+		\[
+			\log p(\bx|\btheta) = \log p(f(\bx, \btheta)) + \log  \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right|
+		\]
+		\vspace{-0.2cm}
+		\begin{itemize}
+		\item We need to be able to compute $f(\bx, \btheta)$ and its Jacobian.
+		\item We need to be able to compute the density $p(\bz)$.
+		\item We don’t need to think about computing the function $g(\bz, \btheta) = f^{-1}(\bz, \btheta)$ until we want to sample from the flow.
+		\end{itemize}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{Masked autoregressive flow (MAF)}
+	\begin{block}{Gaussian autoregressive model}
+		\vspace{-0.5cm}
+		\[
+		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta) = \prod_{i=1}^m \mathcal{N} \left(x_i | \mu_i(\bx_{1:i-1}), \sigma^2_i (\bx_{1:i-1})\right).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	We could use MADE (masked autoencoder) as conditional model. The sampling order could be crucial.
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/maf1.png}
+	\end{figure}
+	Samples from the base distribution could be an indicator of how good the flow was fitted. \\
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{Masked autoregressive flow (MAF)}
+	\begin{block}{Gaussian autoregressive model}
+		\vspace{-0.5cm}
+		\[
+		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta) = \prod_{i=1}^m \mathcal{N} \left(x_i | \mu_i(\bx_{1:i-1}), \sigma^2_i (\bx_{1:i-1})\right).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/maf1.png}
+	\end{figure}
+	MAF is just a stacked MADE model with different ordering.
+	\begin{itemize}
+		\item Parallel density estimation.
+		\item Sequential sampling.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{Inverse autoregressive flow (IAF)}
+	Let use the following reparametrization:
+	$\tilde{\bsigma} = \frac{1}{\bsigma}$; $ \tilde{\bmu} = - \frac{\bmu}{\bsigma}$.
+	
+	\begin{block}{Gaussian autoregressive flow}
+		\vspace{-0.5cm}
+		\begin{align*}
+			x_i &= \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}) =  \left( z_i - \tilde{\mu}_i(\bx_{1:i-1})\right) \cdot \frac{1}{\tilde{\sigma}_i (\bx_{1:i-1}) }\\
+			z_i &= \left(x_i - \mu_i(\bx_{1:i-1}) \right) \cdot \frac{1}{ \sigma_i (\bx_{1:i-1})} = \tilde{\sigma}_i (\bx_{1:i-1}) \cdot x_i + \tilde{\mu}_i(\bx_{1:i-1}).
+		\end{align*}
+		\vspace{-0.3cm}
+	\end{block}
+	Let just swap $\bz$ and $\bx$. 
+	
+	\begin{block}{Inverse autoregressive flow}
+		\vspace{-0.5cm}
+		\begin{align*}
+			\bx &= g(\bz, \btheta) \quad \Rightarrow \quad x_i = \tilde{\sigma}_i (\bz_{1:i-1}) \cdot z_i + \tilde{\mu}_i(\bz_{1:i-1}) \\
+			\bz &= f(\bx, \btheta) \quad \Rightarrow \quad z_i = \left( x_i - \tilde{\mu}_i(\bz_{1:i-1})\right) \cdot \frac{1}{\tilde{\sigma}_i (\bz_{1:i-1}) }.
+		\end{align*}
+		\vspace{-0.3cm}
+	\end{block}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
+\end{frame}
+%=======
+\begin{frame}{Inverse autoregressive flow (IAF)}
+
+	\begin{minipage}[t]{0.65\columnwidth}
+		\begin{block}{Gaussian autoregressive flow: $f(\bx, \btheta)$}
+			\[
+			x_i = \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}).
+			\]
+		\end{block}
+	\end{minipage}%
+	\begin{minipage}[t]{0.35\columnwidth}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_1.png}
+		\end{figure}
+	\end{minipage} \\
+	
+	\begin{minipage}[t]{0.65\columnwidth}
+		\begin{block}{Inverse transform: $g(\bz, \btheta)$}
+			\vspace{-0.5cm}
+			\begin{align*}
+				z_i &= (x_i - \mu_i(\bx_{1:i-1})) \cdot \frac{1}{\sigma_i (\bx_{1:i-1}) }; \\
+				z_i &= \tilde{\sigma}_i (\bx_{1:i-1}) \cdot x_i + \tilde{\mu}_i(\bx_{1:i-1}).
+			\end{align*}
+			\vspace{-0.4cm}
+		\end{block}
+	\end{minipage}% 
+	\begin{minipage}[t]{0.35\columnwidth}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_2.png}
+		\end{figure}
+	\end{minipage}\\
+	\vspace{0.1cm}
+	
+	\begin{minipage}[t]{0.65\columnwidth}
+		\begin{block}{Inverse autoregressive flow: $f(\bx, \btheta)$}
+			\[
+			x_i = \tilde{\sigma}_i (\bz_{1:i-1}) \cdot z_i + \tilde{\mu}_i(\bz_{1:i-1}).
+			\]
+		\end{block}
+	\end{minipage}%
+	\begin{minipage}[t]{0.35\columnwidth}
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_3.png}
+		\end{figure}
+	\end{minipage}
+	
+	\myfootnotewithlink{https://blog.evjang.com/2018/01/nf2.html}{image credit: https://blog.evjang.com/2018/01/nf2.html}
+\end{frame}
+%=======
+\begin{frame}{Autoregressive flows}
+	\begin{block}{Forward and inverse transform in MAF}
+		\vspace{-0.6cm}
+		\begin{align*}
+			\bx &= g(\bz, \btheta) \quad \Rightarrow \quad x_i = \sigma_i (\bx_{1:i-1}) \cdot z_i + \mu_i(\bx_{1:i-1}). \\
+			\bz &= f(\bx, \btheta) \quad \Rightarrow \quad z_i = \left(x_i - \mu_i(\bx_{1:i-1}) \right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1}) }.
+		\end{align*}
+		\vspace{-0.6cm}
+		\begin{itemize}
+			\item Sampling is sequential.
+			\item Density estimation is parallel.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Forward and inverse transform in IAF}
+		\vspace{-0.6cm}
+		\begin{align*}
+			\bx &= g(\bz, \btheta) \quad \Rightarrow \quad x_i = \tilde{\sigma}_i (\bz_{1:i-1}) \cdot z_i + \tilde{\mu}_i(\bz_{1:i-1}). \\
+			\bz &= f(\bx, \btheta) \quad \Rightarrow \quad z_i = \left(x_i - \tilde{\mu}_i(\bz_{1:i-1}) \right) \cdot \frac{1}{\tilde{\sigma}_i (\bz_{1:i-1})}.
+		\end{align*}
+		\vspace{-0.6cm}
+		\begin{itemize}
+			\item Sampling is parallel.
+			\item Density estimation is sequential.
+		\end{itemize}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{Flows}
+	\begin{figure}
+		\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
+	\end{figure}
+	\begin{itemize}	
+		\item MAF performs parallel inference that is useful for density estimation tasks (forward KL or MLE).
+		\item IAF performs parallel generation that is useful for variational inference (reverse KL).
+	\end{itemize}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
+\end{frame}
+%=======
+\begin{frame}{Inverse autoregressive flow (IAF)}
+	\vspace{-0.3cm}
+	\begin{align*}
+		\bx &= g(\bz, \btheta) \quad \Rightarrow \quad x_i = \tilde{\sigma}_i (\bz_{1:i-1}) \cdot z_i + \tilde{\mu}_i(\bz_{1:i-1}). \\
+		\bz &= f(\bx, \btheta) \quad \Rightarrow \quad z_i = \left(x_i - \tilde{\mu}_i(\bz_{1:i-1}) \right) \cdot \frac{1}{\tilde{\sigma}_i (\bz_{1:i-1})}.
+	\end{align*}
+	\vspace{-0.5cm}
+	\begin{block}{Reverse KL for flow model}
+  		\vspace{-0.5cm}
+		\[
+			KL(p || \pi)  = \bbE_{p(\bz)} \left[  \log p(\bz) - \log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| - \log \pi(g(\bz, \btheta)) \right]
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{itemize}
+	\item We don’t need to think about computing the function $f(\bx, \btheta)$.
+	\item Inverse autoregressive flow is a natural choice for using flows in VAE:
+	\end{itemize}
+	\vspace{-0.3cm}
+	\begin{align*}
+		\bz_0 &= \bsigma(\bx) \odot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz_0 | \bx, \bphi). \\
+		\bz_k &= \bsigma_k(\bz_{k - 1}) \odot \bz_{k-1} + \bmu_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\bphi_j\}_{j=1}^k).
+	\end{align*}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
+\end{frame}
+%=======
+\begin{frame}{Inverse autoregressive flow (IAF)}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/iaf2.png}
+	\end{figure}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/iaf1.png}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
+\end{frame}
+%=======
+\begin{frame}{MAF vs IAF vs RealNVP}
+	\begin{block}{MADE/MAF}
+		\vspace{-0.5cm}
+		\[
+		\bx = \bsigma (\bx) \odot \bz + \bmu(\bx).
+		\]
+		Estimating the density $p(\bx | \btheta)$ - 1 pass, sampling - $m$ passes.
+	\end{block}
+	\begin{block}{IAF}
+		\vspace{-0.5cm}
+		\[
+		\bx = \tilde{\bsigma} (\bz) \odot \bz + \tilde{\bmu}(\bz).
+		\]
+		Estimating the density $p(\bx | \btheta)$ - $m$ passes, sampling - 1 pass.
+	\end{block}
+	\begin{block}{NICE/RealNVP/Glow}
+		\vspace{-0.8cm}
+		\begin{align*}
+			\bx_1 &= \bz_1; \\ 
+			\bx_2 &= \bz_2 \odot \exp \left(c_1(\bz_1, \btheta)\right) + c_2(\bz_1, \btheta).
+		\end{align*}
+		\vspace{-0.8cm}
+		Estimating the density $p(\bx | \btheta)$ - 1 pass, sampling - 1 pass.
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{MAF vs IAF vs RealNVP}
+	\begin{block}{RealNVP}
+		\vspace{-0.8cm}
+		\begin{align*}
+			\bx_1 &= \bz_1; \\ 
+			\bx_2 &= \bz_2 \odot \exp \left(c_1(\bz_1, \btheta)\right) + c_2(\bz_1, \btheta).
+		\end{align*}
+		\vspace{-0.8cm}
+	\end{block}
+	\begin{itemize}
+		\item Calculating the density $p(\bx | \btheta)$ - 1 pass.
+		\item Sampling - 1 pass.
+	\end{itemize}
+	
+	RealNVP is a special case of MAF and IAF:
+	\begin{block}{MAF}
+		\vspace{-0.5cm}
+		\begin{equation*}
+			\begin{cases}
+				\mu_i  = 0, \sigma_i = 1, \, i = 1, \dots, d; \\
+				\mu_i, \sigma_i \text{ -- functions of } \bx_{1:d}, \, i = d+1, \dots, m.
+			\end{cases}
+		\end{equation*}
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{IAF}
+		\vspace{-0.3cm}
+		\begin{equation*}
+			\begin{cases}
+				\tilde{\mu}_i = 0, \tilde{\sigma}_i = 1, \, i = 1, \dots, d; \\
+				\tilde{\mu}_i, \tilde{\sigma}_i \text{ -- functions of } \bz_{1:d}, \, i = d+1, \dots, m.
+			\end{cases}
+		\end{equation*}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======%=======
+\begin{frame}{MAF/IAF pros and cons}
+	\begin{block}{MAF}
+		\begin{itemize}
+			\item Sampling is slow.
+			\item Likelihood evaluation is fast.
+		\end{itemize}
+	\end{block}
+	\begin{block}{IAF}
+		\begin{itemize}
+			\item Sampling is fast.
+			\item Likelihood evaluation is slow.
+		\end{itemize}
+	\end{block}
+	\vspace{0.3cm}
+	How to take the best of both worlds?
+\end{frame}
+%=======
+\begin{frame}{WaveNet (2016)}
+	Autoregressive model for raw audio waveforms generation
+	\vspace{-0.2cm}
+	\[
+	p(\bx| \btheta) = \prod_{t=1}^T p(x_t|\bx_{1:t-1}, \btheta).
+	\]
+	\vspace{-0.2cm}
+	The model uses causal dilated convolutions.
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/wavenet2.png}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
+\end{frame}
+%=======
+\begin{frame}{Parallel WaveNet, 2017}
+	\begin{block}{Previous WaveNet model}
+		\begin{itemize}
+			\item raw audio is high-dimensional (e.g. 16000 samples per second for 16kHz audio);
+			\item WaveNet encodes 8-bit signal with 256-way categorical distribution.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Goal}
+		\begin{itemize}
+			\item improved fidelity (24kHz instead of 16kHz) $\rightarrow$ increase dilated convolution filter size from 2 to 3;
+			\item 16-bit signals $\rightarrow$ mixture of logistics instead of categorical distribution.
+		\end{itemize}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
+\end{frame}
+%=======
+\begin{frame}{Parallel WaveNet, 2017}
+	\begin{block}{Probability density distillation}
+		\begin{enumerate}
+			\item Train usual WaveNet (MAF) via MLE (teacher network).
+			\item Train IAF WaveNet model (student network), which attempts to match the probability of its own samples under the distribution learned by the teacher.
+		\end{enumerate}
+	\end{block}
+	\begin{block}{Student objective}
+		\[
+		KL(p_s || p_t) = H(p_s, p_t) - H(p_s).
+		\]
+	\end{block}
+	More than 1000x speed-up relative to original WaveNet!
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
+\end{frame}
+%=======
+\begin{frame}{Parallel WaveNet, 2017}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/parallel_wavenet.png}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
+\end{frame}
+%=======
+\begin{frame}{Flow KL duality}
+	\begin{block}{Theorem}
+		Fitting flow model $p(\bx, \btheta)$ to the target distribution $\pi(\bx)$ using forward KL (MLE) is equivalent to fitting the induced distribution $p(\bz, \btheta)$ to the base $p(\bz)$ using reverse KL:
+		\[
+			\argmin_{\btheta} KL(\pi(\bx) || p(\bx | \btheta)) = \argmin_{\btheta} KL(p(\bz | \btheta) || p(\bz)).
+		\]
+		\vspace{-0.3cm}
+		\begin{itemize}
+			\item $p(\bz)$ is a base distribution; $\pi(\bx)$ is a data distribution;
+			\item $\bz \sim p(\bz)$, $\bx = g(\bz, \btheta)$, $\bx \sim p(\bx, \btheta)$;
+			\item $\bx \sim \pi(\bx)$, $\bz = f(\bx, \btheta)$, $\bz \sim p(\bz | \btheta)$;
+		\end{itemize}
+		\vspace{-0.3cm}
+		\begin{align*}
+			\log p(\bz | \btheta) &= \log \pi(g(\bz, \btheta)) + \log \left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz}\right) \right|; \\
+			\log p(\bx | \btheta) &= \log p(f(\bx, \btheta)) + \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right|.
+		\end{align*}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing flows for probabilistic modeling and inference, 2019} 
+\end{frame}
+%=======
+\begin{frame}{MAF vs IAF}
+	\begin{block}{Theorem}
+		Fitting flow model $p(\bx, \btheta)$ to the target distribution $\pi(\bx)$ using forward KL (MLE) is equivalent to fitting the induced distribution $p(\bz, \btheta)$ to the base $p(\bz)$ using reverse KL:
+		\[
+			\argmin_{\btheta} KL(\pi(\bx) || p(\bx | \btheta)) = \argmin_{\btheta} KL(p(\bz | \btheta) || p(\bz)).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Proof}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			KL\left(p(\bz | \btheta) || \pi(\bz) \right) = \mathbb{E}_{p(\bz | \btheta)} \bigl[ \log p(\bz | \btheta) - \log p(\bz) \bigr] = \\ 
+			= \mathbb{E}_{p(\bz | \btheta)} \left[ \log \pi(g(\bz, \btheta)) + \log \left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz}\right) \right| - \log p(\bz) \right] = \\
+			= \mathbb{E}_{\pi(\bx)} \left[ \log \pi(\bx) - \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right| - \log p(f(\bx, \btheta)) \right].
+		\end{multline*}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
+%=======
+\begin{frame}{MAF vs IAF}
+	\begin{block}{Theorem}
+		Fitting flow model $p(\bx, \btheta)$ to the target distribution $\pi(\bx)$ using forward KL (MLE) is equivalent to fitting the induced distribution $p(\bz, \btheta)$ to the base $p(\bz)$ using reverse KL:
+		\[
+			\argmin_{\btheta} KL(\pi(\bx) || p(\bx | \btheta)) = \argmin_{\btheta} KL(p(\bz | \btheta) || p(\bz)).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Proof (continued)}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			KL\left(p(\bz | \btheta) || p(\bz) \right) = \\
+			=  \mathbb{E}_{\pi(\bx)} \left[ \log \pi(\bx) - \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right| - \log p(f(\bx, \btheta)) \right] = \\
+			= \mathbb{E}_{\pi(\bx)} \bigl[ \log \pi(\bx) - \log p(\bx | \btheta) \bigr] = KL (\pi(\bx) || p(\bx | \btheta)).
+		\end{multline*}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
+\end{frame}
 \begin{frame}{Dequantization}
 	\begin{itemize}
 		\item Images are discrete data, pixels lies in the [0, 255] integer domain (the model is $P(\bx | \btheta) = \text{Categorical}(\bpi(\btheta))$).
@@ -254,453 +706,19 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
 %=======
-\begin{frame}{Gaussian autoregressive model}
-	Consider autoregressive model
-	\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta),
-	\]
-	with conditionals
-	\[
-	p(x_i | \bx_{1:i - 1}, \btheta) = \mathcal{N} \left(\hat{\mu}_i(\bx_{1:i-1}), \hat{\sigma}^2_i (\bx_{1:i-1})\right).
-	\]
-	\vspace{-0.5cm}
-	\begin{block}{Sampling}
-		\[
-		x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
-		\]
-	\end{block}
-	Sampling from autoregressive model is sequential. \\
-	Note that we could interpret this sampling as a transformation $\bx = g(\bz, \btheta)$, where $\bz$ comes from base distribution $\mathcal{N}(0, 1)$.
-\end{frame}
-%=======
-\begin{frame}{Gaussian autoregressive model}
-	\begin{block}{Sampling}
-		\vspace{-0.5cm}
-		\[
-		x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}), \quad z_i \sim \mathcal{N}(0, 1).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Jacobian}
-		\vspace{-0.5cm}
-		\[
-		\log \left|\det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx} \right) \right| = -\log \left|\det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz} \right) \right| = - \sum_{i = 1}^m \log \hat{\sigma}_i (\bx_{1:i-1}).
-		\]
-		\vspace{-0.5cm}
-	\end{block} 
-	\begin{block}{Inverse transform}
-		\vspace{-0.2cm}
-		\[
-		z_i = \left(x_i - \hat{\mu}_i(\bx_{1:i-1}) \right) \cdot \frac{1}{\hat{\sigma}_i (\bx_{1:i-1}) }.
-		\]
-	\end{block}
-	We get an autoregressive model with tractable (triangular) Jacobian, which is easily invertible. It is a flow!
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	
-	\begin{block}{Gaussian autoregressive model ($\bz \rightarrow \bx$)}
-		\vspace{-0.2cm}
-		\[
-			x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}).
-		\]
-		\[
-			z_i = \left(x_i - \hat{\mu}_i(\bx_{1:i-1}) \right) \cdot \frac{1}{ \hat{\sigma}_i (\bx_{1:i-1})}.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	This process is sequential. \\
-	Let use the following reparametrization:
-	$\bsigma = \frac{1}{\hat{\bsigma}}; \quad \bmu = - \frac{\hat{\bmu}}{\hat{\bsigma}}.$
-	
-	\begin{block}{Inverse transform ($\bx \rightarrow \bz$)}
-		\vspace{-0.2cm}
-		\[
-			z_i = \sigma_i (\bx_{1:i-1}) \cdot x_i + \mu_i(\bx_{1:i-1}).
-		\]
-		\[
-			x_i = \left( z_i - \mu_i(\bx_{1:i-1})\right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1}) }.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	This process is \textbf{not} sequential.
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	
-	\begin{block}{Inverse transform ($\bx \rightarrow \bz$)}
-		\vspace{-0.2cm}
-		\[
-			z_i = \sigma_i (\bx_{1:i-1}) \cdot x_i + \mu_i(\bx_{1:i-1}).
-		\]
-		\[
-			x_i = \left( z_i - \mu_i(\bx_{1:i-1})\right) \cdot \frac{1}{\sigma_i (\bx_{1:i-1})}.
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	Inverse autoregressive flow use such inverted autoregressive model as a flow in VAE:
-	\begin{align*}
-		\bz_0 &= \bsigma(\bx) \cdot \bepsilon + \bmu(\bx), \quad \bepsilon \sim \mathcal{N}(0, 1); \quad  \sim q(\bz_0 | \bx, \bphi). \\
-		\bz_k &= \bsigma_k(\bz_{k - 1}) \cdot \bz_{k-1} + \bmu_k(\bz_{k - 1}), \quad k \geq 1; \quad  \sim q_k(\bz_k | \bx, \bphi, \{\bphi_j\}_{j=1}^k).
-	\end{align*}
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Flows}
-	\begin{figure}
-		\includegraphics[width=0.8\linewidth]{figs/flows_how2.png}
-	\end{figure}
-	\begin{itemize}	
-		\item Inference mode in autoregressive flows is used for density estimation tasks.
-		\item Generation mode in autoregressive flows (IAF) is used for stochastic variational inference to get a more flexible posterior distribution.
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density estimation using Real NVP, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/iaf2.png}
-	\end{figure}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/iaf1.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
-\end{frame}
-%=======
-\begin{frame}{Inverse autoregressive flow (IAF)}
-
-	\begin{minipage}[t]{0.65\columnwidth}
-		\begin{block}{Gaussian autoregressive model}
-			\[
-			x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}).
-			\]
-		\end{block}
-	\end{minipage}%
-	\begin{minipage}[t]{0.35\columnwidth}
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_1.png}
-		\end{figure}
-	\end{minipage} \\
-	
-	\begin{minipage}[t]{0.65\columnwidth}
-		\begin{block}{Inverse transform}
-			\vspace{-0.5cm}
-			\begin{align*}
-				z_i &= (x_i - \hat{\mu}_i(\bx_{1:i-1})) \cdot \frac{1}{\hat{\sigma}_i (\bx_{1:i-1}) }; \\
-				z_i &= \sigma_i (\bx_{1:i-1}) \cdot x_i + \mu_i(\bx_{1:i-1}).
-			\end{align*}
-			\vspace{-0.4cm}
-		\end{block}
-	\end{minipage}% 
-	\begin{minipage}[t]{0.35\columnwidth}
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_2.png}
-		\end{figure}
-	\end{minipage}\\
-	\vspace{0.1cm}
-	
-	\begin{minipage}[t]{0.65\columnwidth}
-		\begin{block}{Inverse autoregressive flow}
-			\[
-			x_i = \sigma_i (\bz_{1:i-1}) \cdot z_i + \mu_i(\bz_{1:i-1}).
-			\]
-		\end{block}
-	\end{minipage}%
-	\begin{minipage}[t]{0.35\columnwidth}
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=.9\linewidth]{figs/maf_iaf_explained_3.png}
-		\end{figure}
-	\end{minipage}
-	
-	\myfootnotewithlink{https://blog.evjang.com/2018/01/nf2.html}{image credit: https://blog.evjang.com/2018/01/nf2.html}
-\end{frame}
-%=======
-\begin{frame}{Masked autoregressive flow (MAF)}
-	\begin{block}{Gaussian autoregressive model}
-		\vspace{-0.5cm}
-		\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta) = \prod_{i=1}^m \mathcal{N} \left(x_i | \mu_i(\bx_{1:i-1}), \sigma^2_i (\bx_{1:i-1})\right).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	We could use MADE (masked autoencoder) as conditional model. The sampling order could be crucial.
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/maf1.png}
-	\end{figure}
-	Samples from the base distribution could be an indicator of how good the flow was fitted. \\
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Masked autoregressive flow (MAF)}
-	\begin{block}{Gaussian autoregressive model}
-		\vspace{-0.5cm}
-		\[
-		p(\bx | \btheta) = \prod_{i=1}^m p(x_i | \bx_{1:i - 1}, \btheta) = \prod_{i=1}^m \mathcal{N} \left(x_i | \mu_i(\bx_{1:i-1}), \sigma^2_i (\bx_{1:i-1})\right).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/maf1.png}
-	\end{figure}
-	MAF is just a stacked MADE model.
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF}
-	\begin{block}{Sampling and inverse transform in MAF}
-		\vspace{-0.2cm}
-		\[
-		x_i = \hat{\sigma}_i (\bx_{1:i-1}) \cdot z_i + \hat{\mu}_i(\bx_{1:i-1}).
-		\]
-		\[
-		z_i = \left(x_i - \hat{\mu}_i(\bx_{1:i-1}) \right) \cdot \frac{1}{\hat{\sigma}_i (\bx_{1:i-1}) }.
-		\]
-		\vspace{-0.5cm}
-		\begin{itemize}
-			\item Sampling is slow (sequential).
-			\item Density estimation is fast.
-		\end{itemize}
-	\end{block}
-	\begin{block}{Sampling and inverse transform in IAF}
-		\vspace{-0.2cm}
-		\[
-		x_i = \sigma_i (\bz_{1:i-1}) \cdot z_i + \mu_i(\bz_{1:i-1}).
-		\]
-		\[
-		z_i = \left(x_i - \mu_i(\bz_{1:i-1}) \right) \cdot \frac{1}{\sigma_i (\bz_{1:i-1})}.
-		\]
-		\vspace{-0.3cm}
-		\begin{itemize}
-			\item Sampling is fast.
-			\item Density estimation is slow (sequential).
-		\end{itemize}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF}
-	\begin{block}{Theorem}
-		Training a MAF with maximum likelihood corresponds to fitting an implicit IAF  with stochastic variational inference where the posterior is taken to be the base density $\pi(\bz)$:
-		\[  
-		\max_{\btheta} p(\bX | \btheta) \quad \Leftrightarrow \quad \min_{\btheta} KL\left(p(\bz | \btheta) || \pi(\bz)\right).
-		\]
-		\vspace{-0.5cm}
-		\begin{itemize}
-			\item $\pi(\bz)$ is a base distribution; $\pi(\bx)$ is a data distribution.
-			\item $\bz = f(\bx, \btheta)$~-- MAF model; $\bx = g(\bz, \btheta)$~-- IAF model.
-		\end{itemize}
-	\end{block}
-	\vspace{-0.3cm}
-	\[
-	\log p(\bz | \btheta) = \log \pi(g(\bz, \btheta)) + \log \left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz}\right) \right|
-	\]
-	\[
-	\log p(\bx | \btheta) = \log \pi(f(\bx, \btheta)) + \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right|
-	\]
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF}
-	\begin{block}{Theorem}
-		Training a MAF with maximum likelihood corresponds to fitting an implicit IAF  with stochastic variational inference where the posterior is taken to be the base density $\pi(\bz)$:
-		\[  
-		\max_{\btheta} p(\bX | \btheta) \quad \Leftrightarrow \quad \min_{\btheta} KL\left(p(\bz | \btheta) || \pi(\bz)\right).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Proof}
-		\vspace{-0.5cm}
-		\begin{multline*}
-			KL\left(p(\bz | \btheta) || \pi(\bz) \right) = \mathbb{E}_{p(\bz | \btheta)} \bigl[ \log p(\bz | \btheta) - \log \pi(\bz) \bigr] = \\ 
-			= \mathbb{E}_{p(\bz | \btheta)} \left[ \log \pi(g(\bz, \btheta)) + \log \left| \det \left( \frac{\partial g(\bz, \btheta)}{\partial \bz}\right) \right| - \log \pi(\bz) \right] = \\
-			= \mathbb{E}_{\pi(\bx)} \left[ \log \pi(\bx) - \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right| - \log \pi(f(\bx, \btheta)) \right].
-		\end{multline*}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF}
-	\begin{block}{Proof (continued)}
-		\vspace{-0.5cm}
-		\begin{multline*}
-			KL\left(p(\bz | \btheta) || \pi(\bz) \right) = \\
-			=  \mathbb{E}_{\pi(\bx)} \left[ \log \pi(\bx) - \log \left| \det \left( \frac{\partial f(\bx, \btheta)}{\partial \bx}\right) \right| - \log \pi(f(\bx, \btheta)) \right] = \\
-			= \mathbb{E}_{\pi(\bx)} \bigl[ \log \pi(\bx) - \log p(\bx | \btheta) \bigr] = KL (\pi(\bx) || p(\bx | \btheta)).
-		\end{multline*}
-		\begin{align*}
-			\argmin_{\btheta}  KL (\pi(\bx) || p(\bx | \btheta)) &= \argmin_{\btheta} \mathbb{E}_{\pi(\bx)} \left[ \log \pi(\bx) - \log p(\bx | \btheta) \right] \\
-			&= \argmax_{\btheta} \mathbb{E}_{\pi(\bx)} \log p(\bx | \btheta)
-		\end{align*}
-		Unbiased estimator is MLE:
-		\vspace{-0.2cm}
-		\[
-		\mathbb{E}_{\pi(\bx)} \log p(\bx | \btheta) = \sum_{i=1}^n \log p(\bx_i | \btheta).
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF vs RealNVP}
-	\begin{block}{MAF}
-		\vspace{-0.3cm}
-		\[
-		\bx = \hat{\bsigma} (\bx) \odot \bz + \hat{\bmu}(\bx).
-		\]
-		\vspace{-0.5cm}
-		\begin{itemize}
-			\item Calculating the density $p(\bx | \btheta)$ - 1 pass.
-			\item Sampling - $m$ passes.
-		\end{itemize}
-	\end{block}
-	\begin{block}{IAF}
-		\vspace{-0.3cm}
-		\[
-		\bx = \bsigma (\bz) \odot \bz + \bmu(\bz).
-		\]
-		\vspace{-0.5cm}
-		\begin{itemize}
-			\item Calculating the density $p(\bx | \btheta)$ - $m$ passes.
-			\item Sampling - 1 pass.
-		\end{itemize}
-	\end{block}
-	\begin{block}{RealNVP}
-		\vspace{-1cm}
-		\begin{align*}
-			\bx_{1:d} &= \bz_{1:d}; \\ \bx_{d:m} &= \bz_{d:m} \odot \exp \left(c_1(\bz_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).
-		\end{align*}
-		\vspace{-0.3cm}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF vs IAF vs RealNVP}
-	\begin{block}{RealNVP}
-		\vspace{-0.7cm}
-		\begin{align*}
-			\bx_{1:d} &= \bz_{1:d}; \\ \bx_{d:m} &= \bz_{d:m} \odot \exp \left(c_1(\bz_{1:d}, \btheta)\right) + c_2(\bx_{1:d}, \btheta).
-		\end{align*}
-		\vspace{-0.8cm}
-	\end{block}
-	\begin{itemize}
-		\item Calculating the density $p(\bx | \btheta)$ - 1 pass.
-		\item Sampling - 1 pass.
-	\end{itemize}
-	
-	RealNVP is a special case of MAF and IAF:
-	\begin{block}{MAF}
-		\vspace{-0.5cm}
-		\begin{equation*}
-			\begin{cases}
-				\hat{\mu}_i  = \hat{\sigma}_i = 0, \, i = 1, \dots, d; \\
-				\hat{\mu}_i, \hat{\sigma}_i \text{ -- functions of } \bx_{1:d}, \, i = d+1, \dots, m.
-			\end{cases}
-		\end{equation*}
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{IAF}
-		\vspace{-0.3cm}
-		\begin{equation*}
-			\begin{cases}
-				\mu_i  = \sigma_i = 0, \, i = 1, \dots, d; \\
-				\mu_i, \sigma_i \text{ -- functions of } \bz_{1:d}, \, i = d+1, \dots, m.
-			\end{cases}
-		\end{equation*}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017} 
-\end{frame}
-%=======
-\begin{frame}{MAF/IAF pros and cons}
-	\begin{block}{MAF}
-		\begin{itemize}
-			\item Sampling is slow.
-			\item Likelihood evaluation is fast.
-		\end{itemize}
-	\end{block}
-	\begin{block}{IAF}
-		\begin{itemize}
-			\item Sampling is fast.
-			\item Likelihood evaluation is slow.
-		\end{itemize}
-	\end{block}
-	\vspace{0.3cm}
-	How to take the best of both worlds?
-\end{frame}
-%=======
-\begin{frame}{WaveNet (2016)}
-	Autoregressive model for raw audio waveforms generation
-	\vspace{-0.2cm}
-	\[
-	p(\bx| \btheta) = \prod_{t=1}^T p(x_t|\bx_{1:t-1}, \btheta).
-	\]
-	\vspace{-0.2cm}
-	The model uses causal dilated convolutions.
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/wavenet2.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1609.03499}{Oord A. et al. Wavenet: A generative model for raw audio, 2016}
-\end{frame}
-%=======
-\begin{frame}{Parallel WaveNet, 2017}
-	\begin{block}{Previous WaveNet model}
-		\begin{itemize}
-			\item raw audio is high-dimensional (e.g. 16000 samples per second for 16kHz audio);
-			\item WaveNet encodes 8-bit signal with 256-way categorical distribution.
-		\end{itemize}
-	\end{block}
-	\begin{block}{Goal}
-		\begin{itemize}
-			\item improved fidelity (24kHz instead of 16kHz) $\rightarrow$ increase dilated convolution filter size from 2 to 3;
-			\item 16-bit signals $\rightarrow$ mixture of logistics instead of categorical distribution.
-		\end{itemize}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
-\end{frame}
-%=======
-\begin{frame}{Parallel WaveNet, 2017}
-	\begin{block}{Probability density distillation}
-		\begin{enumerate}
-			\item Train usual WaveNet (MAF) via MLE (teacher network).
-			\item Train IAF WaveNet model (student network), which attempts to match the probability of its own samples under the distribution learned by the teacher.
-		\end{enumerate}
-	\end{block}
-	\begin{block}{Student objective}
-		\[
-		KL(p_s || p_t) = H(p_s, p_t) - H(p_s).
-		\]
-	\end{block}
-	More than 1000x speed-up relative to original WaveNet!
-	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
-\end{frame}
-%=======
-\begin{frame}{Parallel WaveNet, 2017}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/parallel_wavenet.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.10433}{Oord A. et al. Parallel WaveNet: Fast High-Fidelity Speech Synthesis, 2017}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
+		\item Gaussian autoregressive model is a special type of flow.
+		\vfill
+		\item MAF is an example of such model which is suitable for density estimation tasks. IAF uses the inverse autoregressive transformation for variational inference task.
+		\vfill
+		\item RealNVP is a special case of IAF and MAF.
+		\vfill
+		\item There is a duality between forward and reverse KL for flow models.
+		\vfill
 		\item To apply continuous model to discrete distribution the standart practice is to dequantize data at first.
 		\vfill
 		\item Uniform dequantization is the simplest form of dequantization. Variational dequantization is more natural type that was proposed in Flow++ model.
-		\vfill
-		\item Gaussian autoregressive model is a special type of flow (RealNVP model is a special type of this autoregressive model).
-		\vfill
-		\item MAF is an example of such model which is suitable for density estimation tasks.
-		\vfill
-		\item  IAF used the inverse autoregressive transformation for variational inference task.
 	\end{itemize}
 \end{frame}
 %=======
