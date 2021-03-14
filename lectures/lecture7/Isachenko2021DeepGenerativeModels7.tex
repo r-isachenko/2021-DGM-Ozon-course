@@ -29,43 +29,43 @@
 \end{itemize}
 \end{frame}
 %=======
-\begin{frame}{ELBO surgery, 2016}
-		\[
-			\mathcal{L} (q, \btheta)  = \int q(\bZ | \bX) \log \frac{p(\bX, \bZ | \btheta)}{q(\bZ | \bX)} d\bZ.
-		\]
-		\vspace{-0.1cm}
-	\begin{block}{ELBO interpretations}
+\begin{frame}{ELBO interpretations}
+	\[
+		\log p(\bx | \btheta) = \cL (\bphi, \btheta) + KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)) \geq  \cL (\bphi, \btheta).
+	\]
+	\[
+		\cL (\bphi, \btheta) = \int q(\bz | \bx, \bphi) \log \frac{p(\bx, \bz | \btheta)}{q(\bz | \bx, \bphi)} d \bz.
+	\]
 	\begin{itemize}
 	    \item Evidence minus posterior KL
 	    \vspace{-0.1cm}
 	    \[
-	        \mathcal{L}(q, \btheta) = \log p(\bX | \btheta) - KL(q(\bZ | \bX) || p(\bZ | \bX, \btheta)).
+	        \mathcal{L}(q, \btheta) = \log p(\bx | \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz | \bx, \btheta)).
 	    \]
 	    \item Average negative energy plus entropy
 	    \vspace{-0.1cm}
-	    \[
-	        \mathcal{L}(q, \btheta) = \mathbb{E}_{q(\bZ | \bX)} p(\bX, \bZ | \btheta) + \mathbb{H} \left[q(\bZ | \bX) \right].
-	    \]
-	    \item Average term-by-term reconstruction minus KL to prior
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx, \bz | \btheta) - \log q(\bz | \bx, \bphi)  \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx, \bz | \btheta) + \mathbb{H} \left[q(\bz | \bx, \bphi) \right].
+	    \end{align*}
+	    \item Average reconstruction minus KL to prior
 	    \vspace{-0.1cm}
-	    \[
-	        \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right].
-	    \]
+	    \begin{align*}
+	        \mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx, \bphi)} \left[ \log p(\bx | \bz, \btheta) + \log p(\bz) - \log q(\bz | \bx, \bphi) \right] \\
+	        &= \mathbb{E}_{q(\bz | \bx, \bphi)} \log p(\bx | \bz, \btheta) - KL(q(\bz | \bx, \bphi) || p(\bz)).
+	    \end{align*}
 	\end{itemize}
-	\end{block}
-	
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO surgery, 2016}
 	\vspace{-0.3cm}
 	\[
-	    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right].
+	    \sum_{i=1}^n \mathcal{L}_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right].
 	\]
 	\vspace{-0.3cm}
 	\begin{block}{Theorem}
 	\[
-	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \mathbb{I}_{q(i, \bz)} [i, \bz],
+	    \frac{1}{n} \sum_{i=1}^n KL(q(\bz_i | \bx_i) || p(\bz_i)) = KL(q(\bz) || p(\bz)) + \bbI_{q(i, \bz)} [i, \bz],
 	\]
 	where $i$ is treated as random variable:
 	\footnotesize{
@@ -78,8 +78,6 @@
 	\]
 	}
 	\end{block}
-
-
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
@@ -135,7 +133,7 @@
 	\begin{block}{ELBO revisiting}
 	{\footnotesize
 	\begin{multline*}
-	    \mathcal{L}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right] = \\
+	    \sum_{i=1}^n \cL_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - KL(q(\bz_i | \bx_i) || p(\bz_i)) \right] = \\
 	    = \frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta) - \mathbb{I}_{q(i, \bz)} [i, \bz] - KL(q(\bz) || p(\bz)) = \\
 	    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}} }_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
 	\end{multline*}
@@ -147,35 +145,40 @@
 %=======
 \begin{frame}{ELBO surgery, 2016}
 	\begin{block}{ELBO revisiting}
-	\vspace{-0.3cm}
+	\vspace{-0.7cm}
 	{\footnotesize
-	\[
-	    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-	\]}
+	\begin{multline*}
+	    \sum_{i=1}^n \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \\
+	    - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
+	\end{multline*}}
 	\end{block}
-	\vspace{-0.3cm}
+	\vspace{-0.8cm}
 	\[
 	    KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
 	\]
+	\vspace{-0.3cm}
 	\begin{figure}
 	    \centering
-	    \includegraphics[width=0.8\linewidth]{figs/ELBO_surgery.png}
+	    \includegraphics[width=0.7\linewidth]{figs/ELBO_surgery.png}
 	\end{figure}
+	\vspace{-0.3cm}
 	\[
 	\log n \approx 11.0021
 	\]
-
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{VAE prior}
+	\vspace{-0.5cm}
 	\begin{block}{ELBO revisiting}
-	\vspace{-0.3cm}
+	\vspace{-0.5cm}
 	{\footnotesize
-	\[
-	    \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log N } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-	\]}
+	\begin{multline*}
+	    \sum_{i=1}^n \mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \\
+	    - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log n } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
+	\end{multline*}}
 	\end{block}
+	\vspace{-0.4cm}
 	
 	How to choose the optimal $p(\bz)$?
 	\begin{itemize}
@@ -189,49 +192,6 @@
 	\myfootnote{\href{https://arxiv.org/abs/1611.02648}{(*) Dilokthanakul N. et al. Deep Unsupervised Clustering with Gaussian Mixture Variational Autoencoders, 2016} \\
 	\href{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}{(**) Nalisnick E., Hertel L., Smyth P. Approximate Inference for Deep Latent Gaussian Mixtures, 2016}}
 
-\end{frame}
-%=======
-\begin{frame}{VAE limitations}
-	\begin{itemize}
-		\item Poor variational posterior distribution (encoder)
-		\[
-		q(\bz | \bx, \bphi) = \mathcal{N}(\bz| \bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx)).
-		\]
-		\item Poor prior distribution
-		\[
-		p(\bz) = \mathcal{N}(0, \mathbf{I}).
-		\]
-		\item Poor probabilistic model (decoder)
-		\[
-		p(\bx | \bz, \btheta) = \mathcal{N}(\bx| \bmu_{\btheta}(\bz), \bsigma^2_{\btheta}(\bz)).
-		\]
-		\item Loose lower bound
-		\[
-		p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
-		\]
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{VAE prior}
-	\begin{block}{ELBO revisiting}
-		\vspace{-0.3cm}
-		{\footnotesize
-			\[
-			\mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log N } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-			\]}
-	\end{block}
-	
-	How to choose the optimal $p(\bz)$?
-	\begin{itemize}
-		\item SG: $p(\bz) = \mathcal{N}(0, I)$ $\Rightarrow$ over-regularization;
-		\vspace{0.1cm}
-		\item MoG: $p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K \mathcal{N}(\bmu_k, \bsigma_k^2)$ $\Rightarrow$ (*), (**);
-		\vspace{0.1cm}
-		\item $p(\bz) = q(\bz) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i)$ $\Rightarrow$ overfitting and highly expensive.
-	\end{itemize}
-	\myfootnote{\href{https://arxiv.org/abs/1611.02648}{(*) Dilokthanakul N. et al. Deep Unsupervised Clustering with Gaussian Mixture Variational Autoencoders, 2016} \\
-	\href{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}{(**) Nalisnick E., Hertel L., Smyth P. Approximate Inference for Deep Latent Gaussian Mixtures, 2016}}
-	
 \end{frame}
 %=======
 \begin{frame}{VampPrior}
@@ -250,9 +210,10 @@
 \end{frame}
 %=======
 \begin{frame}{VampPrior}
-	Do we equally need the multimodal prior? \\
-	\vspace{0.2cm}
-	Is it beneficial to couple the prior with the variational posterior or MoG is enough?
+	\begin{itemize}
+	\item Do we equally need the multimodal prior?
+	\item Is it beneficial to couple the prior with the variational posterior or MoG is enough?
+	\end{itemize}
 	\begin{minipage}[t]{0.5\columnwidth}
 		\begin{figure}[h]
 			\centering
@@ -270,9 +231,9 @@
 %=======
 \begin{frame}{VampPrior}
 	\vspace{0.1cm}
-	\textbf{Top row:} images generated by PixelHVAE + VampPrior for chosen pseudo-input in the left top corner. \\
+	\textbf{Top row:} genneratedd images by PixelHVAE + VampPrior for chosen pseudo-input in the left top corner. \\
 	\vspace{0.1cm}
-	\textbf{Bottom row:} Images represent a subset of trained pseudo-inputs for different datasets.
+	\textbf{Bottom row:} pseudo-inputs for different datasets.
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=1.0\linewidth]{figs/VampPrior_4.png}
@@ -296,7 +257,7 @@
 	\]
 	\item Loose lower bound
 	\[
-	p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
+	\log p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
 	\]
 \end{itemize}
 \end{frame}
@@ -598,7 +559,7 @@
 		\]
 		\item Loose lower bound
 		\[
-		p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
+		\log p(\bx | \btheta) - \mathcal{L}(q, \btheta) = (?).
 		\]
 	\end{itemize}
 \end{frame}
