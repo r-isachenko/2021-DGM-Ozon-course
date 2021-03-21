@@ -190,5 +190,76 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 
 	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
 \end{frame}
+%=======
+\begin{frame}{InfoGAN}
+	\begin{block}{GAN objective}
+		\vspace{-0.6cm}
+		\[
+		\min_{G} \max_D V(G, D)
+		\]
+		\[
+		V(G, D)  =  \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+		\]
+	\end{block}
+	Latent vector $\bz$ is not imposed to be disentangled.
+	
+	InfoGAN decomposes input vector:
+	\begin{itemize}
+		\item $\bz$ -- incompressible noise;
+		\item $\bc$ -- structured latent code $p(\bc) = \prod_{j=1}^d p(c_j)$.
+	\end{itemize}
+	\begin{block}{Information-theoretic regularization}
+		\vspace{-0.3cm}
+		\[
+			\max I (\bc, G(\bz, \bc))
+		\]
+	\end{block}
+	Information in the latent code $\bc$ should not be lost in the generation process.
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
+\end{frame}
+%=======
+\begin{frame}{InfoGAN}
+	\begin{block}{Objective}
+		\vspace{-0.3cm}
+		\[
+		\min_{G} \max_D V(G, D) - \lambda I (\bc, G(\bz, \bc))
+		\]
+	\end{block}
+	\begin{block}{Variational Information Maximization}
+		\vspace{-0.3cm}
+		\begin{multline*}
+		I (\bc, G(\bz, \bc)) = H(\bc) - H(\bc | G(\bz, \bc)) = \\
+		= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \left[ \bbE_{\bc' \sim p(\bc | \bx)} \log p(\bc' | \bx) \right] = \\ 
+		= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} KL(p(\bc'| \bx) || q(\bz' | \bx)) + 
+		\\ + \bbE_{\bx \sim G(\bz, \bc)}  \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx)  \geq\\
+		 \geq H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx) = \\
+		 H(\bc) + \bbE_{\bc \sim p(\bc)} \bbE_{\bx \sim G(\bz, \bc)} \log q(\bc | \bx)
+		\end{multline*}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
+\end{frame}
+%=======
+\begin{frame}{InfoGAN}
+	\begin{block}{Latent codes on MNIST}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/infogan_mnist.png}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
+\end{frame}
+%=======
+\begin{frame}{InfoGAN}
+	\begin{block}{Latent codes on 3D Faces}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/infogan_faces.png}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
+\end{frame}
+%=======
 
 \end{document} 

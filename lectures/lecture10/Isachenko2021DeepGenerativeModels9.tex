@@ -1,0 +1,430 @@
+\input{../utils/preamble}
+\createdgmtitle{9}
+%--------------------------------------------------------------------------------
+\begin{document}
+%--------------------------------------------------------------------------------
+\begin{frame}
+%\thispagestyle{empty}
+\titlepage
+\end{frame}
+%=======
+\begin{frame}{Summary of previous lecture}
+\begin{itemize}
+	\item Likelihood is not a perfect criteria to measure quality of generative model.
+	\item Adversarial learning suggest to solve minimax problem with generator and discriminator.
+	\item Vanila GAN tries to optimize (in some sense) Jensen-Shannon divergence.
+	\item Mode collapse and vanishing gradients are the two main problems of vanila GAN.
+	\item Lots of tips and tricks has to be used to make the GAN training is stable and scalable.
+	\item Wasserstein distance is more appropriate objective function for distribution matching problem.
+\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance}
+	\[
+	W(\pi || p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+	\]
+	\begin{itemize}
+		\item $\prod(\pi, p)$ -- the set of all joint distributions $\gamma (\bx, \by)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx, \by) d \bx = p(\by)$, $\int \gamma(\bx, \by) d \by = \pi(\bx)$)
+		\item $\gamma(\bx, \by)$ -- transportation plan (the amount of "dirt" that should be transported from point $\bx$ to point $\by$).
+		\item $\gamma(\bx, \by)$ -- the amount, $\|\bx - \by \|$-- the distance.
+	\end{itemize}
+	For better understanding of transportation plan function $\gamma$, try to write down the plan for previous discrete case.
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance vs KL vs JSD}
+	\begin{block}{Theorem 1}
+		Let $G(\bz, \btheta)$ be any feedforward neural network, and $p(\bz)$ a prior over $\bz$ such that $\bbE_{\bz \sim p(\bz)}
+		\|\bz\| < \infty$. Then therefore $W(\pi || p)$ is continuous everywhere and differentiable almost everywhere.
+	\end{block}
+	\begin{block}{Theorem 2}
+		Let $\pi$ be a distribution on a compact space $\cX$ and $\{p_t\}_{t=1}^\infty$ be a sequence of distributions on $\cX$. 
+		\begin{align}
+			KL(\pi || p_t) &\rightarrow 0 \, (\text{or }KL (p_t || \pi) \rightarrow 0) \\
+			JSD(\pi || p_t) &\rightarrow 0 \\
+			W(\pi || p_t) &\rightarrow 0
+		\end{align}
+		
+		Then, considering limits as $t \rightarrow \infty$, (1) implies (2), (2) implies (3).
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+	\begin{block}{Wasserstein distance}
+		\vspace{-0.4cm}
+		\[
+			W(\pi || p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+		\]
+	\end{block}
+	The infimum across all possible joint distributions in $\prod(\pi, p)$ is intractable.
+	\begin{block}{Kantorovich-Rubinstein duality}
+		\[
+			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
+		\]
+		where $\| f \|_L \leq K$ are $K-$Lipschitz continuous functions ($f: \cX \rightarrow \bbR$)
+		\[
+			|f(\bx_1) - f(\bx_2)| \leq K \| \bx_1 - \bx_2 \|, \quad \text{for all } \bx_1, \bx_2 \in \cX.
+		\]
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+		\begin{block}{Kantorovich-Rubinstein duality}
+		\[
+			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right],
+		\]
+	\end{block}
+	\begin{itemize}
+		\item Now we have to ensure that $f$ is $K$-Lipschitz continuous.
+		\item Let $f(\bx, \phi)$ be parametrized by parameters $\bphi$.
+		\item If parameters $\phi$ lie in a compact set $\boldsymbol{\Phi}$ then $f(\bx, \bphi)$ will be $K$-Lipschitz continuous function. 
+		\item Let the parameters be clamped to a fixed box $\boldsymbol{\Phi} \in [-0.01, 0.01]^d$ after each gradient update.
+	\end{itemize}
+	{\footnotesize
+	\[
+		 \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\bx \sim \pi} f(\bx, \bphi)  - \bbE_{\bx \sim p} f(\bx, \bphi )\right] \leq  \max_{\| f \|_L \leq K} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right] = K \cdot W(\pi || p)
+	\]}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wassestein GAN}
+	\begin{block}{Vanilla GAN objective}
+		\vspace{-0.3cm}
+		\[
+			\min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+		\]
+	\end{block}
+	\begin{block}{WGAN objective}
+		\vspace{-0.6cm}
+		\[
+		\min_{G} W(\pi || p) = \min_{G} \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f(\bx, \bphi)  - \bbE_{p(\bz)} f(G(\bz), \bphi )\right].
+		\]
+	\end{block}
+	\begin{itemize}
+		\item Discriminator $D$ is similar to the function $f$, but not the same (it is not a classifier anymore). In the WGAN model, function $f$ is usually called $\textit{critic}$.
+		\item "Weight clipping is a clearly terrible way to enforce a Lipschitz constraint". If the clipping parameter is large, it is hard to train the critic till optimality. If the clipping parameter is too small, it could lead to vanishing gradients.
+	\end{itemize}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/wgan_pseudocode}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/wgan_toy}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+	\begin{minipage}[t]{0.49\columnwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/dcgan_quality}
+		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.49\columnwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/wgan_quality}
+		\end{figure}
+	\end{minipage}
+	\begin{itemize}
+		\item $JSD$ correlates poorly with the sample quality. Stays contast nearly maximum value $\log 2 \approx 0.69$.
+		\item $W$ is highly correlated with the sample quality. 
+	\end{itemize}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN}
+	\begin{block}{WGAN converged without batch norm and constant number of filters}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/wgan_convergence}
+		\end{figure}
+	\end{block}
+	\begin{block}{"In no experiment did we see evidence of mode collapse for the WGAN algorithm."}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/wgan_mode_collapse}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	
+	\begin{minipage}[t]{0.45\columnwidth}
+		\vspace{0.2cm}
+		The generator distribution is fixed and equal to the real distribution + Gaussian noise. \\
+		Problems with weight clipping:
+		\begin{itemize}
+			\item The critic ignores higher moments of the data distribution.
+			\item The gradients either grow or decay exponentially.
+		\end{itemize}
+	Gradient penalty makes the gradients  more stable.
+	\end{minipage}%
+	\begin{minipage}[t]{0.52\columnwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.95\linewidth]{figs/wgan_gp_toy}
+		\end{figure}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.95\linewidth]{figs/wgan_gp_weights}
+		\end{figure}
+	\end{minipage}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	\begin{block}{Theorem}
+		Let $\pi(\bx)$ and $p(\bx)$ be two distribution in $\cX$, a compact metric space. Then, there is 1-Lipschitz function $f^*$ which is the optimal solution of 
+		\[
+			\max_{\| f \|_L \leq 1} \left[ \bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)\right].
+		\]
+		Let $\gamma$ be the optimal transportation plan between $\pi(\bx)$ and $p(\bx)$. Then, if $f^*$ is differentiable $\gamma(x = y) = 0$ and $\bx_t = t \bx + (1 - t) \by$ with $t \in [0, 1]$ it holds that
+		\[
+			\bbP_{(\bx, \by) \sim \gamma} \left[ \nabla f^*(\bx_t) = \frac{\by - \bx_t}{\| \by - \bx_t \|} \right] = 1.
+		\]
+	\end{block}
+	\begin{block}{Corollary}
+		$f^*$ has gradient norm 1 almost everywhere under $\pi(\bx)$ and $p(\bx)$.
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	A differentiable function is 1-Lipschtiz if and only if it has gradients with norm at most 1 everywhere.
+	\begin{block}{Gradient penalty}
+		\[
+			W(\pi || p) = \underbrace{\bbE_{\bx \sim \pi} f(\bx)  - \bbE_{\bx \sim p} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{\hat{\bx}} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
+		\]
+	\end{block}
+	\begin{itemize}
+		\item Samples $\hat{\bx}$ are uniformly sampled along straight lines between pairs of points from the data distribution $\pi(\bx)$ and the generator distribution $p(\bx | \btheta)$.
+		\item Enforcing the unit gradient norm constraint everywhere is intractable, it turns out to be sifficient to enforce it only along these straight lines.
+	\end{itemize}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/wgan_gp_pseudocode}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/wgan_gp_convergence}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\linewidth]{figs/wgan_gp_model_space}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.65\linewidth]{figs/wgan_gp_wgan}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein GAN with Gradient Penalty}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.95\linewidth]{figs/wgan_gp_results}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	How else could we enforce Lipschitzness?
+	\begin{block}{Fact 1}
+		\vspace{-0.3cm}
+		\[
+			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx))
+		\]
+	\end{block}
+	Here $\sigma(\bA)$~-- spectral norm of matrix $\bA$.
+	\[
+		\sigma(\bA) = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA),
+	\]
+	where $\lambda_{\text{max}}(\bA)$ is the largest singular value of $\bA$.
+	\begin{block}{Fact 2}
+		\vspace{-0.3cm}
+		\[
+			\| \mathbf{g}_1 \circ \mathbf{g}_2 \|_L \leq \| \mathbf{g}_1 \|_L \cdot \| \mathbf{g}_2\|_L
+		\]
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	Let consider the critic $f(\bx, \bphi)$ of the following form:
+	\[
+		f(\bx, \bphi) = \bW_{K+1} a_K (\bW_K a_{K-1}(\dots a_1(\bW_1 \bx) \dots)).
+	\]
+	This feedforward network is a superposition of simple functions.
+	\begin{itemize}
+		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
+		\item $\mathbf{g}(\bh) = \bW \bh$ is a linear transformation.
+		\[
+			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
+		\]
+	\end{itemize}
+	\vspace{-0.5cm}
+	\begin{block}{Critic spectral norm}
+		\vspace{-0.5cm}
+		\[
+			\| f \|_L \leq \prod_{k=1}^{K+1} \sigma(\bW_k).
+		\]
+	\end{block}
+	If we replace the weights in the critic by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes computationally heavy.
+	 \begin{block}{Power iteration}
+	 	\begin{itemize}
+	 		\item $\bu$ -- random vector.
+	 		\item repeat
+	 		\[
+	 			\bv = \frac{\bW^T \bu}{\| \bW^T \bu \|}, \quad \bu = \frac{\bW \bv}{\| \bW \bv \|}
+	 		\]
+	 		\item approximate the spectral norm
+	 		\[
+	 			\sigma(\bW) \approx \bu^T \bW \bv
+	 		\]
+	 	\end{itemize}
+	 \end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/sngan_pseudocode}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/sngan_fids}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Divergences}
+	\begin{block}{What do we have?}
+		\begin{itemize}
+			\item Forward KL divergence in maximum likelihood estimation
+			\item Reverse KL in variational inference
+			\item JS divergence in  vanilla gan
+			\item Wasserstein distance in WGAN
+		\end{itemize}
+	\end{block}
+	\begin{block}{Divergence minimization}
+		\vspace{-0.3cm}
+		\[
+			\min_p D(\pi || p)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{What is a divergence?}
+		Let $\cS$ be the set of all possible probability distributions. Then $D: \cS \times \cS \rightarrow \bbR$ is a divergence if 
+		\begin{itemize}
+			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cS$;
+			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	
+	\begin{block}{f-divergence}
+		\vspace{-0.3cm}
+		\[
+		D_f(\pi || p) = \bbE_p  f\left( \frac{\pi(\bx)}{p(\bx)} \right)  = \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx.
+		\]
+		Here $f: \bbR_+ \rightarrow \bbR$ is a convex, lower-semicontinuous function satisfying $f(1) = 0$.
+	\end{block}
+	\begin{block}{Fenchel conjugate}
+		\vspace{-0.5cm}
+		\[
+		f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right), \quad f^{**} = f, \quad f(u) = \sup_{t \in \text{dom}_{f^*}} \left( ut - f^*(t) \right)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/f_divs}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\begin{block}{Variational divergence estimation}
+		\vspace{-0.6cm}
+		\begin{align*}
+			D_f(\pi || p) &= \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx \\
+			& = \int p(\bx) \sup_{t \in \text{dom}_{f^*}} \left( \frac{\pi(\bx)}{p(\bx)} t - f^*(t) \right) d \bx \\
+			& = \int \sup_{t \in \text{dom}_{f^*}} \left( \pi(\bx)t - p(\bx) f^*(t) \right) d \bx \\
+			& \geq \sup_{T \in \cT} \int \left( \pi(\bx)T(\bx) - p(\bx) f^*(T(\bx)) \right) d \bx \\
+			& = \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\end{align*}
+	\vspace{-0.6cm}
+	\end{block}
+	Here $\cT: \cX \rightarrow \bbR$ is an arbitrary class of functions.
+	
+	The lower bound is tight for $T^*(\bx) = f'\left( \frac{\pi(\bx)}{p(\bx)} \right)$.
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\begin{block}{Variational divergence estimation}
+		\[
+			D_f(\pi || p) \geq \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\]
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/f_div_results}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{Summary}
+\end{frame}
+%=======
+\end{document} 
