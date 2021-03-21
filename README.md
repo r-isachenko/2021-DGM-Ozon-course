@@ -10,7 +10,8 @@
 | 3 | February, 25 | ELBO, Reparametrization trick, Variational Autoencoder. MLE vs MAP. VAE drawbacks. | [slides](lectures/lecture3/Isachenko2021DeepGenerativeModels3.pdf) | [slides](seminars/seminar3/seminar3.ipynb) | 
 | 4 | March, 5 | Mean-field approximation and EM-algorithm. Flow models definition. Forward and reverse KL divergence. | [slides](lectures/lecture4/Isachenko2021DeepGenerativeModels4.pdf) | [slides](seminars/seminar4/seminar4.ipynb) | 
 | 5 | March, 11 | Flow models (Planar flows, NICE, RealNVP, Glow). Flows in variational inference. | [slides](lectures/lecture5/Isachenko2021DeepGenerativeModels5.pdf) | [slides](seminars/seminar5/seminar5.ipynb) | 
-| 6 | March, 18 | Autoregressive flows (MAF, IAF). Flow KL duality. Uniform dequantization. | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [slides](seminars/seminar6/seminar6.ipynb) | 
+| 6 | March, 18 | Autoregressive flows (MAF, IAF). Flow KL duality. Uniform dequantization. | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [slides](seminars/seminar6/seminar6.ipynb) |  
+| 7 | March, 25 | Variational dequantization. IWAE. ELBO surgery. Improved VAE prior (VampPrior, AF prior). | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | [slides](seminars/seminar7/seminar7.ipynb) | 
 
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
