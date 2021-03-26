@@ -10,7 +10,7 @@
 %=======
 \begin{frame}{Dequantization}
 	\begin{itemize}
-		\item Images are discrete data, pixels lie in the [0, 255] integer domain (the model is $P(\bx | \btheta) = \text{Categorical}(\bpi(\btheta))$).
+		\item Images are discrete data, pixels lie in the \{0, 255\} integer domain (the model is $P(\bx | \btheta) = \text{Categorical}(\bpi(\btheta))$).
 		\item Flow is a continuous model (it works with continuous data $\bx$).
 	\end{itemize}
 	By fitting a continuous density model to discrete data, one can produce a degenerate solution with all probability mass on discrete values. \\
@@ -40,18 +40,22 @@
 \begin{frame}{Uniform dequantization}
 	\begin{block}{Statement}
 		Fitting continuous model $p(\by | \btheta)$ on uniformly dequantized data $\by = \bx + \bu, \, \bu \sim U[0, 1]$ is equivalent to maximization of a lower bound on log-likelihood for a discrete model:
+		\vspace{-0.2cm}
 		\[
 		P(\bx | \btheta) = \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu
 		\]
-		\vspace{-0.2cm} \\
-		Thus, the maximisation of continuous model log-likelihood on $\by$ can't lead to the a collapse onto the discrete data (the objective is bounded above by the discrete model log-likelihood).
+		\vspace{-0.5cm} 
 	\end{block}
 	\begin{block}{Proof}
-		\vspace{-1cm}
+		\vspace{-0.8cm}
 		\begin{multline*}
-			 \log P(\bx | \btheta) = \log \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu \geq \\ \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu = \log p(\by | \btheta).
+			\bbE_{\pi} \log p(\by | \btheta) = \int \pi(\by) \log p(\by | \btheta) d \by = \\ 
+			= \sum \pi(\bx) \int_{U[0,1]} \log p(\bx + \bu | \btheta) d \bu \leq \\
+			 \leq \sum \pi(\bx) \log \int_{U[0,1]}  p(\bx + \bu | \btheta) d \bu = \\
+			 = \sum \pi(\bx) \log P(\bx | \btheta) = \bbE_{\pi} \log P(\bx | \btheta).
 		\end{multline*}
 	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A note on the evaluation of generative models. 2015}
 \end{frame}
 %=======
 \begin{frame}{Variational dequantization}
@@ -88,10 +92,10 @@
 	\end{block}
 	\vspace{-0.5cm}
 	\begin{block}{Uniform dequantization bound}
-		\vspace{-0.7cm}
-		\begin{multline*}
-		 \log P(\bx | \btheta) = \log \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu \geq \\ \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu = \log p(\by | \btheta).
-		\end{multline*}
+		\vspace{-0.4cm}
+		\[
+		 \log P(\bx | \btheta) = \log \int_{U[0, 1]} p(\bx + \bu | \btheta) d \bu \geq \int_{U[0, 1]} \log p(\bx + \bu | \btheta) d \bu.
+		\]
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1902.00275}{Ho J. et al. Flow++: Improving Flow-Based Generative Models with Variational Dequantization and Architecture Design, 2019}
 \end{frame}
@@ -188,6 +192,9 @@
 \end{frame}
 %=======
 \begin{frame}{IWAE}
+		\[
+			p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int \left[\frac{p(\bx, \bz | \btheta)}{q(\bz | \bx)} \right] q(\bz | \bx) d\bz = \mathbb{E}_{\bz \sim q(\bz | \bx)} f(\bx, \bz)
+		\]
 	Let define
 	\[
 	f(\bx, \bz_1, \dots, \bz_K) = \frac{1}{K} \sum_{k=1}^K \frac{p(\bx, \bz_k | \btheta)}{q(\bz_k | \bx)}
@@ -211,7 +218,7 @@
 	\begin{block}{VAE objective}
 		\vspace{-0.2cm}
 		\[
-		\log p(\bx | \btheta) \geq \mathcal{L} (q, \btheta)  = \mathbb{E}_{q(\bz | \bx)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx)} \rightarrow \max_{\bphi, \btheta}
+		\log p(\bx | \btheta) \geq \mathcal{L} (q, \btheta)  = \mathbb{E}_{q(\bz | \bx)} \log \frac{p(\bx, \bz | \btheta)}{q(\bz| \bx)} \rightarrow \max_{q, \btheta}
 		\]
 		\[
 		\mathcal{L} (q, \btheta)  = \mathbb{E}_{\bz_1, \dots, \bz_K \sim q(\bz | \bx)} \left( \frac{1}{K} \sum_{k=1}^K \log \frac{p(\bx, \bz_k | \btheta)}{q(\bz_k| \bx)} \right) \rightarrow \max_{q, \btheta}.
@@ -247,7 +254,7 @@
 				&= \mathbb{E}_{\bz_1, \dots, \bz_M} \log \left( \frac{1}{M}\sum_{m=1}^M\frac{p(\bx, \bz_m | \btheta)}{q(\bz_m| \bx)} \right) = \mathcal{L}_M (q, \btheta)
 			\end{align*}
 			\[
-			\frac{a_1 + \dots + a_K}{K} = \mathbb{E}_{i_1, \dots, i_M} \frac{a_{i_1} + \dots + a_{i_M}}{M}, \quad i_1, \dots, i_M \sim U[1, K]
+			\frac{a_1 + \dots + a_K}{K} = \mathbb{E}_{k_1, \dots, k_M} \frac{a_{k_1} + \dots + a_{k_M}}{M}, \quad k_1, \dots, k_M \sim U[1, K]
 			\]
 		}
 	\end{block}
@@ -290,11 +297,9 @@
 	\begin{itemize}
 		\item $\mathcal{L}_1(q, \btheta) = \mathcal{L}(q, \btheta)$;
 		\item $\mathcal{L}_{\infty}(q, \btheta) = \log p(\bx | \btheta)$.
+		\item Which $q^*(\bz | \bx)$ gives $\mathcal{L}(q^*, \btheta) = \log p(\bx | \btheta)$? 
+		\item Which $q^*(\bz | \bx)$ gives $\mathcal{L}(q^*, \btheta) = \mathcal{L}_K(q, \btheta)$?
 	\end{itemize}
-	\vspace{0.2cm}
-	Which $q(\bz | \bx)$ gives $\mathcal{L}(q, \btheta) = \log p(\bx | \btheta)$? \\
-	\vspace{0.2cm}
-	Which $q(\bz | \bx)$ gives $\mathcal{L}(q, \btheta) = \mathcal{L}_K(q, \btheta)$?
 
 	\myfootnotewithlink{https://arxiv.org/abs/1509.00519}{Burda Y., Grosse R., Salakhutdinov R. Importance Weighted Autoencoders, 2015}
 \end{frame}
@@ -456,8 +461,8 @@
 		\]
 		\begin{itemize}
 			\item $q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i)$ -- \textbf{aggregated} posterior distribution.
-			\item $\bbI_{q} [\bx, \bz]$ -- mutual information between $\bx$ and $\bz$ under empirial data distribution and distribution $q(\bz | \bx)$.
-			\item First term pushes $q(\bz)$ towards the prior $p(z)$.
+			\item $\bbI_{q} [\bx, \bz]$ -- mutual information between $\bx$ and $\bz$ under empirical data distribution and distribution $q(\bz | \bx)$.
+			\item First term pushes $q(\bz)$ towards the prior $p(\bz)$.
 			\item Second term reduces the amount of	information about $\bx$ stored in $\bz$. 
 		\end{itemize}
 	\end{block}
@@ -506,215 +511,15 @@
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
-\begin{frame}{ELBO surgery}
-	\begin{block}{Theorem}
-	\[
-	 	\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i) || p(\bz)) = KL(q(\bz) || p(\bz)) + \bbI_q [\bx, \bz].
-	\]
-	\end{block}
-	\begin{block}{ELBO revisiting}
-	\vspace{-0.4cm}
-	{\footnotesize
-	\begin{multline*}
-	    \frac{1}{n}\sum_{i=1}^n \cL_i(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \left[ \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right] = \\
-	    = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{0 \leq \text{MI} \leq \log n } - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-	\end{multline*}
-	}
-	\vspace{-0.2cm}
-	\end{block}
-	Prior distribution $p(\bz)$ is only in the last term.
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
-\end{frame}
-%=======
-\begin{frame}{ELBO surgery}
-	\begin{block}{ELBO revisiting}
-	\vspace{-0.7cm}
-	{\footnotesize
-	\[
-	    \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
-	    - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{0 \leq \text{MI} \leq \log n } - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-	\]
-	}
-	\end{block}
-	\vspace{-0.6cm}
-	\[
-	    KL(q(\bz) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i).
-	\]
-	The optimal prior distribution $p(\bz)$ is aggregated posterior $q(\bz)$.
-	\vspace{-0.3cm}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.7\linewidth]{figs/ELBO_surgery.png}
-	\end{figure}
-	\vspace{-0.3cm}
-	\[
-	\log n \approx 11.0021
-	\]
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
-\end{frame}
-%=======
-\begin{frame}{VAE prior}
-	\vspace{-0.5cm}
-	\begin{block}{ELBO revisiting}
-	\vspace{-0.5cm}
-	{\footnotesize
-	\[
- 		 \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
-		  - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{0 \leq \text{MI} \leq \log n } - \underbrace{\vphantom{ \sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
-	\]
-		}
-	\end{block}
-	\vspace{-0.4cm}
-	
-	How to choose the optimal $p(\bz)$?
-	\begin{itemize}
-	    \item SG: $p(\bz) = \mathcal{N}(0, I)$ $\Rightarrow$ over-regularization;
-	    \vspace{0.1cm}
-	    \item MoG: $p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K \mathcal{N}(\bmu_k, \bsigma_k^2)$ $\Rightarrow$ (*), (**);
-	    \vspace{0.1cm}
-	    \item $p(\bz) = q(\bz) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i)$ $\Rightarrow$ overfitting and highly expensive.
-	\end{itemize}
-	Note that now we consider cases of parametrized priors.
-
-	\myfootnote{\href{https://arxiv.org/abs/1611.02648}{(*) Dilokthanakul N. et al. Deep Unsupervised Clustering with Gaussian Mixture Variational Autoencoders, 2016} \\
-	\href{https://pdfs.semanticscholar.org/f6fe/5e8e25994c188ba6a124462e2cc55f2c5a67.pdf}{(**) Nalisnick E., Hertel L., Smyth P. Approximate Inference for Deep Latent Gaussian Mixtures, 2016}}
-
-\end{frame}
-%=======
-\begin{frame}{VampPrior}
-	\begin{block}{Variational Mixture of posteriors}
-		\[
-		p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K q(\bz | \bu_k),
-		\]
-		where $\blambda = \{\bu_1, \dots, \bu_K\}$ are trainable preudo-inputs.
-	\end{block}
-	\begin{itemize}
-		\item Multimodal $\Rightarrow$ prevents over-regularization;.
-		\item $K \ll n$ $\Rightarrow$ prevents from potential overfitting + less expensive to train.
-		\item Pseudo-inputs are prior hyperparameters $\Rightarrow$ connection to the Empirical Bayes.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07120}{Tomczak J. M., Welling M. VAE with a VampPrior, 2017}
-\end{frame}
-%=======
-\begin{frame}{VampPrior}
-	\begin{itemize}
-	\item Do we equally need the multimodal prior?
-	\item Is it beneficial to couple the prior with the variational posterior or MoG is enough?
-	\end{itemize}
-	\begin{block}{MNIST results}
-		\begin{minipage}[t]{0.5\columnwidth}
-			\begin{figure}[h]
-				\centering
-				\includegraphics[width=0.9\linewidth]{figs/VampPrior_1.png}
-			\end{figure}
-		\end{minipage}%
-		\begin{minipage}[t]{0.5\columnwidth}
-			\begin{figure}[h]
-				\centering
-				\includegraphics[width=1.\linewidth]{figs/VampPrior_2.png}
-			\end{figure}
-		\end{minipage}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07120}{Tomczak J. M., Welling M. VAE with a VampPrior, 2017}
-\end{frame}
-%=======
-\begin{frame}{VampPrior}
-	\vspace{0.1cm}
-	\textbf{Top row:} generated images by PixelHVAE + VampPrior for chosen pseudo-input in the left top corner. \\
-	\vspace{0.1cm}
-	\textbf{Bottom row:} pseudo-inputs for different datasets.
-	\begin{figure}[h]
-		\centering
-		\includegraphics[width=1.0\linewidth]{figs/VampPrior_4.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07120}{Tomczak J. M., Welling M. VAE with a VampPrior, 2017}
-\end{frame}
-%=======
-\begin{frame}{Flow prior in VAE}
-	
-	\begin{block}{ELBO revisiting}
-		\vspace{-0.3cm}
-		{\footnotesize
-			\[
-			\mathcal{L}(q, \btheta) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz_i | \bx_i)} \log p(\bx_i | \bz_i, \btheta)}_{\text{Reconstruction loss}} - \underbrace{\left(\log n - \mathbb{E}_{q(\bz)} \mathbb{H} \left[ q(i | \bz) \right] \right)\vphantom{\sum_{i=1}}}_{0 \leq \text{Mutual info} \leq \log N } - \underbrace{KL(q(\bz) || p(\bz))\vphantom{\sum_{i=1}}}_{\text{Marginal KL}}
-			\]}
-	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{VampPrior}
-		\vspace{-0.5cm}
-		\[
-			p(\bz | \blambda) = \frac{1}{K} \sum_{k=1}^K q(\bz | \bu_k),
-		\]
-	where $\bu_1, \dots \bu_K$ is trainable preudo-inputs.
-	\end{block}
-	\begin{block}{Autoregressive flow prior}
-		\vspace{-0.5cm}
-		\[
-			\log p(\bz | \blambda) = \log p(\bepsilon) + \log \det \left | \frac{d \bepsilon}{d\bz}\right|
-		\]
-		\[
-			\bz = g(\bepsilon, \blambda) = f^{-1}(\bepsilon, \blambda) 
-		\]
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
-\end{frame}
-%=======
-\begin{frame}{Variational Lossy AutoEncoder, 2016}
-	\begin{block}{Theorem}
-	VAE with the AF prior for latent code $\bz$ is equivalent to using the IAF posterior for latent code $\bepsilon$.
-	\end{block}
-	\begin{block}{Proof}
-	\vspace{-0.5cm}
-	{\footnotesize
-	\begin{align*}
-	\mathcal{L}(q, \btheta) &= \mathbb{E}_{q(\bz | \bx)} \left[ \log p(\bx | \bz, \btheta) +  \log p(\bz, \blambda) - q(\bz | \bx) \right] \\
-	&= \mathbb{E}_{\bz \sim q(\bz | \bx)} \Bigl[ \log p(\bx | \bz, \btheta) + \underbrace{ \Bigl( \log p(f(\bz, \blambda)) + \log \left| \det \frac{\partial f(\bz, \blambda)}{\partial \bz} \right| \Bigr) }_{\text{AF prior}} - q(\bz | \bx) \Bigr] \\
-	&= \mathbb{E}_{\bz \sim q(\bz | \bx)} \Bigl[ \log p(\bx | \bz, \btheta) +  \log p(f(\bz, \blambda)) - \underbrace{ \Bigl( q(\bz | \bx) - \log \left| \det \frac{\partial f(\bz, \blambda)}{\partial \bz} \right| \Bigr) }_{\text{IAF posterior}} \Bigr]
-	\end{align*}
-	}
-	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{Flows in VAE}
-		\vspace{-0.3cm}
-		{\footnotesize
-		\[
-			\mathcal{L} (\bphi, \btheta) 
-			= \mathbb{E}_{q(\bz_0 | \bx, \bphi)} \bigg[\log p(\bx, \bz_K | \btheta) -  \log q(\bz_0 | \bx, \bphi ) +   \log \left| \det \left( \frac{\partial g(\bz_0, \bphi_*)}{\partial \bz_0} \right) \right| \bigg].
-		\]
-		}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
-\end{frame}
-%=======
-\begin{frame}{Variational Lossy AutoEncoder, 2016}
-	\begin{block}{Autoregressive flow prior}
-		{\footnotesize
-		\begin{align*}
-			\mathcal{L}(q, \btheta) &= \mathbb{E}_{\bz \sim q(\bz | \bx)} \Bigl[ \log p(\bx | \bz, \btheta) + \underbrace{ \Bigl( \log p(f(\bz, \blambda)) + \log \left| \det \frac{\partial f(\bz, \blambda)}{\partial \bz} \right| \Bigr) }_{\text{AF prior}} - q(\bz | \bx) \Bigr] \\
-			&= \mathbb{E}_{\bz \sim q(\bz | \bx)} \Bigl[ \log p(\bx | \bz, \btheta) +  \log p(f(\bz, \blambda)) - \underbrace{ \Bigl( q(\bz | \bx) - \log \left| \det \frac{\partial f(\bz, \blambda)}{\partial \bz} \right| \Bigr) }_{\text{IAF posterior}} \Bigr]
-		\end{align*}
-		}
-	\end{block}
-	\begin{itemize}
-		\item IAF posterior decoder path: $p(\bx|\bz, \btheta)$, $\bz \sim p(\bz)$.
-		\item AF prior decoder path: $p(\bx|\bz, \btheta)$, $\bz = g(\bepsilon, \blambda)$, $\bepsilon \sim p(\bepsilon)$. 
-	\end{itemize}
-	The AF prior and the IAF posterior have the same computation cost, so using the AF prior makes the model more expressive at no training time cost.
-
-	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Uniform dequantization is the simplest form of dequantization. Variational dequantization is a more natural type that was proposed in Flow++ model.
+		\item Uniform dequantization is the simplest form of dequantization. 
 		\vfill
-		\item The importance sampling could get the tighter lower bound to the likelihood.
+		\item Variational dequantization is a more natural type that was proposed in Flow++ model.
+		\vfill
+		\item The IWAE could get the tighter lower bound to the likelihood, but the training of such model becomes more difficult.
 		\vfill
 		\item The ELBO surgery reveals insights about a prior distribution in VAE. The optimal prior is the aggregated posterior.
-		\vfill
-		\item VampPrior proposes to use a variational mixture of posteriors as the prior to approximate the aggregated posterior.
-		\vfill
-		\item The autoregressive flows could be used as the prior. This is equivalent to the use of the IAF posterior. 
 	\end{itemize}
 \end{frame}
 
