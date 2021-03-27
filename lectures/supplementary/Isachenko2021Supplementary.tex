@@ -8,6 +8,52 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{GatedPixelCNN}
+\end{frame}
+%=======
+\begin{frame}{GatedPixelCNN (2016)}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{figs/gatedpixelcnn.png}
+	\includegraphics[width=0.5\linewidth]{figs/gated_block.png}
+\end{figure}
+\vfill
+\hrule\medskip
+{\scriptsize Van den Oord A. et al. Conditional image generation with pixelcnn decoders \href{https://arxiv.org/pdf/1606.05328.pdf}{https://arxiv.org/pdf/1606.05328.pdf}}
+\end{frame}
+%=======
+\begin{frame}{GatedPixelCNN (2016)}
+\begin{minipage}[t]{0.5\columnwidth}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/pixelcnn_receptive_field.png}
+	\end{figure}
+\end{minipage}%
+\begin{minipage}[t]{0.5\columnwidth}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/gatedpixelcnn_receptive_field.png}
+	\end{figure}
+\end{minipage}
+\vfill
+\hrule\medskip
+{\scriptsize Van den Oord A. et al. Conditional image generation with pixelcnn decoders \href{https://arxiv.org/pdf/1606.05328.pdf}{https://arxiv.org/pdf/1606.05328.pdf}}
+\end{frame}
+%=======
+\begin{frame}{Extensions}
+\begin{itemize}
+	\item \textbf{PixelCNN++}: \textit{Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications} \\
+	\href{https://arxiv.org/pdf/1701.05517.pdf}{https://arxiv.org/pdf/1701.05517.pdf} \\
+	(mixture of logistics instead of softmax);
+	\item \textbf{PixelSNAIL}: \textit{An Improved Autoregressive Generative Model} \\
+	\href{https://arxiv.org/pdf/1712.09763.pdf}{https://arxiv.org/pdf/1712.09763.pdf} \\
+	(self-attention to learn optimal autoregression ordering).
+\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{ELBO gradient, Log derivative trick}
+\end{frame}
+%=======
 \begin{frame}{ELBO gradient (E-step, $\nabla_{\bphi} \mathcal{L}(\bphi, \btheta)$)}
 \vspace{-0.3cm}
 \[
@@ -50,6 +96,9 @@
 	\end{block}
 \end{frame}
 %=======
+\begin{frame}{IWAE, active units, posterior collapse}
+\end{frame}
+%=======
 \begin{frame}{IWAE, 2015}
 How to determine whether all VAE latent variables are informative?
 \[
@@ -64,45 +113,8 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 {\scriptsize \href{https://arxiv.org/pdf/1509.00519.pdf}{https://arxiv.org/pdf/1509.00519.pdf}}
 \end{frame}
 %=======
- \begin{frame}{GatedPixelCNN (2016)}
- \begin{figure}
-     \centering
-     \includegraphics[width=0.5\linewidth]{figs/gatedpixelcnn.png}
-     \includegraphics[width=0.5\linewidth]{figs/gated_block.png}
- \end{figure}
- \vfill
- \hrule\medskip
- {\scriptsize Van den Oord A. et al. Conditional image generation with pixelcnn decoders \href{https://arxiv.org/pdf/1606.05328.pdf}{https://arxiv.org/pdf/1606.05328.pdf}}
- \end{frame}
- %=======
- \begin{frame}{GatedPixelCNN (2016)}
- \begin{minipage}[t]{0.5\columnwidth}
- 	\begin{figure}[h]
- 		\centering
- 		\includegraphics[width=0.9\linewidth]{figs/pixelcnn_receptive_field.png}
- 	\end{figure}
- \end{minipage}%
- \begin{minipage}[t]{0.5\columnwidth}
- 	\begin{figure}[h]
- 		\centering
- 		\includegraphics[width=0.9\linewidth]{figs/gatedpixelcnn_receptive_field.png}
- 	\end{figure}
- \end{minipage}
- \vfill
- \hrule\medskip
- {\scriptsize Van den Oord A. et al. Conditional image generation with pixelcnn decoders \href{https://arxiv.org/pdf/1606.05328.pdf}{https://arxiv.org/pdf/1606.05328.pdf}}
- \end{frame}
- %=======
- \begin{frame}{Extensions}
-     \begin{itemize}
-         \item \textbf{PixelCNN++}: \textit{Improving the PixelCNN with Discretized Logistic Mixture Likelihood and Other Modifications} \\
-         \href{https://arxiv.org/pdf/1701.05517.pdf}{https://arxiv.org/pdf/1701.05517.pdf} \\
-         (mixture of logistics instead of softmax);
-         \item \textbf{PixelSNAIL}: \textit{An Improved Autoregressive Generative Model} \\
-         \href{https://arxiv.org/pdf/1712.09763.pdf}{https://arxiv.org/pdf/1712.09763.pdf} \\
-         (self-attention to learn optimal autoregression ordering).
-     \end{itemize}
- \end{frame}
+\begin{frame}{PixelVAE, Hierarchical VAE}
+\end{frame}
 %=======
 \begin{frame}{PixelVAE, 2016}
 	\begin{block}{Hierarchical VAE}
@@ -140,7 +152,11 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 	\vfill
 	\hrule\medskip
 	{\scriptsize \href{https://arxiv.org/pdf/1611.05013.pdf}{https://arxiv.org/pdf/1611.05013.pdf}}
-\end{frame}%=======
+\end{frame}
+%=======
+\begin{frame}{RevNet, i-RevNet}
+\end{frame}
+%=======
 \begin{frame}{RevNets, 2017}
 	\begin{minipage}[t]{0.6\columnwidth}
 		\begin{itemize}
@@ -233,6 +249,121 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 	\myfootnotewithlink{https://arxiv.org/abs/1802.07088}{Jacobsen J. H., Smeulders A., Oyallon E. i-RevNet: Deep Invertible Networks, 2018}
 \end{frame}
 %=======
+\begin{frame}{Posterior collapse, toy example}
+\end{frame}
+%=======
+\begin{frame}{Posterior collapse: toy example}
+	Let define latent variable model in the following way:
+	\[
+	p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d \bz = \int p(\bx | \bz, \btheta) p(\bz) d \bz 
+	\]
+	\begin{itemize}
+		\item prior distribution $p(\bz) = \mathcal{N}(\bz| 0, \mathbf{I})$;
+		\item probabilistic model $p(\bx | \bz, \btheta) = \mathcal{N}(\bx | \bmu_{\btheta}(\bz), \bsigma_{\btheta}(\bz))$ (diagonal covariance);
+		\item variational posterior $q(\bz | \bx, \bphi) =  \mathcal{N}(\bx | \bmu_{\bphi}(\bx), \bsigma_{\phi}(\bx))$  (diagonal covariance).
+	\end{itemize}
+	
+	Let data distribution is $\pi(\bx) = \mathcal{N}(\bx | \bmu, \bSigma)$. Possible cases:
+	\begin{itemize}
+		\item covariance matrix $\bSigma$ is diagonal (univariate case);
+		\item covariance matrix $\bSigma$ is \textbf{not} diagonal (multivariate case).
+	\end{itemize}
+	What is the difference?
+\end{frame}
+%=======
+\begin{frame}{Posterior collapse: toy example}
+	\begin{block}{Multivariate ($\bSigma$ is non-diagonal)}
+		\vspace{-0.5cm}
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.8\linewidth]{figs/posterior_collapse_toy_1.png}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.75\linewidth]{figs/posterior_collapse_toy_3.png}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.75\linewidth]{figs/posterior_collapse_toy_5.png}
+			\end{figure}
+		\end{minipage}
+		The encoder uses latent variables to model data.
+	\end{block}
+	
+	\begin{block}{Univariate ($\bSigma$ is diagonal)}
+		\vspace{-0.5cm}
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.8\linewidth]{figs/posterior_collapse_toy_2.png}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.75\linewidth]{figs/posterior_collapse_toy_4.png}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=.75\linewidth]{figs/posterior_collapse_toy_6.png}
+			\end{figure}
+		\end{minipage}
+		Latent variables are not used, since the decoder could model the data without the encoder.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Posterior collapse, VLAE}
+\end{frame}
+%=======
+\begin{frame}{Variational Lossy AutoEncoder}
+	\begin{block}{Lossy code via explicit information placement}
+		\[
+		p(\bx | \bz, \btheta) = \prod_{i=1}^m p(x_i | \bz, \bx_{\text{WindowAround}(i)}, \btheta).
+		\]
+		\begin{itemize}
+			\item WindowAround($i$) restricts the receptive field (it forbids to represent arbitrarily complex distribution over $\bx$ without dependence on $\bz$). 
+			\item Local statistics of 2D images (texture) will be modeled by a small local window.
+			\item Global structural information (shapes) is long-range dependency that can only be communicated through latent code $\bz$. 
+		\end{itemize}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
+\end{frame}
+%=======
+\begin{frame}{Variational Lossy AutoEncoder}
+	\begin{itemize}
+		\item Can VLAE learn lossy codes that encode global statistics?
+		\item Does using AF priors improves upon using IAF posteriors as predicted by theory?
+		\item Does using autoregressive decoding distributions improve density estimation performance?
+	\end{itemize}
+	\begin{minipage}[t]{0.5\columnwidth}
+		\vspace{1cm}
+		MNIST
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=1.\linewidth]{figs/VLAE_1.png}
+		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.5\columnwidth}
+		CIFAR10
+		\begin{figure}[h]
+			\centering
+			\includegraphics[width=1.\linewidth]{figs/VLAE_2.png}
+		\end{figure}
+	\end{minipage}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
+\end{frame}
+%=======
+\begin{frame}{Disentanglement, InfoGAN}
+\end{frame}
+%=======
 \begin{frame}{InfoGAN}
 	\begin{block}{GAN objective}
 		\vspace{-0.6cm}
@@ -253,7 +384,7 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 	\begin{block}{Information-theoretic regularization}
 		\vspace{-0.3cm}
 		\[
-			\max I (\bc, G(\bz, \bc))
+		\max I (\bc, G(\bz, \bc))
 		\]
 	\end{block}
 	Information in the latent code $\bc$ should not be lost in the generation process.
@@ -270,12 +401,12 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 	\begin{block}{Variational Information Maximization}
 		\vspace{-0.3cm}
 		\begin{multline*}
-		I (\bc, G(\bz, \bc)) = H(\bc) - H(\bc | G(\bz, \bc)) = \\
-		= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \left[ \bbE_{\bc' \sim p(\bc | \bx)} \log p(\bc' | \bx) \right] = \\ 
-		= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} KL(p(\bc'| \bx) || q(\bz' | \bx)) + 
-		\\ + \bbE_{\bx \sim G(\bz, \bc)}  \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx)  \geq\\
-		 \geq H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx) = \\
-		 H(\bc) + \bbE_{\bc \sim p(\bc)} \bbE_{\bx \sim G(\bz, \bc)} \log q(\bc | \bx)
+			I (\bc, G(\bz, \bc)) = H(\bc) - H(\bc | G(\bz, \bc)) = \\
+			= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \left[ \bbE_{\bc' \sim p(\bc | \bx)} \log p(\bc' | \bx) \right] = \\ 
+			= H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} KL(p(\bc'| \bx) || q(\bz' | \bx)) + 
+			\\ + \bbE_{\bx \sim G(\bz, \bc)}  \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx)  \geq\\
+			\geq H(\bc) + \bbE_{\bx \sim G(\bz, \bc)} \bbE_{\bc' \sim p(\bc | \bx)} \log q(\bc' | \bx) = \\
+			H(\bc) + \bbE_{\bc \sim p(\bc)} \bbE_{\bx \sim G(\bz, \bc)} \log q(\bc | \bx)
 		\end{multline*}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
@@ -288,7 +419,7 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 			\includegraphics[width=\linewidth]{figs/infogan_mnist.png}
 		\end{figure}
 	\end{block}
-
+	
 	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
 \end{frame}
 %=======
@@ -299,9 +430,91 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 			\includegraphics[width=\linewidth]{figs/infogan_faces.png}
 		\end{figure}
 	\end{block}
-
+	
 	\myfootnotewithlink{https://arxiv.org/abs/1606.03657}{Chen X. et al. InfoGAN: Interpretable Representation Learning by Information Maximizing Generative Adversarial Nets, 2016}
 \end{frame}
 %=======
+\begin{frame}{$\beta$-VAE, Disentanglement metric}
+\end{frame}
+%=======
+\begin{frame}{$\beta$-VAE}
+	\begin{block}{Disentangling metric}
+		\begin{enumerate}
+			\item Generate two sets of objects
+			\[
+			\bx_{li} \sim \text{Sim}(\bv_{li}, \bw_{li}); \quad \bx_{lj} \sim \text{Sim}(\bv_{lj}, \bw_{lj}); \quad y_{ij} \sim U[1, d].
+			\]
+			\[
+			\bv_{li} \sim p(\bv); \quad \bv_{lj} \sim p(\bv) \, ([v_{li}]_y = [v_{lj}]_y); \quad \bw_{li}, \bw_{lj} \sim p(\bw).
+			\]
+			\item Find representations
+			\[
+			q(\bz | \bx) = \mathcal{N}\left(\mu(\bx) | \sigma^2(\bx)\right); \quad \bz_{li} = \mu(\bx_{li}); \quad \bz_{lj} = \mu(\bx_{lj}).
+			\]
+			\item Use accuracy of classifier $p(y | \bz_{\text{diff}})$ with a low VC-dimension as metric of disentanglement
+			\[
+			\bz_{\text{diff}} = \frac{1}{L} \sum_{l=1}^L | \bz_{li} - \bz_{lj} |.
+			\]
+		\end{enumerate}
+	\end{block}
 
+	\myfootnotewithlink{https://openreview.net/references/pdf?id=Sy2fzU9gl}{Higgins I. et al. beta-VAE: Learning Basic Visual Concepts with a Constrained Variational Framework, 2017}
+\end{frame}
+%=======
+\begin{frame}{$\beta$-VAE}
+	\begin{itemize}
+		\item \textbf{Top row:} original images.
+		\item \textbf{Second row:} the corresponding reconstructions. 
+		\item \textbf{Remaining rows:} latent traversals ordered by KL divergence with the prior. 
+		\item \textbf{Heatmaps:} latent activations for each 2D position.
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/betaVAE_6.png}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1804.03599}{Burgess C. P. et al. Understanding disentangling in $\beta$-VAE, 2018}
+\end{frame}
+%=======
+\begin{frame}{$\beta$-VAE}
+	\begin{block}{Controlled encoding capacity}
+		\vspace{-0.5cm}
+		\[
+		\mathcal{L}(q, \btheta, \beta) = \mathbb{E}_{q(\bz | \bx)} \log p(\bx | \bz, \btheta) - | KL (q(\bz | \bx) || p(\bz)) - C|.
+		\]
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/betaVAE_7.png}
+	\end{figure}
+	The early capacity is allocated to positional latents only, followed by a scale latent, then shape and orientation latents.
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1804.03599}{Burgess C. P. et al. Understanding disentangling in $\beta$-VAE, 2018}
+\end{frame}
+%=======
+\begin{frame}{$\beta$-VAE}
+	\begin{block}{Controlled encoding capacity}
+		\vspace{-0.5cm}
+		\[
+		\mathcal{L}(q, \btheta, \beta) = \mathbb{E}_{q(\bz | \bx)} \log p(\bx | \bz, \btheta) - | KL (q(\bz | \bx) || p(\bz)) - C|.
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.7\linewidth]{figs/betaVAE_8.png}
+	\end{figure}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1804.03599}{Burgess C. P. et al. Understanding disentangling in $\beta$-VAE, 2018}
+\end{frame}
+%=======
+\begin{frame}{$\beta$-VAE}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/betaVAE_9.png}
+	\end{figure}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1804.03599}{Burgess C. P. et al. Understanding disentangling in $\beta$-VAE, 2018}
+\end{frame}
+%=======
 \end{document} 
