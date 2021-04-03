@@ -8,15 +8,112 @@
 \titlepage
 \end{frame}
 %=======
-\begin{frame}{Summary of previous lecture}
-\begin{itemize}
-	\item Likelihood is not a perfect criteria to measure quality of generative model.
-	\item Adversarial learning suggest to solve minimax problem with generator and discriminator.
-	\item Vanila GAN tries to optimize (in some sense) Jensen-Shannon divergence.
-	\item Mode collapse and vanishing gradients are the two main problems of vanila GAN.
-	\item Lots of tips and tricks has to be used to make the GAN training is stable and scalable.
-	\item Wasserstein distance is more appropriate objective function for distribution matching problem.
-\end{itemize}
+\begin{frame}{Informal theoretical results}
+	\begin{itemize}
+		\footnotesize
+		\item Since $\bz$ usually has lower dimensionality compared to $\bx$, manifold $G(\bz)$ has a measure 0 in $\bx$ space. Hence, support of $p(\bx | \btheta)$ lies on low-dimensional manifold.
+		\item Distribution of real images $\pi(\bx)$ is also concentrated on a low dimensional manifold.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.5\linewidth]{figs/low_dim_manifold}
+		\end{figure}
+		\item If $\pi(\bx)$ and $p(\bx | \btheta)$ have disjoint supports, then there is a smooth optimal discrimator. We are not able to learn anything by backproping through it.
+		\item For such low-dimensional disjoint manifolds
+		\vspace{-0.1cm}
+		\[
+			KL(\pi || p) = KL(p || \pi) = \infty, \quad JSD(\pi || p) = \log 2
+		\]
+		\vspace{-0.7cm}
+		\item Adding continuous noise to the inputs of the discriminator smoothes the distributions of the probability mass.
+	\end{itemize}
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+	\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance (discrete)}
+	Also called Earth Mover's distance.
+	The minimum cost of moving and transforming a pile of dirt in the shape of one probability distribution to the shape of the other distribution.
+	\begin{figure}
+		\centering
+		\includegraphics[width=.9\linewidth]{figs/EM_distance_discrete}
+	\end{figure}
+	\[
+		W(P, Q) = 2 \text{(step 1)} + 2 \text{(step 2)} + 1 \text{(step 3)}  = 5
+	\]
+	\myfootnotewithlink{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} 
+	
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance}
+	\[
+		W(\pi, p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+	\]
+	\begin{itemize}
+		\item $\prod(\pi, p)$ -- the set of all joint distributions $\gamma (\bx, \by)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx, \by) d \bx = p(\by)$, $\int \gamma(\bx, \by) d \by = \pi(\bx)$)
+		\item $\gamma(\bx, \by)$ -- transportation plan (the amount of "dirt" that should be transported from point $\bx$ to point $\by$).
+		\item $\gamma(\bx, \by)$ -- the amount, $\|\bx - \by \|$-- the distance.
+	\end{itemize}
+	For better understanding of transportation plan function $\gamma$, try to write down the plan for previous discrete case.
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance vs KL vs JSD}
+	
+	\begin{minipage}[t]{0.48\columnwidth}
+		\vspace{0.1cm}
+		Consider 2d distributions
+		\[
+			\pi(x, y) = (0, U[0,1])
+		\]	
+		\[
+			p(x, y | \theta) = (\theta, U[0, 1])
+		\]
+	\end{minipage}%
+	\begin{minipage}[t]{0.52\columnwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/w_kl_jsd}
+		\end{figure}
+	\end{minipage}
+	\begin{itemize}
+		\footnotesize
+		\item $\theta = 0$.
+		Distributions are the same 
+		\[
+			KL(\pi || p) = KL(p || \pi) = JSD(p || \pi) = W(\pi, p) = 0
+		\]
+		\item $\theta \neq 0$
+		\[
+			KL(\pi || p) = \int_{U[0, 1]} 1 \log \frac{1}{0} d y = \infty = KL(p || \pi)
+		\]
+		\[
+			JSD(\pi || p) = \frac{1}{2}\left( \int_{U[0, 1]}1 \log \frac{1}{1/2} dy + \int_{U[0, 1]}1 \log \frac{1}{1/2} dy \right) = \log 2
+		\]
+		\[
+			W(\pi, p) = |\theta|
+		\]
+	\end{itemize}
+	
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+	\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}}
+\end{frame}
+%=======
+\begin{frame}{Wasserstein distance vs KL vs JSD}
+	\begin{block}{Theorem 1}
+		Let $G(\bz, \btheta)$ be any feedforward neural network, and $p(\bz)$ a prior over $\bz$ such that $\bbE_{\bz \sim p(\bz)}
+		\|\bz\| < \infty$. Then therefore $W(\pi, p)$ is continuous everywhere and differentiable almost everywhere.
+	\end{block}
+	\begin{block}{Theorem 2}
+		Let $\pi$ be a distribution on a compact space $\cX$ and $\{p_t\}_{t=1}^\infty$ be a sequence of distributions on $\cX$. 
+		\begin{align}
+			KL(\pi || p_t) &\rightarrow 0 \, (\text{or }KL (p_t || \pi) \rightarrow 0) \\
+			JSD(\pi || p_t) &\rightarrow 0 \\
+			W(\pi || p_t) &\rightarrow 0
+		\end{align}
+		
+		Then, considering limits as $t \rightarrow \infty$, (1) implies (2), (2) implies (3).
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein distance}
@@ -425,6 +522,9 @@
 \end{frame}
 %=======
 \begin{frame}{Summary}
+	\begin{itemize} 
+		\item Wasserstein distance is more appropriate objective function for distribution matching problem.
+	\end{itemize}
 \end{frame}
 %=======
 \end{document} 

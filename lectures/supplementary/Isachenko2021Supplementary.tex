@@ -613,4 +613,41 @@ A_{i} = \text{cov}_\bx \left( \mathbb{E}_{q(z_i | \bx)} [z_i] \right) > 0.01 \qu
 
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05983}{Kim H., Mnih A. Disentangling by Factorising, 2018}
 \end{frame}
+%=======
+\begin{frame}{Improved techniques for training GANs}
+\end{frame}
+%=======
+\begin{frame}{Improved techniques for training GANs}
+	\begin{itemize}
+		\item Feature matching
+		\[
+			\cL_G = \| \bbE_{\pi(\bx)} \mathbf{d}(\bx) - \bbE_{p(\bz)} \mathbf{d}(G(\bz)) \|_2^2
+		\]
+		Here $\mathbf{d}(\bx)$ -- intermediate layer of discriminator. Matching the learned discriminator statistics instead of the output of the discriminator. Helps to avoid the vanishing gradients for sufficiently good discriminator.
+		\item Historical averaging adds extra loss term for generator and discriminator losses
+		\vspace{-0.2cm}
+		\[
+		 \| \btheta - \frac{1}{T}\sum_{t=1}^T \btheta_t\|^2_2.
+		\]
+		Here $\btheta_t$ -- value of parameters at the previous step $t$. It allows to stabilize training procedure.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03498}{Salimans T. et al. Improved Techniques for Training GANs, 2016}
+\end{frame}
+%=======
+\begin{frame}{Improved techniques for training GANs}
+	\begin{itemize}
+		\item One-sided label smoothing. Instead of using one-hot labels in classification, use $(1 - \alpha)$ for real data (the generated samples are not smoothed).
+		\[
+			D^*(\bx) = \frac{(1 - \alpha )\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
+		\]
+		\item Virtual batch normalization. BatchNorm makes samples within minibatch are highly correlated.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/virtual_batch_norm}
+		\end{figure}
+	Use reference fixed batch to compute the normalization statistics. To avoid overfitting construct batch with the reference batch and the current sample. 
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.03498}{Salimans T. et al. Improved Techniques for Training GANs, 2016}
+\end{frame}
+%=======
 \end{document} 
