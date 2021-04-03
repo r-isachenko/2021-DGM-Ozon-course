@@ -8,6 +8,68 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{DIP-VAE}
+	\begin{block}{Disentangled aggregated variational posterior}
+		\vspace{-0.3cm}
+		\[
+		q(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx) = \prod_{j=1}^d q(z_j)
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{DIP-VAE Objective}
+		\vspace{-0.3cm}
+		{\footnotesize
+			\begin{multline*}
+			\cL_{\text{DIP}}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) -\lambda \cdot KL(q(\bz) || p(\bz)) = \\
+			= \frac{1}{n} \sum_{i=1}^n\left[ \bbE_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta) - KL(q(\bz | \bx_i) || p(\bz)) \right] -\lambda \cdot KL(q(\bz) || p(\bz)) = \\
+			= \underbrace{ \frac{1}{n} \sum_{i=1}^n \left[\bbE_{q(\bz | \bx_i)} \log p(\bx_i | \bz, \btheta)\right]}_{\text{Reconstruction loss}} - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_{q} [\bx, \bz]}_{\text{MI}} - (1 + \lambda) \cdot \underbrace{\vphantom{\sum_{i=1}^n} KL(q(\bz) || p(\bz))}_{\text{Marginal KL}}
+			\end{multline*}
+		}
+		\vspace{-0.3cm}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
+\end{frame}
+%=======
+\begin{frame}{DIP-VAE}
+		\vspace{-0.2cm}
+		\[
+			\cL_{\text{DIP}}(q, \btheta) = \frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) -\lambda \cdot \underbrace{KL(q(\bz) || p(\bz))}_{\text{intractable}}
+		\]
+	Let match the moments of $q(\bz)$ and $p(\bz)$:
+	\[
+	\text{cov}_{q(\bz)}(\bz) = \bbE_{q(\bz)} \left[ (\bz - \bbE_{q(\bz)}(\bz)) (\bz - \bbE_{q(\bz)}(\bz))^T \right]
+	\]
+	DIP-VAE regularizes $\text{cov}_{q(\bz)}(\bz) $ to be close to the identity matrix. 
+	\begin{block}{Objective}
+		\vspace{-0.5cm}
+		\begin{multline*}
+		\max_{q, \btheta} \Bigl[\frac{1}{n} \sum_{i=1}^n \cL_i(q, \btheta) - \\ - \lambda_1 \sum_{i \neq j} \left[\text{cov}_{q(\bz)} (\bz) \right]^2_{ij} - \lambda_2 \sum_{i} \left( \left[ \text{cov}_{q(\bz)} (\bz) \right]_{ii} - 1 \right)^2 \Bigr]
+		\end{multline*}
+		\vspace{-0.5cm}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
+\end{frame}
+%=======
+\begin{frame}{DIP-VAE}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.75\linewidth]{figs/dip-vae_1}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
+\end{frame}
+%=======
+\begin{frame}{DIP-VAE}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/dip-vae_2}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
+\end{frame}
+%=======
 \begin{frame}{Challenging Disentanglement Assumptions}
 Whether unsupervised disentanglement learning is even possible for arbitrary generative models?
 
@@ -611,6 +673,9 @@ to $\bz$ in the generative model.
 \end{frame}
 %=======
 \begin{frame}{Summary}
+	\begin{itemize}
+	\item Majority of disentanglement learning models use heuristic objective or regularizers to achieve the goal.
+	\end{itemize}
 \end{frame}
 %=======
 \end{document} 
