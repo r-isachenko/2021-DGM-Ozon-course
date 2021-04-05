@@ -84,22 +84,20 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1611.05013}{Gulrajani I. et al. PixelVAE: A Latent Variable Model for Natural Images, 2016}
 \end{frame}
 %=======
-\begin{frame}{Decoder weakening}
-	\begin{itemize}
-		\item Powerful decoder $p(\bx | \bz, \btheta)$ makes the model expressive, but posterior collapse is possible.
-		\item PixelVAE model uses the autoregressive PixelCNN model with small number of layers to limit receptive field.
-	\end{itemize}
+\begin{frame}{Recap of previous lecture}
+	\begin{block}{Decoder weakening}
+		\begin{itemize}
+			\item Powerful decoder $p(\bx | \bz, \btheta)$ makes the model expressive, but posterior collapse is possible.
+			\item PixelVAE model uses the autoregressive PixelCNN model with small number of layers to limit receptive field.
+		\end{itemize}
+	\end{block}
 	
 	\begin{block}{KL annealing}
 		\vspace{-0.2cm}
 		\[
 		    \mathcal{L}(q, \btheta, \beta) = \mathbb{E}_{q(\bz | \bx)} \log p(\bx | \bz, \btheta) - \beta \cdot KL (q(\bz | \bx) || p(\bz))
 		\]
-		\vspace{-0.4cm}
-		\begin{itemize}
-		    \item Start training with $\beta = 0$.
-		    \item Increase it until $\beta = 1$ during training process.
-		\end{itemize}
+		Start training with $\beta = 0$, increase it until $\beta = 1$ during training.
 	\end{block}
 	
 	\begin{block}{Free bits}
@@ -240,7 +238,7 @@ to $\bz$ in the generative model.
 		\]
 		\vspace{-0.4cm}
 		\begin{itemize}
-			\item $g$ is bijective (since $p(\bz) = \prod_{i=1}dp(z_i)$).
+			\item $g$ is bijective (since $p(\bz) = \prod_{i=1}^dp(z_i)$).
 			\item $\frac{\partial g_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial g_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
 			\item $g(\bz)$ is an independent $d$-dimensional uniform distribution.
 		\end{itemize}
@@ -270,6 +268,7 @@ to $\bz$ in the generative model.
 		\item $h^{-1}( \bA h(g(\bz))) \in \bbR^d$ is an independent $d$-dimensional uniform distribution.
 	\end{itemize}
 	Define $f: \text{supp}(\bz) \rightarrow \text{supp}(\bz)$:
+	\vspace{-0.2cm}
 	\[
 	f(\bu) = g^{-1} (h^{-1}( \bA h(g(\bz)))).
 	\]
@@ -368,7 +367,7 @@ to $\bz$ in the generative model.
 			H_0: \pi(\bx) = p(\bx | \btheta), \quad H_1: \pi(\bx) \neq p(\bx | \btheta)
 		\]
 	\end{block}
-	Define test statistic $T(\cS_1, \cS_2)$. The test statictic is likelihood free.
+	Define test statistic $T(\cS_1, \cS_2)$. The test statistic is likelihood free.
 	If $T(\cS_1, \cS_2) < \alpha$, then accept $H_0$, else reject it.
 \end{frame}
 %=======
@@ -389,13 +388,13 @@ to $\bz$ in the generative model.
 	\begin{block}{GAN objective}
 		\vspace{-0.5cm}
 		\[
-			V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+			\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 		\vspace{-0.4cm}
 	\end{block}
 	\begin{itemize}
 		\item \textbf{Generator:} generative model $\bx = G(\bz)$, which makes generated sample more realistic.
-		\item \textbf{Discriminator:} a classifier $D(\bx)$, which distinguishes real samples from generated samples.
+		\item \textbf{Discriminator:} a classifier $D(\bx) \in [0, 1]$, which distinguishes real samples from generated samples.
 	\end{itemize}
 	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
@@ -403,9 +402,9 @@ to $\bz$ in the generative model.
 \begin{frame}{Vanilla GAN optimality}
 	\begin{block}{Theorem}
 	The minimax game 
-		\vspace{-0.2cm}
+		\vspace{-0.1cm}
 		\[
-			V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+			\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 	has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D(\bx) = 0.5$.
 	\end{block}
@@ -451,9 +450,9 @@ to $\bz$ in the generative model.
 \begin{frame}{Vanilla GAN optimality}
 	\begin{block}{Theorem}
 		The minimax game 
-		\vspace{-0.2cm}
+		\vspace{-0.1cm}
 		\[
-			V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+			\min_{G} \max_D  V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 		has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D(\bx) = 0.5$.
 	\end{block}
@@ -478,7 +477,7 @@ to $\bz$ in the generative model.
 	\begin{block}{Objective}
 		\vspace{-0.4cm}
 		\[
-		V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 		\vspace{-0.4cm}
 	\end{block}
@@ -500,7 +499,7 @@ to $\bz$ in the generative model.
 	\begin{block}{Objective}
 		\vspace{-0.4cm}
 		\[
-		V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 		\vspace{-0.4cm}
 	\end{block}
@@ -524,7 +523,7 @@ to $\bz$ in the generative model.
 	\begin{block}{Objective}
 		\vspace{-0.4cm}
 		\[
-		V(G, D) = \min_{G} \max_D \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz)))
+		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
 		\vspace{-0.4cm}
 	\end{block}
