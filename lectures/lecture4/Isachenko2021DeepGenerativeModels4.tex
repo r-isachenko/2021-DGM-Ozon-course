@@ -292,16 +292,16 @@
 %=======
 \begin{frame}{Flows intuition}
 	\begin{itemize}
-		\item Let $\bz \sim p(\bz)$ is a random variable with base distribution $p(\bz) = U[0, 1]^m$. 
-		\item Let $\bx \sim p(\bx)$ is a random variable with complex distribution $p(\bx)$ and cdf $F(\bx)$. 
-		\item Then noise variable $\bz$ can be transformed to $\bx$ using inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz)$).
+		\item Let $z \sim p(z)$ is a random variable with base distribution $p(z) = U[0, 1]$. 
+		\item Let $x \sim p(x)$ is a random variable with complex distribution $p(x)$ and cdf $F(x)$. 
+		\item Then noise variable $z$ can be transformed to $x$ using inverse cdf~$F^{-1}$ ($x = F^{-1}(z)$).
 	\end{itemize}
-	How to transform random variable $\bz$  which has a distribution different from uniform to $\bx$?
+	How to transform random variable $z$  which has a distribution different from uniform to $x$?
 		\begin{itemize}
-			\item Let $\bz \sim p(\bz)$ is a random variable with base distribution $p(\bz)$ and cdf $G(\bz)$.
-			\item Then $\bz_0 = G(\bz)$ has base distribution $p(\bz_0) = U[0, 1]^m$.
-			\item Let $\bx \sim p(\bx)$ is a random variable with complex distribution $p(\bx)$ and cdf $F(\bx)$. 
-			\item Then noise variable $\bz$ can be transformed to $\bx$ using cdf $G$ and inverse cdf~$F^{-1}$ ($\bx = F^{-1}(\bz_0) = F^{-1}(G(\bz))$).
+			\item Let $z \sim p(z)$ is a random variable with base distribution $p(z)$ and cdf $G(z)$.
+			\item Then $z_0 = G(z)$ has base distribution $p(z_0) = U[0, 1]$.
+			\item Let $x \sim p(x)$ is a random variable with complex distribution $p(x)$ and cdf $F(x)$. 
+			\item Then noise variable $z$ can be transformed to $x$ using cdf $G$ and inverse cdf~$F^{-1}$ ($x = F^{-1}(z_0) = F^{-1}(G(z))$).
 		\end{itemize}
 \end{frame}
 %=======
@@ -396,7 +396,7 @@
 	\begin{block}{Monte-Carlo estimation}
 		\vspace{-0.5cm}
 		\[
-			KL(\pi || p) = - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \approx - \sum_{i=1}^n \log p(\bx_i | \btheta) \rightarrow \min_{\btheta}.
+			KL(\pi || p) = - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) \rightarrow \min_{\btheta}.
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -413,7 +413,7 @@
 	\begin{block}{Forward KL}
 	    \vspace{-0.3cm}
 		\[
-			\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta) \approx  \argmin_{\btheta} KL(\pi || p)
+			\btheta^* = \argmax_{\btheta} \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) \approx  \argmin_{\btheta} KL(\pi || p)
 		\]
 		Maximum likelihood estimation is equivalent to minimization of the Monte-Carlo estimation of forward KL.
 	\end{block}
