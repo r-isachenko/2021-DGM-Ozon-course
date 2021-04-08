@@ -571,13 +571,24 @@ to $\bz$ in the generative model.
 		JSD(\pi || p) = \frac{1}{2} \left[KL \left(\pi(x) || \frac{\pi(\bx) + p(\bx)}{2}\right) + KL \left(p(x) || \frac{\pi(\bx) + p(\bx)}{2}\right) \right]
 		\]
 		\vspace{-0.4cm}
+		
+	\begin{minipage}[t]{0.33\columnwidth}
 		\begin{figure}
-			\centering
-			\includegraphics[width=0.7\linewidth]{figs/mode_collapse_2}
+			\includegraphics[width=\linewidth]{figs/forward_KL}
 		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}
+				\includegraphics[width=\linewidth]{figs/reverse_KL}
+			\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.33\columnwidth}
+			\begin{figure}
+				\includegraphics[width=\linewidth]{figs/JSD}
+			\end{figure}
+	\end{minipage}
 	\vspace{-0.3cm}
 	\end{block}
-	\myfootnotewithlink{https://sites.google.com/view/berkeley-cs294-158-sp20/home}{image credit: https://sites.google.com/view/berkeley-cs294-158-sp20/home}
 \end{frame}
 %=======
 \begin{frame}{Vanilla GAN results}
