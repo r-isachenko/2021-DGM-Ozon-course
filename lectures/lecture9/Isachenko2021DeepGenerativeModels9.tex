@@ -184,22 +184,13 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
 \end{frame}
 %=======
-\begin{frame}{DIP-VAE}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/dip-vae_2}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00848}{Kumar A., Sattigeri P., Balakrishnan A. Variational Inference of Disentangled Latent Concepts from Unlabeled Observations, 2017}
-\end{frame}
-%=======
 \begin{frame}{Challenging Disentanglement Assumptions}
 Whether unsupervised disentanglement learning is even possible for arbitrary generative models?
 
 \begin{block}{Theorem}
 	For $d > 1$, let $\bz \sim P$ denote any distribution which admits a density $p(\bz) = \prod^d_{i=1} p(z_i)$. Then, there exists an infinite family of bijective functions $f : \text{supp}(\bz) \rightarrow \text{supp}(\bz)$ such that
 	\begin{itemize}
-		\item $\frac{\partial f_i(\bu)}{\partial u_j} \neq 0$ almost everywhere for all $i$ and $j$ (i.e., $\bz$ and $f(\bz)$ are completely entangled);
+		\item $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$ almost everywhere for all $i$ and $j$ (i.e., $\bz$ and $f(\bz)$ are completely entangled);
 		\item and $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ for all $\bu \in \text{supp}(\bz)$ (i.e., they
 		have the same marginal distribution).
 	\end{itemize}  
@@ -234,7 +225,7 @@ to $\bz$ in the generative model.
 		Consider the function $g: \text{supp}(\bz) \rightarrow [0, 1]^d$:
 		\vspace{-0.1cm}
 		\[
-		g_i(\bv) = P(z_i \leq v_i), \quad i=1, \dots, d.
+		g_i(\bu) = P(z_i \leq u_i), \quad i=1, \dots, d.
 		\]
 		\vspace{-0.4cm}
 		\begin{itemize}
@@ -245,12 +236,12 @@ to $\bz$ in the generative model.
 		\item 
 		Consider $h: (0, 1]^d \rightarrow \bbR^d$
 		\[
-		h_i(\bv) = \psi^{-1}(v_i), \quad i= 1, \dots, d.
+		h_i(\bu) = \psi^{-1}(u_i), \quad i= 1, \dots, d.
 		\]
 		Here $\psi$  denotes the CDF of a standard normal distribution.
 		\begin{itemize}
 			\item $h$ is bijective.
-			\item $\frac{\partial g_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial g_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
+			\item $\frac{\partial h_i(\bu)}{\partial u_i} \neq 0$, for all $i$ and $\frac{\partial h_i(\bu)}{\partial u_j} = 0$ for all $i \neq j$.
 			\item $h(g(\bz))$  is a $d$-dimensional standard normal distribution.
 		\end{itemize}
 	\end{enumerate}
@@ -272,21 +263,8 @@ to $\bz$ in the generative model.
 	\[
 	f(\bu) = g^{-1} (h^{-1}( \bA h(g(\bz)))).
 	\]
-	By definition $f(\bz)$ has the same marginal distribution as $\bz$: $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ and $\frac{\partial f_i(\bu)}{\partial u_j} \neq 0$.
+	By definition $f(\bz)$ has the same marginal distribution as $\bz$: $P(\bz \leq \bu) = P(f(\bz) \leq \bu)$ and $\frac{\partial f_i(\bz)}{\partial z_j} \neq 0$.
 \end{block}
-
-\myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
-\end{frame}
-%=======
-\begin{frame}{Challenging Disentanglement Assumptions}
-\begin{itemize}
-	\item \textbf{Training:} Factorizing \textbf{samples} from aggregated posterior $q(\bz) = \prod_{i=1}^d q(z_i)$.
-	\item \textbf{Inference:} Use a \textbf{mean} vector (usually mean of Gaussian encoder) as a representation.
-\end{itemize}
-\begin{figure}
-	\centering
-	\includegraphics[width=0.95\linewidth]{figs/challenge_dis_1}
-\end{figure}
 
 \myfootnotewithlink{https://arxiv.org/abs/1811.12359}{Locatello F. et al. Challenging Common Assumptions in the Unsupervised Learning of Disentangled Representations, 2018}
 \end{frame}
@@ -341,7 +319,7 @@ to $\bz$ in the generative model.
 			\begin{multline*}
 				\log \left[ 0.01p(\bx) + 0.99p_{\text{noise}}(\bx) \right] \geq  \\ \geq \log \left[ 0.01p(\bx) \right]  = \log p(\bx) - \log 100
 			\end{multline*}
-		Noisy irrelevant samples, but for high dimensions $\log p(\bx)$ becames larger.
+		Noisy irrelevant samples, but for high dimensions $\log p(\bx)$ becomes proportional to $m$.
 		\end{block}
 	\end{minipage}
 	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A note on the evaluation of generative models, 2015}
@@ -406,7 +384,7 @@ to $\bz$ in the generative model.
 		\[
 			\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
-	has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D(\bx) = 0.5$.
+	has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D^*(\bx) = 0.5$.
 	\end{block}
 	\begin{block}{Proof (fixed $G$)}
 		\vspace{-0.5cm}
@@ -423,7 +401,7 @@ to $\bz$ in the generative model.
 \end{frame}
 %=======
 \begin{frame}{Vanilla GAN optimality}
-	\begin{block}{Proof confitnued (fixed $D$)}
+	\begin{block}{Proof confitnued (fixed $D = D^*$)}
 		\vspace{-0.5cm}
 		\begin{multline*}
 			V(G, D^*) = \bbE_{\pi(\bx)} \log \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)} + \bbE_{p(\bx | \btheta)} \log \frac{p(\bx | \btheta)}{\pi(\bx) + p(\bx | \btheta)} \\
@@ -454,7 +432,7 @@ to $\bz$ in the generative model.
 		\[
 			\min_{G} \max_D  V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
 		\]
-		has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D(\bx) = 0.5$.
+		has the global optimum $\pi(\bx) = p(\bx | \btheta)$, in this case $D^*(\bx) = 0.5$.
 	\end{block}
 	\vspace{-0.2cm}
 	\begin{block}{Proof}
@@ -463,9 +441,9 @@ to $\bz$ in the generative model.
 		D^*(\bx) = \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
 	\]
 	\vspace{-0.5cm} \\
-	for fixed $D$:
+	for fixed $D = D^*$:
 	\[
-		\min_{G} V(G, D^*) = \min_{G} \left[ JSD(\pi || p) - \log 4 \right] = -\log 4, \quad \pi(\bx) = p(\bx | \btheta).
+		\min_{G} V(G, D^*) = \min_{G} \left[ 2 JSD(\pi || p) - \log 4 \right] = -\log 4, \quad \pi(\bx) = p(\bx | \btheta).
 	\]
 	\vspace{-0.6cm}
 	\end{block}
@@ -495,170 +473,6 @@ to $\bz$ in the generative model.
 	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
-\begin{frame}{Vanishing gradients}
-	\begin{block}{Objective}
-		\vspace{-0.4cm}
-		\[
-		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
-		\]
-		\vspace{-0.4cm}
-	\end{block}
-	Early in learning, $G$ is poor, $D$ can reject samples with high confidence. In this case, $\log (1 - D(G(\bz)))$ saturates.
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\linewidth]{figs/vanishing_gradients_1}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.5\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\linewidth]{figs/vanishing_gradients_2}
-		\end{figure}
-	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}
-\end{frame}
-%=======
-\begin{frame}{Vanishing gradients}
-	\begin{block}{Objective}
-		\vspace{-0.4cm}
-		\[
-		\min_{G} \max_D V(G, D) = \min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(G(\bz))) \right]
-		\]
-		\vspace{-0.4cm}
-	\end{block}
-	\begin{minipage}[t]{0.45\columnwidth}
-		\begin{block}{Non-saturating GAN}
-		\begin{itemize}
-			\item Maximize $\log D(G(z))$ instead of $\log (1 - D(G(\bz)))$. \\
-			\item Gradients are getting much stronger, but the training is instable (with increasing mean and variance).
-		\end{itemize}
-		\end{block}
-	\end{minipage}%
-	\begin{minipage}[t]{0.55\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/vanishing_gradients_3}
-		\end{figure}
-	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}
-\end{frame}
-%=======
-\begin{frame}{Mode collapse}
-	The phenomena where the generator of a GAN collapses to one or few distribution modes.
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/mode_collapse_1}
-	\end{figure}
-	\begin{figure}
-		\centering
-		\includegraphics[width=1.0\linewidth]{figs/mode_collapse_3}
-	\end{figure}
-	Alternate architectures, adding regularization terms, injecting small noise
-	perturbations and other millions bags and tricks are used to avoid the mode collapse.
-	
-	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
-	\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
-\end{frame}
-%=======
-\begin{frame}{Jensen-Shannon vs Kullback-Leibler }
-	\begin{block}{Mode covering vs mode seeking}
-		\vspace{-0.2cm}
-		\[
-			KL(\pi || p) = \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx)}d\bx, \quad KL(p || \pi) = \int p(\bx) \log \frac{p(\bx)}{\pi(\bx)}d\bx
-		\]
-		\[
-		JSD(\pi || p) = \frac{1}{2} \left[KL \left(\pi(x) || \frac{\pi(\bx) + p(\bx)}{2}\right) + KL \left(p(x) || \frac{\pi(\bx) + p(\bx)}{2}\right) \right]
-		\]
-		\vspace{-0.4cm}
-		
-	\begin{minipage}[t]{0.33\columnwidth}
-		\begin{figure}
-			\includegraphics[width=\linewidth]{figs/forward_KL}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.33\columnwidth}
-			\begin{figure}
-				\includegraphics[width=\linewidth]{figs/reverse_KL}
-			\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.33\columnwidth}
-			\begin{figure}
-				\includegraphics[width=\linewidth]{figs/JSD}
-			\end{figure}
-	\end{minipage}
-	\vspace{-0.3cm}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Vanilla GAN results}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.95\linewidth]{figs/Vanila_gan_results}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
-\end{frame}
-%=======
-\begin{frame}{Deep Convolutional GAN}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/dcgan_1}
-	\end{figure}
-	\begin{itemize}
-		\footnotesize
-		\item  Mean-pooling instead of max-pooling.
-		\item Transposed convolutions in the generator for upsampling.
-		\item Downsample with strided convolutions and average pooling.
-		\item ReLU for generator, Leaky-ReLU (0.2) for discriminator.
-		\item Output nonlinearity: tanh for Generator, sigmoid for discriminator.
-		\item Batch Normalization used to prevent mode collapse (not applied at the output of $G$ and input of $D$).
-		\item Adam: small LR = 2e-4; small momentum: 0.5, batch-size: 128.
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
-\end{frame}
-%=======
-\begin{frame}{Deep Convolutional GAN}
-	\begin{block}{ImageNet samples}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_1}
-		\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
-\end{frame}
-%=======
-\begin{frame}{Deep Convolutional GAN}
-	\begin{block}{Smooth interpolations}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/dcgan_results_2}
-		\end{figure}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
-\end{frame}
-%=======
-\begin{frame}{Deep Convolutional GAN}
-	\begin{block}{Vector arithmetic}
-		\begin{figure}
-			\centering
-			\includegraphics[width=1.0\linewidth]{figs/dcgan_results_3}
-		\end{figure}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
-\end{frame}
-%=======
-\begin{frame}{Deep Convolutional GAN}
-	\begin{block}{Mode collapse}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.95\linewidth]{figs/mode_collapse_4}
-		\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize}
 		\item Majority of disentanglement learning models use heuristic objective or regularizers to achieve the goal, but the task itself could not be solved without good inductive bias.
@@ -668,10 +482,6 @@ to $\bz$ in the generative model.
 		\item Adversarial learning suggest to solve minimax problem to match the distributions.
 		\vfill
 		\item Vanilla GAN tries to optimize Jensen-Shannon divergence (in theory).
-		\vfill
-		\item Mode collapse and vanishing gradients are the two main problems of vanilla GAN.
-		\vfill
-		\item Lots of tips and tricks has to be used to make the GAN training is stable and scalable.
 	\end{itemize}
 \end{frame}
 %=======
