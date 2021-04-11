@@ -8,6 +8,165 @@
 \titlepage
 \end{frame}
 %=======
+\begin{frame}{Spectral Normalization GAN}
+	How else could we enforce Lipschitzness?
+	\begin{block}{Fact 1}
+		\vspace{-0.3cm}
+		\[
+			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx))
+		\]
+	\end{block}
+	Here $\sigma(\bA)$~-- spectral norm of matrix $\bA$.
+	\[
+		\sigma(\bA) = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA),
+	\]
+	where $\lambda_{\text{max}}(\bA)$ is the largest singular value of $\bA$.
+	\begin{block}{Fact 2}
+		\vspace{-0.3cm}
+		\[
+			\| \mathbf{g}_1 \circ \mathbf{g}_2 \|_L \leq \| \mathbf{g}_1 \|_L \cdot \| \mathbf{g}_2\|_L
+		\]
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	Let consider the critic $f(\bx, \bphi)$ of the following form:
+	\[
+		f(\bx, \bphi) = \bW_{K+1} a_K (\bW_K a_{K-1}(\dots a_1(\bW_1 \bx) \dots)).
+	\]
+	This feedforward network is a superposition of simple functions.
+	\begin{itemize}
+		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
+		\item $\mathbf{g}(\bh) = \bW \bh$ is a linear transformation.
+		\[
+			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
+		\]
+	\end{itemize}
+	\vspace{-0.5cm}
+	\begin{block}{Critic spectral norm}
+		\vspace{-0.5cm}
+		\[
+			\| f \|_L \leq \prod_{k=1}^{K+1} \sigma(\bW_k).
+		\]
+	\end{block}
+	If we replace the weights in the critic by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes computationally heavy.
+	 \begin{block}{Power iteration}
+	 	\begin{itemize}
+	 		\item $\bu$ -- random vector.
+	 		\item repeat
+	 		\[
+	 			\bv = \frac{\bW^T \bu}{\| \bW^T \bu \|}, \quad \bu = \frac{\bW \bv}{\| \bW \bv \|}
+	 		\]
+	 		\item approximate the spectral norm
+	 		\[
+	 			\sigma(\bW) \approx \bu^T \bW \bv
+	 		\]
+	 	\end{itemize}
+	 \end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Spectral Normalization GAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/sngan_pseudocode}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/sngan_fids}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Divergences}
+	\begin{block}{What do we have?}
+		\begin{itemize}
+			\item Forward KL divergence in maximum likelihood estimation
+			\item Reverse KL in variational inference
+			\item JS divergence in  vanilla gan
+			\item Wasserstein distance in WGAN
+		\end{itemize}
+	\end{block}
+	\begin{block}{Divergence minimization}
+		\vspace{-0.3cm}
+		\[
+			\min_p D(\pi || p)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{What is a divergence?}
+		Let $\cS$ be the set of all possible probability distributions. Then $D: \cS \times \cS \rightarrow \bbR$ is a divergence if 
+		\begin{itemize}
+			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cS$;
+			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	
+	\begin{block}{f-divergence}
+		\vspace{-0.3cm}
+		\[
+		D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right)  = \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx.
+		\]
+		Here $f: \bbR_+ \rightarrow \bbR$ is a convex, lower-semicontinuous function satisfying $f(1) = 0$.
+	\end{block}
+	\begin{block}{Fenchel conjugate}
+		\vspace{-0.5cm}
+		\[
+		f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right), \quad f^{**} = f, \quad f(u) = \sup_{t \in \text{dom}_{f^*}} \left( ut - f^*(t) \right)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.85\linewidth]{figs/f_divs}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\begin{block}{Variational divergence estimation}
+		\vspace{-0.6cm}
+		\begin{align*}
+			D_f(\pi || p) &= \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx \\
+			& = \int p(\bx) \sup_{t \in \text{dom}_{f^*}} \left( \frac{\pi(\bx)}{p(\bx)} t - f^*(t) \right) d \bx \\
+			& = \int \sup_{t \in \text{dom}_{f^*}} \left( \pi(\bx)t - p(\bx) f^*(t) \right) d \bx \\
+			& \geq \sup_{T \in \cT} \int \left( \pi(\bx)T(\bx) - p(\bx) f^*(T(\bx)) \right) d \bx \\
+			& = \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\end{align*}
+	\vspace{-0.6cm}
+	\end{block}
+	Here $\cT: \cX \rightarrow \bbR$ is an arbitrary class of functions.
+	
+	The lower bound is tight for $T^*(\bx) = f'\left( \frac{\pi(\bx)}{p(\bx)} \right)$.
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\begin{block}{Variational divergence estimation}
+		\[
+			D_f(\pi || p) \geq \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\]
+	\end{block}
+	\begin{figure}
+		\centering
+		\includegraphics[width=1.0\linewidth]{figs/f_div_results}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
 \begin{frame}{Evaluation of likelihood-free models}
 	How to evaluate generative models?
 	\begin{block}{Likelihood-based models}
