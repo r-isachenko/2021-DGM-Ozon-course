@@ -13,7 +13,7 @@
 | 6 | March, 18 | Autoregressive flows (MAF, IAF). Flow KL duality. Uniform dequantization. | [slides](lectures/lecture6/Isachenko2021DeepGenerativeModels6.pdf) | [slides](seminars/seminar6/seminar6.ipynb) |  
 | 7 | March, 25 | Variational dequantization. IWAE. ELBO surgery. | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | [slides](seminars/seminar7/seminar7.ipynb) | 
 | 8 | April, 1 | VampPrior + Autoregressive prior. Posterior collapse. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [slides](seminars/seminar8/seminar8.ipynb) | 
-| 9 | April, 8 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. Vanishing gradients + Mode collapse. DCGAN. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [slides](seminars/seminar9/seminar9.ipynb) | 
+| 9 | April, 8 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [slides](seminars/seminar9/seminar9.ipynb) | 
 
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
