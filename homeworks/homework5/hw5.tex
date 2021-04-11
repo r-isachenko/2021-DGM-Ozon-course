@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[russian]{babel}
+
+\usepackage{graphicx, epsfig}
+\usepackage{amsmath,mathrsfs,amsfonts,amssymb}
+
+\usepackage{geometry} % Простой способ задавать поля
+	\geometry{top=25mm}
+	\geometry{bottom=25mm}
+	\geometry{left=25mm}
+	\geometry{right=20mm}
+
+\input{../../lectures/utils/newcommands}
+
+\begin{document}
+\begin{center}
+    {\Large \textbf{Homework 5}} \\
+\end{center}
+
+\begin{enumerate}
+    \item На лекции мы с вами изучили планарные потоки вида:
+    \begin{equation}
+    	\bx = g(\bz, \btheta) = \bz + \bu h(\bw^T\bz + b),
+    \end{equation}
+    где $\bu \in \bbR^m$,  $\bw \in \bbR^m$, $b \in \bbR$.
+    Существует естественное обобщение планарных потоков вида:
+    \begin{equation}
+    	\bx = g(\bz, \btheta) = \bz + \bV h(\bW^T\bz + \mathbf{b}),
+    	\label{sylvester}
+    \end{equation}
+    где $\bV \in \bbR^{m \times k}$,  $\bW \in \bbR^{m \times k}$, $\mathbf{b} \in \bbR^k$. Такой поток получил название \textit{Sylvester flow}.
+    \begin{enumerate}
+    	\item  \textbf{(1 pt)} Докажите упрощенный вариант matrix-determinant lemma:
+    	\[
+    		\det (\bI_m + \bV \bW^T) = \det (\bI_k + \bW^T \bV).
+    	\]
+    	\item  \textbf{(1.5 pt)} Посчитайте детерминант Якобиана для преобразования~\eqref{sylvester} и примените к нему доказанную в предыдущем пункте лемму.
+    	\item  \textbf{(1 pt)} Для того чтобы уменьшить сложность подсчета полученного детерминанта авторы предложили применить QR-разложение вида:
+    	\[
+    		\bV = \bQ \bU; \quad \bW = \bQ \bL,
+    	\]
+    	где $\bQ \in \bbR^{n \times k}$ -- ортогональная матрица ($\bQ^T \bQ = \bI$), $\bU \in \bbR^{k \times k}$ -- верхнетреугольная матрица, $\bL \in \bbR^{k \times k}$ -- нижнетреугольная матрица. Выпишите выражение для детерминанта якобиана, используя это разложение. 
+    	\item  \textbf{(1.5 pt)} Вычислите и сравните сложности для подсчета детерминанта Якобиана до применения леммы, после применения леммы и после применения QR-разложения
+    \end{enumerate}
+    
+    \item  \textbf{(2 pt)} На лекции мы с вами доказали теорему об \textit{операции над ELBO}:
+    \[
+    	\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i) || p(\bz)) = KL(q(\bz) || p(\bz)) + \bbI_{q} [\bx, \bz],
+    \]
+    где первый член $KL(q(\bz) || p(\bz))$ включает в себя агрегированное апостериорное распределение $q(\bz)$ и априорное распределение $p(\bz)$. Наша цель сейчас -- разобраться со вторым членом. На лекции второй член был равен:
+
+    \begin{equation}
+    	\bbI_{q} [\bx, \bz] = \frac{1}{n}\sum_{i=1}^n KL(q(\bz | \bx_i) || q (\bz)).
+	   	 \label{mut_info1}
+    \end{equation}
+    На самом деле это совместная информация между $\bx$ и $\bz$ по эмпирическому распределению данных и распределению $q(\bz | \bx)$. Представим индекс объекта выборки $i$ - случайной величиной.
+    
+    \[
+        q(i, \bz) = q(i) q(\bz | i); \quad p(i, \bz) = p(i) p(\bz); \quad 
+        q(i) = p(i) = \frac{1}{n}.
+    \]
+    \[
+    	 \quad q(\bz | i) = q(\bz | \bx_i) \quad q(\bz) = \sum_{i=1}^n q(i, \bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i); \quad  
+    \]
+    Совместная информация - это некая мера независимости двух случайных величин:
+    \begin{equation}
+	   	 \mathbb{I}_{q} [\bx, \bz] = \mathbb{E}_{q(i, \bz)} \log \frac{q(i, \bz)}{q(i)q(\bz)}.
+	   	 \label{mut_info2}
+    \end{equation}
+    Докажите, что выражение~\eqref{mut_info2} равно выражению~\eqref{mut_info1}.
+    
+    \item  \textbf{(2 pt)} Вспомним вариационную нижнюю оценку для задачи деквантизации дискретных данных:
+    \[
+     	\log P(\bx | \btheta) \geq  \int q(\bu | \bx) \log \frac{p(\bx + \bu | \btheta)}{q(\bu | \bx)} d \bu = \mathcal{L}(q, \btheta).
+    \]
+    Мы с вами обсуждали, что вариационную нижнюю оценку можно улучшить с помощью Importance Sampling. Выпишите нижнюю оценку для деквантизации, используя $\cL_k$ по аналогии с моделью IWAE (необходимо использовать не одну $\bu$, а набор из $\{\bu_k\}_{k=1}^K$).
+    
+   	\item Стандартный GAN часто страдает от проблем с затухающим градиентом. Least Squares GAN пытается решить данную проблему заменой функции ошибки на следующую:
+   	\[
+   		\min_D V(D) = \min_D \frac{1}{2}\left[ \bbE_{\pi(\bx)} (D(\bx) - b)^2 + \bbE_{p(\bz)} (D(G(\bz)) - a)^2 \right]
+   	\]
+   	\[
+   		\min_G V(G) = \min_G \frac{1}{2}\left[ \bbE_{\pi(\bx)} (D(\bx) - c)^2 + \bbE_{p(\bz)} (D(G(\bz)) - c)^2 \right],
+   	\]
+   	где $a,b,c \in \bbR$ -- фиксированные константы.
+   	\begin{enumerate}
+   		\item  \textbf{(1.5 pt)} Найдите формулу для оптимального дискриминатора $D^*$.
+   		\item  \textbf{(1 pt)} Выпишите выражение функции ошибок гененатора $V(G)$ в случае оптимального дискриминатора $D^*$.
+   		\item  \textbf{(1.5 pt)} Докажите, что при $b - c = 1$, $b - a = 2$, функция ошибок генератора $V(G)$ в случае оптимального дискриминатора $D^*$ принимает вид:
+   		\[
+   			V(G) = \frac{1}{2} \chi^2_{\text{Pearson}} (\pi(\bx) + p(\bx | \btheta) || 2 p(\bx | \btheta)), 
+   		\]
+   		где $\chi^2_{\text{Pearson}} (p || q)$ - квадратичная дивергенция Пирсона:
+   		\[
+   			\chi^2_{\text{Pearson}} (p || q) = \int \frac{(p(\bx) - q(\bx))^2}{p(\bx)} d \bx.
+   		\]
+   	\end{enumerate}
+\end{enumerate}
+
+\end{document}
