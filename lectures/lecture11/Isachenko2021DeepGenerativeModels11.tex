@@ -61,6 +61,7 @@
 \begin{frame}{Spectral Normalization GAN}
 	How to compute $\sigma(\bW)$? \\
 	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes intractable.
+	 
 	 \begin{block}{Power iteration}
 	 	\begin{itemize}
 	 		\item $\bu_0$ -- random vector.
@@ -100,19 +101,19 @@
 			\item Wasserstein distance in WGAN
 		\end{itemize}
 	\end{block}
-	\begin{block}{Divergence minimization}
-		\vspace{-0.3cm}
-		\[
-			\min_p D(\pi || p)
-		\]
-		\vspace{-0.5cm}
-	\end{block}
 	\begin{block}{What is a divergence?}
 		Let $\cS$ be the set of all possible probability distributions. Then $D: \cS \times \cS \rightarrow \bbR$ is a divergence if 
 		\begin{itemize}
 			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cS$;
 			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
 		\end{itemize}
+	\end{block}
+	\begin{block}{General divergence minimization task}
+		\vspace{-0.3cm}
+		\[
+			\min_p D(\pi || p)
+		\]
+		\vspace{-0.5cm}
 	\end{block}
 \end{frame}
 %=======
@@ -123,37 +124,58 @@
 		\[
 		D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right)  = \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx.
 		\]
-		Here $f: \bbR_+ \rightarrow \bbR$ is a convex, lower-semicontinuous function satisfying $f(1) = 0$.
-	\end{block}
-	\begin{block}{Fenchel conjugate}
-		\vspace{-0.5cm}
-		\[
-		f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right), \quad f^{**} = f, \quad f(u) = \sup_{t \in \text{dom}_{f^*}} \left( ut - f^*(t) \right)
-		\]
-		\vspace{-0.5cm}
+		Here $f: \bbR_+ \rightarrow \bbR$ is a convex, lower semicontinuous function satisfying $f(1) = 0$.
 	\end{block}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.85\linewidth]{figs/f_divs}
+		\includegraphics[width=\linewidth]{figs/f_divs}
 	\end{figure}
 	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
 \end{frame}
 %=======
 \begin{frame}{f-divergence family}
-	\begin{block}{Variational divergence estimation}
+	\vspace{-0.2cm}
+	\begin{block}{Fenchel conjugate}
+		\vspace{-0.7cm}
+		\[
+		f^*(t) = \sup_{u \in \text{dom}_f} \left( ut - f(u) \right), \quad f(u) = \sup_{t \in \text{dom}_{f^*}} \left( ut - f^*(t) \right)
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\textbf{Important property:} $ f^{**} = f$ for convex $f$.
+	\begin{block}{f-divergence}
+		\vspace{-0.8cm}
+		\begin{multline*}
+			D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right)  = \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx = \\ = \int p(\bx) \sup_{t \in \text{dom}_{f^*}} \left( \frac{\pi(\bx)}{p(\bx)} t - f^*(t) \right) d \bx = \\ 
+			= \int \sup_{t \in \text{dom}_{f^*}} \left( \pi(\bx)t - p(\bx) f^*(t) \right) d \bx .
+		\end{multline*}
 		\vspace{-0.6cm}
-		\begin{align*}
-			D_f(\pi || p) &= \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx \\
-			& = \int p(\bx) \sup_{t \in \text{dom}_{f^*}} \left( \frac{\pi(\bx)}{p(\bx)} t - f^*(t) \right) d \bx \\
-			& = \int \sup_{t \in \text{dom}_{f^*}} \left( \pi(\bx)t - p(\bx) f^*(t) \right) d \bx \\
-			& \geq \sup_{T \in \cT} \int \left( \pi(\bx)T(\bx) - p(\bx) f^*(T(\bx)) \right) d \bx \\
-			& = \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
-		\end{align*}
+	\end{block}
+	Here we seek value of $t$, which gives us maximum value of $ \pi(\bx)t - p(\bx) f^*(t)$, for each data point $\bx$.
+	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
+\end{frame}
+%=======
+\begin{frame}{f-divergence family}
+	\vspace{-0.4cm}
+	\begin{block}{f-divergence}
+		\vspace{-0.3cm}
+		\[
+		D_f(\pi || p) = \bbE_{p(\bx)}  f\left( \frac{\pi(\bx)}{p(\bx)} \right)  = \int p(\bx) f\left( \frac{\pi(\bx)}{p(\bx)} \right) d \bx.
+		\]
+		\vspace{-0.4cm}
+	\end{block}
+	\begin{block}{Variational f-divergence estimation}
+		\vspace{-0.8cm}
+		\begin{multline*}
+			D_f(\pi || p)  = \int \sup_{t \in \text{dom}_{f^*}} \left( \pi(\bx)t - p(\bx) f^*(t) \right) d \bx \geq \\
+			 \geq \sup_{T \in \cT} \int \left( \pi(\bx)T(\bx) - p(\bx) f^*(T(\bx)) \right) d \bx = \\
+			 = \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
+		\end{multline*}
 	\vspace{-0.6cm}
 	\end{block}
-	Here $\cT: \cX \rightarrow \bbR$ is an arbitrary class of functions.
+	This is a lower bound because of Jensen-Shannon inequality and restricted class of functions $\cT: \cX \rightarrow \bbR$.
 	
-	The lower bound is tight for $T^*(\bx) = f'\left( \frac{\pi(\bx)}{p(\bx)} \right)$.
+	\textbf{Note:} To evaluate lower bound we only need samples from $\pi(\bx)$ and $p(\bx)$. Hence, we could fit implicit generative model.
 	\myfootnotewithlink{https://arxiv.org/abs/1606.00709}{Nowozin S., Cseke B., Tomioka R. f-GAN: Training Generative Neural Samplers using Variational Divergence Minimization, 2016}
 \end{frame}
 %=======
@@ -162,6 +184,7 @@
 		\[
 			D_f(\pi || p) \geq \sup_{T \in \cT} \left[\bbE_{\pi}T(\bx) -  \bbE_p f^*(T(\bx)) \right]
 		\]
+		The lower bound is tight for $T^*(\bx) = f'\left( \frac{\pi(\bx)}{p(\bx)} \right)$.
 	\end{block}
 	\begin{figure}
 		\centering
