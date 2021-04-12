@@ -11,18 +11,20 @@
 \begin{frame}{Spectral Normalization GAN}
 	How else could we enforce Lipschitzness?
 	\begin{block}{Fact 1}
-		\vspace{-0.3cm}
+		Let denote by $\sigma(\bA)$ a spectral norm of matrix $\bA$.
+		\[
+			\sigma(\bA) = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA),
+		\]
+		where $\lambda_{\text{max}}(\bA)$ is the largest singular value of $\bA$. \\
+		By definition, Lipschitz norm is 
 		\[
 			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx))
 		\]
 	\end{block}
-	Here $\sigma(\bA)$~-- spectral norm of matrix $\bA$.
-	\[
-		\sigma(\bA) = \max_{\bh \neq 0} \frac{\|\bA \bh\|_2}{\|\bh\|_2} = \max_{\|\bh\|_2 \leq 1} \| \bA \bh \|_2 = \lambda_{\text{max}}(\bA),
-	\]
-	where $\lambda_{\text{max}}(\bA)$ is the largest singular value of $\bA$.
+	\vspace{-0.5cm}
 	\begin{block}{Fact 2}
-		\vspace{-0.3cm}
+		Lipschitz norm of superposition is bounded above by product of Lipschitz norms
+		\vspace{-0.2cm}
 		\[
 			\| \mathbf{g}_1 \circ \mathbf{g}_2 \|_L \leq \| \mathbf{g}_1 \|_L \cdot \| \mathbf{g}_2\|_L
 		\]
@@ -38,35 +40,37 @@
 	This feedforward network is a superposition of simple functions.
 	\begin{itemize}
 		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
-		\item $\mathbf{g}(\bh) = \bW \bh$ is a linear transformation.
+		\item $\mathbf{g}(\bh) = \bW \bh$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
 		\[
 			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
 		\]
 	\end{itemize}
-	\vspace{-0.5cm}
+	\vspace{-0.3cm}
 	\begin{block}{Critic spectral norm}
-		\vspace{-0.5cm}
+		\vspace{-0.3cm}
 		\[
-			\| f \|_L \leq \prod_{k=1}^{K+1} \sigma(\bW_k).
+			\| f \|_L \leq \| \bW_{K+1}\| \cdot \prod_{k=1}^K  \| a_k \|_L \cdot \| \bW_k \| = \prod_{k=1}^{K+1} \sigma(\bW_k).
 		\]
+		\vspace{-0.2cm}
 	\end{block}
-	If we replace the weights in the critic by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
+	If we replace the weights in the critic $f(\bx, \bphi)$ by $\bW^{SN}_k = \bW_k / \sigma(\bW_k)$, we will get $\| f\|_L \leq 1.$ \\
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1802.05957}{Miyato T. et al. Spectral Normalization for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{Spectral Normalization GAN}
-	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes computationally heavy.
+	How to compute $\sigma(\bW)$? \\
+	 If we apply singular value decomposition to compute the $\sigma(\bW)$ at each round of the algorithm, the algorithm becomes intractable.
 	 \begin{block}{Power iteration}
 	 	\begin{itemize}
-	 		\item $\bu$ -- random vector.
-	 		\item repeat
+	 		\item $\bu_0$ -- random vector.
+	 		\item for $k = 0, \dots, n - 1$: ($n$ is a large enough number of steps)
 	 		\[
-	 			\bv = \frac{\bW^T \bu}{\| \bW^T \bu \|}, \quad \bu = \frac{\bW \bv}{\| \bW \bv \|}
+	 			\bv_{k+1} = \frac{\bW^T \bu_{k}}{\| \bW^T \bu_{k} \|}, \quad \bu_{k+1} = \frac{\bW \bv_{k+1}}{\| \bW \bv_{k+1} \|}
 	 		\]
 	 		\item approximate the spectral norm
 	 		\[
-	 			\sigma(\bW) \approx \bu^T \bW \bv
+	 			\sigma(\bW) \approx \bu_{n}^T \bW \bv_{n}
 	 		\]
 	 	\end{itemize}
 	 \end{block}
