@@ -1,5 +1,5 @@
 \input{../utils/preamble}
-\createdgmtitle{12}
+\createdgmtitle{11}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
@@ -7,525 +7,336 @@
 %\thispagestyle{empty}
 \titlepage
 \end{frame}
-\begin{frame}{Neural ODE}
-	\begin{minipage}[t]{0.6\columnwidth}
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Neural networks for classification task have hundreds of layers.
-		\item Skip connections eliminate exploding/vanishing gradients.
-	\end{itemize}
-	\[
-		\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
-	\]
-	\end{minipage}%
-	\begin{minipage}[t]{0.4\columnwidth}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.95\linewidth]{figs/resnet_1.png}
-	\end{figure}
-	\end{minipage}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=\linewidth]{figs/resnet_2.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
 %=======
-\begin{frame}{Neural ODE}
-	Consider Ordinary Differential Equation    
-	\begin{align*}
-	    \frac{d \bz(t)}{dt} &= f(\bz(t), \btheta); \quad \text{with initial condition }\bz(t_0) = \bz_0. \\
-	    \bz(t_1) &= \int^{t_1}_{t_0} f(\bz(t), \btheta) d t  + \bz_0 = \text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta).
-	\end{align*}
-	\vspace{-0.4cm}
-	\begin{block}{Euler update step}
-		\vspace{-0.4cm}
-		\[
-		    \frac{\bz(t + \Delta t) - \bz(t)}{\Delta t} = f(\bz(t), \btheta) \quad \Rightarrow \quad \bz(t + \Delta t) = \bz(t) + \Delta t f(\bz(t), \btheta).
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Residual block}
-		\vspace{-0.5cm}
-		\[
-		    \bz_{t+1} = \bz_t + f(\bz_t, \btheta).
-		\]
-		\vspace{-0.4cm}
-	\end{block}
-	\begin{itemize}
-	 \item Residual learning is equavalent to Euler update step for solving ODE with $\Delta t = 1$!
-	 \item Euler update step is unstable and trivial. There are much more sophisticated methods.
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	\begin{block}{Residual block}
-	\vspace{-0.3cm}
-	\[
-	    \bz_{t+1} = \bz_t + f(\bz_t, \btheta).
-	\]
-	\vspace{-0.4cm}
-	\end{block}
-	\begin{itemize}
-		\item What happens as we add more layers and take smaller steps? \\
-		\item In the limit, we parameterize the continuous dynamics of hidden units using an ODE specified by a neural network: 
-	\[
-	    \frac{d \bz(t)}{dt} = f(\bz(t), t, \btheta); \quad \bz(t_0) = \bx; \quad \bz(t_1) = \by.
-	\]
-	\end{itemize}
-	\begin{minipage}[t]{0.4\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.9\linewidth]{figs/euler}
-		\end{figure}
-	\end{minipage}%
-	\begin{minipage}[t]{0.6\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/resnet_vs_neural_ode.png}
-		\end{figure}
-	\end{minipage}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-
-\begin{frame}{Neural ODE}
-	\begin{block}{Forward pass (loss function)}
-		\vspace{-0.5cm}
-		\begin{align*}
-			L(\by) = L(\bz(t_1)) &= L\left( \bz(t_0) + \int_{t_0}^{t_1} f(\bz(t), \btheta) dt \right) \\ &= L\left(\text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta) \right)
-		\end{align*}
-	\vspace{-0.5cm}
-	\end{block}
-	\textbf{Note:} ODESolve could be any method (not neccessary Euler).
-	\begin{block}{Backward pass (gradients computation)}
-		For fitting parameters we need gradients:
-		\[
-		\ba_{\bz}(t) = \frac{\partial L(\by)}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\by)}{\partial \btheta(t)}.
-		\]
-		In theory of optimal control this functions called \textbf{adjoint} functions. 
-		They shows how the gradient of the loss depends on the hidden state~$\bz(t)$ and parameters $\btheta$.
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}     
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	\begin{block}{Loss function (forward pass)}
-	\vspace{-0.2cm}
-	\[
-	    L(\by) = L(\bz(t_1)) = L\left(\text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta) \right)
-	\]
-	\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Adjoint functions}
-	\vspace{-0.2cm}
-	\[
-	    \ba_{\bz}(t) = \frac{\partial L(\bz(t))}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\bz(t))}{\partial \btheta}
-	\]
-	\vspace{-0.2cm}
-	\end{block}
-	\begin{block}{Theorem (Pontryagin)}
-	\vspace{-0.3cm}
-	\[
-	    \frac{d \ba_{\bz}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)}; \quad  \frac{d \ba_{\btheta}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \btheta}
-	\]
-	Do we know any initilal condition?
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	\begin{block}{Theorem (Pontryagin)}
-		\vspace{-0.3cm}
-		\[
-		\frac{d \ba_{\bz}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)}; \quad  \frac{d \ba_{\btheta}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \btheta}
-		\]
-	\end{block}
-	\begin{block}{Solution for adjoint function}
-		\begin{align*}
-		 \frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), t, \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)} \\
-		 \frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta))}{\partial \btheta(t)} dt \\
-		 \bz(t_0) &= \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
-		\end{align*}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	\begin{block}{Forward pass}
-		\[
-		\bz(t_1) = \int^{t_1}_{t_0} f(\bz(t), \btheta) d t  + \bz_0 \quad \Rightarrow \quad \text{ODE Solver}
-		\]
-	\end{block}
-	\begin{block}{Backward pass}
-		\small
-		\vspace{-0.3cm}
-		\begin{equation*}
-			{\left.\begin{aligned}
-				\frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), t, \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)} \\
-				\frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta))}{\partial \btheta(t)} dt \\
-				\bz(t_0) &= \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
-			\end{aligned}\right\rbrace} \Rightarrow
-			\text{ODE Solver}
-		\end{equation*}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	
+\begin{frame}{Evolution of GANs}
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{figs/neural_ode}
+		\includegraphics[width=\linewidth]{figs/gan_evolution}
 	\end{figure}
-	
-	\begin{block}{Benefits}
+	\begin{itemize}
+		\item \textbf{Vanilla GAN} \href{https://arxiv.org/abs/1406.2661}{https://arxiv.org/abs/1406.2661}
+		\item \textbf{DCGAN} \href{https://arxiv.org/abs/1511.06434}{https://arxiv.org/abs/1511.06434}
+		\item \textbf{CoGAN} \href{https://arxiv.org/abs/1606.07536}{https://arxiv.org/abs/1606.07536}
+		\item \textbf{ProGAN} \href{https://arxiv.org/abs/1710.10196}{https://arxiv.org/abs/1710.10196} 
+		\item \textbf{StyleGAN} \href{https://arxiv.org/abs/1812.04948}{https://arxiv.org/abs/1812.04948}
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Self-Attention GAN}
+	\begin{itemize}
+		\item Convolutional layers process the information in a local neighborhood.
+		\item Using convolutional layers alone is computationally inefficient for modeling long-range dependencies in images.
+	\end{itemize}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/conv-vs-sa}
+	\end{figure}
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}{image credit: https://lilianweng.github.io/lil-log/2018/06/24/attention-attention.html}
+\end{frame}
+%=======
+\begin{frame}{Self-Attention GAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\linewidth]{figs/self-attention}
+	\end{figure}
+	\vspace{-0.2cm}
+	\begin{itemize}
+		\item $\bx$ -- feature vector for one feature location.
+		\item $N$ -- number of feature locations.
+	\end{itemize}
+	\vspace{0.5cm}
+	\[
+		\mathbf{f}(\bx) = \bW_f(\bx), \quad \mathbf{g}(\bx) = \bW_g(\bx), \quad \mathbf{h}(\bx) = \bW_h(\bx), \quad \mathbf{v}(\bx) = \bW_v(\bx)
+	\]
+	\[
+		s_{ij} = \mathbf{f}(\bx_i)^T \mathbf{g}(\bx_j), \quad a_{ij} = \frac{\exp{s_{ij}}}{\sum_{i=1}^N \exp{s_{ij}}}, \quad \textbf{o}_j = \textbf{v}\left( \sum_{i=1}^N a_{ij} \mathbf{h}(\bx_i) \right)
+	\]
+	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{Self-Attention GAN}
+	\begin{block}{Technical Details}
 		\begin{itemize}
-			\item memory efficient (there is no need to store activations);
-			\item adaptive computation (depth is not defined explicitly);
-			\item parameter efficient (there is only parameters of function $f(\bz(t), \btheta)$);
-			\item scalable and invertible normalizing flows (we will discuss it today).
+			\item Hinge loss for training.
+			\item Spectral Normalization in both the generator and the discriminator.
+			\item Separate learning rates for the generator and the discriminator.
 		\end{itemize}
 	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Continuous Normaling Flows}
-	\begin{block}{Discrete Normalizing Fflows}
-		\vspace{-0.4cm}
-		  \[
-		  \bz_{t+1} = f(\bz_t, \btheta); \quad \log p(\bz_{t+1}) = \log p(\bz_{t}) - \log \left| \det \frac{\partial f(\bz_t, \btheta)}{\partial \bz_{t}} \right| .
-		  \]
-		\vspace{-0.4cm}
-	\end{block}
-	\begin{block}{Planar flows}
-		\vspace{-0.3cm}
-		\[
-		\bz_{t + 1} = g(\bz_t, \btheta) = \bz_t + \mathbf{u} h(\bw^T\bz_t + b) = \bz_t + f(\bz_t, \btheta).
-		\]
-		Exactly residual learning.
-	\end{block}
-	Let consider continuous-in-time dynamic transformation of $\bz_t$
-	\[
-		\frac{d\bz(t)}{dt} = f(\bz(t), \btheta).
-	\]
-	\vspace{-0.3cm}
-	\begin{block}{Continuous dynamic for planar flows}
-		\vspace{-0.3cm}
-		\[
-			\frac{d\bz(t)}{dt}  = \mathbf{u} h(\bw^T\bz_t + b); \quad \frac{\partial \log p (\bz(t))}{ \partial t} = - \mathbf{u}^T \frac{\partial h}{\partial \bz(t)}.
-		\]
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Continuous Normaling Flows}
-	\begin{block}{Theorem}
-		Consider the continuous dynamic $\frac{d\bz(t)}{dt} = f(\bz(t), \btheta)$. if function $f$ is uniformly Lipschitz continuous in $\bz$ and continuous in $t$, then the change in log probability follows a differential equation
-		\[
-		\frac{\partial \log p(\bz(t))}{\partial t} = - \text{trace} \left( \frac{\partial f}{\partial \bz(t)} \right).
-		\]
-		\vspace{-0.1cm}
-		Continuity of function $f$ guarantees that the solution of ODE exists and unique (Piccard theorem).
-	\end{block}
-	\begin{itemize}
-		\item Unlike standard finite flows, the differential equation $f$ does not need to be bijective, since if
-		uniqueness is satisfied, then the entire transformation is automatically bijective.
-		\item trace($\cdot$) is a linear op instead of det($\cdot$)
-		\vspace{-0.1cm}
-		\[
-		\frac{d\bz(t)}{dt} = \sum_{j=1}^M f_j(\bz(t), \btheta); \quad \frac{\partial \log p(\bz(t))}{\partial t} = - \sum_{j=1}^M\text{trace} \left( \frac{\partial f_j}{\partial \bz(t)} \right).
-		\]
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Continuous NF}
-	\begin{block}{Solution for continuous NF}
-		\vspace{-0.3cm}
-	\begin{align*}
-		\bz(t_0) &= \int_{t_1}^{t_0} f(\bz(t), \btheta) dt + \bz(t_1); \\
-	    \log p(\bz(t_1)) &= \log p(\bz(t_0)) - \int_{t_0}^{t_1} \text{trace} \left( \frac{\partial f}{\partial \bz(t)} \right) dt.
-	\end{align*}
-	\end{block}
-	\vspace{-0.3cm}
 	\begin{figure}
-	    \centering
-	    \includegraphics[width=1\linewidth]{figs/cnf}
+		\centering
+		\includegraphics[width=\linewidth]{figs/sa_results1}
+	\end{figure}
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/sa_results2}
 	\end{figure}
 
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
+	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{Continuous NF}
-	
-	\begin{minipage}[t]{0.45\columnwidth}
+\begin{frame}{Self-Attention GAN}
+	\begin{block}{Visualization of attention maps}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/sa_maps}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{BigGAN}
+	\begin{block}{Model description}
 		\begin{itemize}
-			\item Standard normalizing flows need invertible $f$.
-			\item In general, it costs $O(d^3)$ to get det of Jacobian.
-			\item Continuous flows need smooth $f$.
-			\item In general, it costs $O(d^2)$ to get trace of Jacobian.
+			\item Self-Attention GAN baseline.
+			\item Class-conditional generator.
+			\item Increasing batch size gives tremendous benefit (allows to cover more modes).
+			\item Increasing model size is helpful (wider helps as much as deeper).
+			\item Hinge loss for training.
+			\item Orthogonal regularization for smoothness the generator output.
+			\item Truncation trick for balancing between diversity and fidelity.
 		\end{itemize}
-	\end{minipage}%
-	\begin{minipage}[t]{0.55\columnwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/cnf_flow.png}
-		\end{figure}
-	\end{minipage}
+	\end{block}
+	\vspace{0.5cm}
 
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
+	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
 \end{frame}
 %=======
-\begin{frame}{FFJORD}
-	It is possible to reduce cost from $O(d^2)$ to $O(d)$.
-	\begin{block}{Hutchinson's trace estimator}
-	\[
-	    \text{trace}(A) = \mathbb{E}_{p(\bepsilon)} \left[ \bepsilon^T A \bepsilon \right]; \quad \mathbb{E} [\bepsilon] = 0; \quad \text{Cov} (\bepsilon) = I.
-	\]
-	\end{block}
-	\begin{block}{Unbiased estimation}
-		\vspace{-0.3cm}
-	\begin{align*}
-	    \log p(\bz(t_1)) &= \log p(\bz(t_0)) - \int_{t_0}^{t_1} \text{trace} \left( \frac{\partial f}{\partial \bz} \right) dt \\
-	    &= \log p(\bz(t_0)) - \int_{t_0}^{t_1} \mathbb{E}_{p(\bepsilon)} \left[ \bepsilon^T \frac{\partial f}{\partial \bz} \bepsilon \right] dt \\
-	    &= \log p(\bz(t_0)) - \mathbb{E}_{p(\bepsilon)} \int_{t_0}^{t_1} \left[ \bepsilon^T \frac{\partial f}{\partial \bz} \bepsilon \right] dt.
-	\end{align*}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
-\end{frame}
-%=======
-\begin{frame}{FFJORD}
-	\begin{block}{Comparison of generative modelling approaches}
-		\begin{figure}
-		    \centering
-		    \includegraphics[width=\linewidth]{figs/flow_comparison.png}
-		\end{figure}
-	\end{block}
-	\vspace{1cm}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
-\end{frame}
-%=======
-\begin{frame}{FFJORD}
-	\begin{block}{Density estimation}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/ffjord_results}
-		\end{figure}
-	\end{block}
-	\begin{block}{Flows for variational inference}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.8\linewidth]{figs/ffjord_vae}
-		\end{figure}
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
-\end{frame}
-%=======
-\begin{frame}{FFJORD}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.6\linewidth]{figs/ffjord.png}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018} 
-\end{frame}
-%=======
-\begin{frame}{Discrete VAE}
+\begin{frame}{BigGAN}
 	\begin{itemize}
-		\item Before we have discussed VAE with \textbf{continuous} latent variables.
-		\item VAE suffers from posterior collapse if the decoder too powerful (PixelVAE, VLAE tries to solve this problem).
-		\item \textbf{Discrete} representations are potentially a more natural fit for many of the modalities.
-		\item Powerful autoregressive models (like PixelCNNN) have been developed for modelling distributions over discrete variables.
-		\item However, to construct the model with discrete representations is not so easy (e.g. variance of such estimators is a problem).
-	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE}
-	\begin{itemize}
-		\item Latent embedding space $\{\be_j\}_{j=1}^K$, where $\be_j \in \bbR^D$, $K$ is the size of a discrete latent space.
-		\item $\bz_e(\bx)$ is an encoder output.
-		\item $z$ is a discrete random variable calculated by a nearest neighbour look-up using the shared embedding space. The posterior categorical distribution is defined as 
+		\item \textbf{Orthogonal regularization}
 		\[
-			q(z = k | \bx) = \begin{cases}
-				1 , \quad \text{for } k = \argmin_j \| \bz_e(\bx) - \be_j \| \\
-				0, \quad \text{otherwise}.
-			\end{cases}
+		\| \bW^T \bW - \bI \|^2 \quad \Rightarrow \| \bW^T \bW - \text{diag}(\bW^T \bW) \|^2
 		\]
-		
-		\item VAE proposal distribution $q(z | \bx)$ is deterministic. If prior $p(z)$ is a uniform then $KL(q(z| \bx) || p(z))$ term in ELBO is constant (equals to $\log K$).
-		\item Quantized representation is defined as follows
-		\[
-			\bz_q(\bx) = \be_k, \quad \text{where } k = \argmin_j \| \bz_e(\bx) - \be_j \| 
-		\] 
-		
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/vqvae}
-	\end{figure}
-	\begin{block}{Objective}
-		\vspace{-0.3cm}
-		\[
-			\log p(\bx | \bz_q(\bx)) + \| \text{sg} (\bz_e(\bx)) - \bz_q(\bx) \| + \beta \| \bz_e(\bx) - \text{sg}(\bz_q(\bx)) \|
-		\]
-	\end{block}
-	\begin{itemize}
-		\item Quantization operation is not differentiable.
-		\item Straight-through gradient estimation is used to backpropagate the quantization operation.
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE}
-	\begin{itemize}
-		\item The prior distribution over the discrete latents $p(\bz)$ is a categorical distribution.
-		\item It could be made autoregressive by depending on other $\bz$ in the feature map. 
-		\item Whilst training the VQ-VAE, the prior is kept constant and uniform. 
-		\item After training, fit an autoregressive distribution (using PixelCNN) over $\bz$.
+		\item \textbf{Truncation trick.} Coordinates of samples $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled to fall inside that range.
 	\end{itemize}
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{figs/vqvae_results}
+		\includegraphics[width=\linewidth]{figs/biggan_results}
 	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
 \end{frame}
 %=======
-\begin{frame}{Vector Quantized VAE-2}
-	\begin{itemize}
-		\item Use multi-scale hierarchical model.
-		\item Use autoregressive prior model in each scale of the hierarchy.
-		\item Improve autoregressive prior (PixelSNAIL with self-attention in bottom layer, PixelCNN++ in bottom layer).
-		\item Train the encoder and decoder at the first stage, train the priors at the second stage.
-	\end{itemize}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/vqvae2}
-	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446}} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE-2}
+\begin{frame}{BigGAN}
+	\begin{block}{Samples (512x512)}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.9\linewidth]{figs/vqvae2_pseudo}
+			\includegraphics[width=\linewidth]{figs/biggan_samples}
 		\end{figure}
+	\end{block}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
+\end{frame}
+%=======
+\begin{frame}{BigGAN}
+	\begin{block}{Interpolations}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.85\linewidth]{figs/vqvae2_latents}
+			\includegraphics[width=\linewidth]{figs/biggan_interpolations}
 		\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE-2}
-	\begin{block}{FFHQ 1024x1024}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.63\linewidth]{figs/vqvae2_faces}
-	\end{figure}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
+	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
 \end{frame}
 %=======
-\begin{frame}{Vector Quantized VAE-2}
+\begin{frame}{Progressive Growing GAN}
+	\begin{block}{Problems with HR image generation}
+		\begin{itemize}
+			\item Disjoint manifolds $\Rightarrow$ gradient problem.
+			\item Small minibatch $\Rightarrow$ training instability.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Solution}
+		Grow both the generator and discriminator progressively, starting from LR images, and add new layers that introduce higher-resolution details as the training progresses. 
+		\begin{itemize}
+			\item Train GAN which generate 4x4 images (just 2 convolutions for G and D).
+			\item Add upsampling layers to G, downsampling layers to D.
+			\item Train GAN which generate 8x8 images.
+			\item etc.
+		\end{itemize}
+	\end{block}
+	
+	\myfootnotewithlink{https://arxiv.org/abs/1710.10196}{Karras T. et al. Progressive Growing of GANs for Improved Quality, Stability, and Variation, 2017}
+\end{frame}
+\begin{frame}{Progressive Growing GAN}
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.65\linewidth]{figs/vqvae2_diversity}
+		\includegraphics[width=0.8\linewidth]{figs/pggan_arch}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\linewidth]{figs/pggan_fadein}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1710.10196}{Karras T. et al. Progressive Growing of GANs for Improved Quality, Stability, and Variation, 2017}
 \end{frame}
 %=======
-\begin{frame}{Feature Quantized GAN}
+\begin{frame}{Progressive Growing GAN}
+	\begin{block}{Samples (1024x1024)}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/pggan_samples}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1710.10196}{Karras T. et al. Progressive Growing of GANs for Improved Quality, Stability, and Variation, 2017}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
 	\begin{itemize}
-		\item GAN tries to find Nash equilibrium, minibatch training is unstable. GAN relies heavily on the minibatch statistics.
-		\item Lots of feature matching strategies were proposed to stabilize the training. 
+		\item Generating of HR images is hard.
+		\item Progressive growing greatly simplifies the task.
+		\item The ability to control specific features of the generated image is very limited.
 	\end{itemize}
-	\begin{block}{Feature quantized GAN discriminator}
-		\[
-			D(\bx) = f_{\bw_T} \circ f_{\bw_B}(\bx) \quad \Rightarrow \quad D(\bx) = f_{\bw_T} \circ f_Q \circ f_{\bw_B}(\bx). 
-		\]
+	\begin{block}{Face image features}
+		\begin{itemize}
+			\item Coarse (pose, general hair style, face shape). Resolution $4^2 - 8^2$.
+			\item Middle (finer facial features, hair style, eyes open/closed). Resolution $16^2 - 32^2$.
+			\item Fine (color scheme (eye, hair and skin) and micro features). Resolution $64^2 - 1024^2$.
+		\end{itemize}
 	\end{block}
-	Here $f_Q$ is a vector quantization operation.
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/fqgan}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{Feature Quantized GAN}
-	\begin{block}{Quantization procedure}
-		\begin{minipage}[t]{0.65\columnwidth}
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 1: Mapping Network}
+		\begin{itemize}
+			\item Generator input is likely to be \textbf{disentangled}.  Each component of input vector $\bz$ should be responsible for one generative factor.
+			\item Mapping network $f: \cZ \rightarrow \cW$ is used to reduce correlations between components of~$\bz$.
+		\end{itemize}
+		\begin{minipage}[t]{0.6\columnwidth}
 			\begin{figure}
 				\centering
-				\includegraphics[width=\linewidth]{figs/fqgan_cnn.png}
+				\includegraphics[width=0.98\linewidth]{figs/stylegan_mapping}
 			\end{figure}
 		\end{minipage}%
-		\begin{minipage}[t]{0.35\columnwidth}
+		\begin{minipage}[t]{0.38\columnwidth}
 			\begin{figure}
 				\centering
-				\includegraphics[width=0.9\linewidth]{figs/fqgan_lookup}
+				\includegraphics[width=1.0\linewidth]{figs/stylegan_curved}
 			\end{figure}
 		\end{minipage}
+	\vspace{0.3cm}
 	\end{block}
-	\begin{block}{Quantized features}
-		\begin{figure}
-			\centering
-			\includegraphics[width=\linewidth]{figs/fqgan_features}
-		\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{Feature Quantized GAN}
-		\begin{minipage}[t]{0.45\columnwidth}
-			\begin{block}{ImageNet-1000}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results1.png}
-				\end{figure}
-			\end{block}
-			\begin{block}{FFHQ}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results2.png}
-				\end{figure}
-			\end{block}
-		\end{minipage}%
-		\begin{minipage}[t]{0.55\columnwidth}
-			\begin{block}{Per class metrics for ImageNet}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results3}
-				\end{figure}
-			\end{block}
-		\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 2: Style modulation}
+		\begin{itemize}
+			\item Adaptive Instance Normalization transfers the $\bw$ vector to the synthesis Network.
+			\item The module is added to each resolution to define the visual expression of the features.
+		\end{itemize}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/stylegan_adain}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 3: Remove traditional input}
+		Mapping network provides stochasticity to different stages of the synthesis network. Input of the synthesis network is a trainable vector.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.55\linewidth]{figs/stylegan_input}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 4: Stochastic variation}
+		Inject random noise to add small aspects, such as freckles, exact placement of hairs, wrinkles, features which make the image more realistic and increase the variety of outputs.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/stylegan_noise}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 4: Style Mixing}
+		\vspace{-0.33cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/stylegan_mix_reg}
+		\end{figure}
+	\begin{itemize}
+		\item Makes different levels of synthesis network to be independent.
+		\item Allows to couple diffirent styles.
+	\end{itemize}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/stylegan_scheme}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Truncation trick}
+		\vspace{-0.2cm}
+		\[
+			\bw' = \hat{\bw} - \psi \cdot (\bw - \hat{\bw}), \quad \hat{\bw} = \bbE_{\bz} p(f(\bz))
+		\]
+		\vspace{-0.2cm}
+		\begin{itemize}
+			\item Constant $\psi$ is a tradeoff between diversity and fidelity. 
+			\item $\psi=0.7$ is used for most of the results.
+			\item Truncation is done only at the low-resolution layers.
+		\end{itemize}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/stylegan_truncation}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Results}
+		\vspace{-0.2cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/stylegan_results}
+		\end{figure}
+	\vspace{-0.3cm}
+	\end{block}
+	\begin{block}{Samples (1024x1024)}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/stylegan_samples}
+		\end{figure}
+	\vspace{-0.1cm}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/stylegan_mix}
+		\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{Summary}
 \end{frame}
+%=======
 \end{document} 

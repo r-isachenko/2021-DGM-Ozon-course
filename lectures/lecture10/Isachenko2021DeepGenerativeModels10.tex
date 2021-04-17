@@ -91,7 +91,7 @@
 	\begin{minipage}[t]{0.45\columnwidth}
 		\begin{block}{Non-saturating GAN}
 		\begin{itemize}
-			\item Maximize $\log D(G(z))$ instead of $\log (1 - D(G(\bz)))$. \\
+			\item Maximize $\log D(G(z))$ instead of minimizing $\log (1 - D(G(\bz)))$. \\
 			\item Gradients are getting much stronger, but the training is unstable (with increasing mean and variance).
 		\end{itemize}
 		\end{block}
@@ -263,10 +263,10 @@
 %=======
 \begin{frame}{Wasserstein distance}
 	\[
-		W(\pi, p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+		W(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \Gamma(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
 	\]
 	\begin{itemize}
-		\item $\prod(\pi, p)$ -- the set of all joint distributions $\gamma (\bx, \by)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx, \by) d \bx = p(\by)$, $\int \gamma(\bx, \by) d \by = \pi(\bx)$)
+		\item $\Gamma(\pi, p)$ -- the set of all joint distributions $\Gamma (\bx, \by)$ with marginals $\pi$ and $p$ ($\int \gamma(\bx, \by) d \bx = p(\by)$, $\int \gamma(\bx, \by) d \by = \pi(\bx)$)
 		\item $\gamma(\bx, \by)$ -- transportation plan (the amount of "dirt" that should be transported from point $\bx$ to point $\by$).
 		\item $\gamma(\bx, \by)$ -- the amount, $\|\bx - \by \|$-- the distance.
 	\end{itemize}
@@ -336,10 +336,10 @@
 	\begin{block}{Wasserstein distance}
 		\vspace{-0.4cm}
 		\[
-			W(\pi || p) = \inf_{\gamma \in \prod(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \prod(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+			W(\pi || p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \Gamma(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
 		\]
 	\end{block}
-	The infimum across all possible joint distributions in $\prod(\pi, p)$ is intractable.
+	The infimum across all possible joint distributions in $\Gamma(\pi, p)$ is intractable.
 	\begin{block}{Kantorovich-Rubinstein duality}
 		\[
 			W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right],
@@ -438,101 +438,19 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{block}{Weight clipping annalysis}
-		\begin{itemize}
-			\item The critic ignores higher moments of the data distribution.
-			\item The gradients either grow or decay exponentially.
-		\end{itemize}
-	\end{block}
-	\vspace{-0.2cm}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.8\linewidth]{figs/wgan_gp_weights}
-	\end{figure}
-	\vspace{-0.2cm} 
-	
-	Gradient penalty makes the gradients  more stable.
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{block}{Theorem}
-		Let $\pi(\bx)$ and $p(\bx)$ be two distribution in $\cX$, a compact metric space. Then, there is 1-Lipschitz function $f^*$ which is the optimal solution of 
-		\[
-			\max_{\| f \|_L \leq 1} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right].
-		\]
-		Let $\gamma$ be the optimal transportation plan between $\pi(\bx)$ and $p(\bx)$. Then, if $f^*$ is differentiable, $\gamma(\bx = \by) = 0$ and $\hat{\bx}_t = t \bx + (1 - t) \by$ with $t \in [0, 1]$ it holds that
-		\[
-			\bbP_{(\bx, \by) \sim \gamma} \left[ \nabla f^*(\hat{\bx}_t) = \frac{\by - \hat{\bx}_t}{\| \by - \hat{\bx}_t \|} \right] = 1.
-		\]
-	\end{block}
-	\vspace{-0.2cm}
-	\begin{block}{Corollary}
-		$f^*$ has gradient norm 1 almost everywhere under $\pi(\bx)$ and $p(\bx)$.
-	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	A differentiable function is 1-Lipschtiz if and only if it has gradients with norm at most 1 everywhere.
-	\begin{block}{Gradient penalty}
-		\[
-			W(\pi || p) = \underbrace{\bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{\hat{\bx}} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
-		\]
-	\end{block}
-	\begin{itemize}
-		\item Samples $\hat{\bx}$ are uniformly sampled along straight lines between pairs of points from the data distribution $\pi(\bx)$ and the generator distribution $p(\bx | \btheta)$.
-		\item Enforcing the unit gradient norm constraint everywhere is intractable, it turns out to be sifficient to enforce it only along these straight lines.
-	\end{itemize}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	
-	\begin{figure}
-		\centering
-		\includegraphics[width=1.0\linewidth]{figs/wgan_gp_pseudocode}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/wgan_gp_convergence}
-	\end{figure}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/wgan_gp_wgan}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.95\linewidth]{figs/wgan_gp_results}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
 \begin{frame}{Summary}
 	\begin{itemize} 
 		\item Mode collapse and vanishing gradients are the two main problems of vanilla GAN.  Lots of tips and tricks has to be used to make the GAN training is stable and scalable.
 		\vfill
 		\item DCGAN is the first GAN with deep convolutional architecture.
 		\vfill
+		\item KL and JS divergences work poorly as model objective in the case of disjoint supports.
+		\vfill
 		\item Earth-Mover distance is a more appropriate objective function for distribution matching problem.
 		\vfill
 		\item Wasserstein GAN uses Kantorovich-Rubinstein duality to obtain EM distance.
 		\vfill
-		\item Weight clipping and gradient penalty are the ways to enforce Lipschitzness of the critic.
+		\item Weight clipping is a way to enforce Lipschitzness of the critic.
 	\end{itemize}
 \end{frame}
 %=======
