@@ -1,9 +1,18 @@
 # 2021-DGM-Ozon-course
 
-The course is devoted to modern generative models in the application to computer vision. We will study 4 main classes of generative models: autoregressive models, latent variable models, normalization flow models, and adversarial models. 
+The course is devoted to modern generative models in the application to computer vision. 
+
+We will study 4 main classes of generative models: 
+- autoregressive models, 
+- latent variable models, 
+- normalization flow models, 
+- adversarial models. 
+
 Special attention is paid to the properties of various classes of generative models, their interrelationships, theoretical prerequisites and methods of quality assessment.
+
 The aim of the course is to introduce the student to widely used advanced methods of deep learning.
-The course is accompanied by practical tasks that allow you to understand the principles of the considered models in practice.
+
+The course is accompanied by practical tasks that allow you to understand the principles of the considered models.
 
 ## Course materials
 
