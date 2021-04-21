@@ -1,9 +1,18 @@
 # 2021-DGM-Ozon-course
 
-The course is devoted to modern generative models in the application to computer vision. We will study 4 main classes of generative models: autoregressive models, latent variable models, normalization flow models, and adversarial models. 
+The course is devoted to modern generative models in the application to computer vision. 
+
+We will study 4 main classes of generative models: 
+- autoregressive models, 
+- latent variable models, 
+- normalization flow models, 
+- adversarial models. 
+
 Special attention is paid to the properties of various classes of generative models, their interrelationships, theoretical prerequisites and methods of quality assessment.
+
 The aim of the course is to introduce the student to widely used advanced methods of deep learning.
-The course is accompanied by practical tasks that allow you to understand the principles of the considered models in practice.
+
+The course is accompanied by practical tasks that allow you to understand the principles of the considered models.
 
 ## Course materials
 
@@ -18,6 +27,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 7 | March, 25 | Variational dequantization. IWAE. ELBO surgery. | [slides](lectures/lecture7/Isachenko2021DeepGenerativeModels7.pdf) | [slides](seminars/seminar7/seminar7.ipynb) | 
 | 8 | April, 1 | VampPrior + Autoregressive prior. Posterior collapse. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [slides](seminars/seminar8/seminar8.ipynb) | 
 | 9 | April, 8 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [slides](seminars/seminar9/seminar9.ipynb) | 
+| 10 | April, 15 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [slides](seminars/seminar10/seminar10.ipynb) | 
 
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
