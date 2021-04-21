@@ -28,6 +28,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 8 | April, 1 | VampPrior + Autoregressive prior. Posterior collapse. Disentanglement learning (beta-VAE). | [slides](lectures/lecture8/Isachenko2021DeepGenerativeModels8.pdf) | [slides](seminars/seminar8/seminar8.ipynb) | 
 | 9 | April, 8 | Disentanglement learning (DIP-VAE + summary). Likelihood-free learning. GAN theorem. | [slides](lectures/lecture9/Isachenko2021DeepGenerativeModels9.pdf) | [slides](seminars/seminar9/seminar9.ipynb) | 
 | 10 | April, 15 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [slides](seminars/seminar10/seminar10.ipynb) | 
+| 11 | April, 22 | WGAN-GP. Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID) | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [slides](seminars/seminar11/seminar11.ipynb) | 
 
 ## Homeworks 
 | Homework | Date | Deadline | Description | Link |
