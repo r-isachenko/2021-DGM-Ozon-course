@@ -103,7 +103,7 @@
 		\[
 			\max_{\| f \|_L \leq 1} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right].
 		\]
-		Let $\gamma$ be the optimal transportation plan between $\pi(\bx)$ and $p(\bx)$. Then, if $f^*$ is differentiable, $\gamma(\bx = \by) = 0$ and $\hat{\bx}_t = t \bx + (1 - t) \by$ with $t \in [0, 1]$ it holds that
+		Let $\gamma$ be the optimal transportation plan between $\pi(\bx)$ and $p(\bx)$. Then, if $f^*$ is differentiable, $\gamma(\bx = \by) = 0$ and $\hat{\bx}_t = t \bx + (1 - t) \by$ with $\bx \sim \pi(\bx)$, $\by \sim p(\bx | \btheta)$, $t \in [0, 1]$ it holds that
 		\[
 			\bbP_{(\bx, \by) \sim \gamma} \left[ \nabla f^*(\hat{\bx}_t) = \frac{\by - \hat{\bx}_t}{\| \by - \hat{\bx}_t \|} \right] = 1.
 		\]
@@ -120,11 +120,11 @@
 	A differentiable function is 1-Lipschtiz if and only if it has gradients with norm at most 1 everywhere.
 	\begin{block}{Gradient penalty}
 		\[
-			W(\pi || p) = \underbrace{\bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{\hat{\bx}} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
+			W(\pi || p) = \underbrace{\bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)}_{\text{original critic loss}} + \lambda \underbrace{\bbE_{U[0, 1]} \left[ \left( \| \nabla_{\hat{\bx}} f(\hat{\bx}) \|_2 - 1 \right) ^ 2\right]}_{\text{gradient penalty}},
 		\]
 	\end{block}
 	\begin{itemize}
-		\item Samples $\hat{\bx}$ are uniformly sampled along straight lines between pairs of points from the data distribution $\pi(\bx)$ and the generator distribution $p(\bx | \btheta)$.
+		\item Samples $\hat{\bx}_t = t \bx + (1 - t) \by$ with $t \in [0, 1]$ are uniformly sampled along straight lines between pairs of points: $\bx$ from the data distribution $\pi(\bx)$ and $\by$ from the generator distribution $p(\bx | \btheta)$.
 		\item Enforcing the unit gradient norm constraint everywhere is intractable, it turns out to be sifficient to enforce it only along these straight lines.
 	\end{itemize}
 
@@ -146,19 +146,12 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/wgan_gp_convergence}
 	\end{figure}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.75\linewidth]{figs/wgan_gp_wgan}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
-\end{frame}
-%=======
-\begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.95\linewidth]{figs/wgan_gp_results}
-	\end{figure}
+	\begin{block}{WGAN-GP convergence}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.75\linewidth]{figs/wgan_gp_wgan}
+		\end{figure}
+	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1704.00028}{Gulrajani I. et al. Improved Training of Wasserstein GANs, 2017}
 \end{frame}
@@ -444,23 +437,26 @@
 \end{frame}
 %=======
 \begin{frame}{Evaluation of likelihood-free models}
-	\begin{block}{Theorem}
+	\begin{block}{Theorem (informal)}
 		If $\pi(\bx)$ and $p(\bx | \btheta)$ has moment generation functions then
+		\vspace{-0.1cm}
 		\[
 			\pi(\bx) = p(\bx | \btheta) \, \Leftrightarrow \, \bbE_{\pi} \bx^k = \bbE_{p} \bx^k, \quad \forall k \geq 1.
 		\]
+		\vspace{-0.7cm}
 	\end{block}
 	This is intractable to calculate all moments.
 	\begin{block}{Frechet Inception Distance}
-		\vspace{-0.1cm}
+		\vspace{-0.3cm}
 		\[
 			D^2 (\pi, p) = \| \mathbf{m}_{\pi} - \mathbf{m}_{p}\|_2^2 + \text{Tr} \left( \bC_{\pi} + \bC_p - 2 \sqrt{\bC_{\pi} \bC_p} \right)
 		\]
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
+		\item Representations are outputs of intermediate layer from pretrained classification model.
 		\item $\mathbf{m}_{\pi}$, $\bC_{\pi} $ are mean vector and covariance matrix of feature representations for real samples from $\pi(\bx)$
 		\item $\mathbf{m}_{p}$, $\bC_p$ are mean vector and covariance matrix of feature representations for generated samples from $p(\bx | \btheta)$.
-		\item Representations are outputs of intermediate layer from pretrained classification model.
 	\end{itemize} 
 
 	\myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
@@ -487,7 +483,7 @@
 			\item FID depends on the pretrained classification model.
 			\item FID needs a large samples  size for evaluation.
 			\item Calculation of FID is slow.
-			\item FID extimates only two sample moments.
+			\item FID estimates only two sample moments.
 		\end{itemize}
 	\end{block}
 
@@ -496,15 +492,13 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Wasserstein GAN uses Kantorovich-Rubinstein duality to estimate Wasserstein distance.
-		\item Gradient Penalty proposes the regularizer to enforce Lipschitzness.
-		\item Spectral normalization is a weight normalization technique to enforce Lipshitzness.
-		\item f-divergence family is a unified framework for divergence minimization.
-		\item Inception Score and Frechet Inception Distance are the common metrics for GAN evaluation.
+		\item Weight clipping is a terrible way to enforce Lipschitzness. Gradient Penalty works better.
+		\vfill
+		\item Spectral normalization is a weight normalization technique to enforce Lipshitzness, which is helpful for generator and discriminator.
+		\vfill
+		\item f-divergence family is a unified framework for divergence minimization, which uses variational approximation.
+		\vfill
+		\item Inception Score and Frechet Inception Distance are the common metrics for GAN evaluation, but both of them have drawbacks.
 	\end{itemize}
 \end{frame}
-%=======
-\begin{frame}{Summary}
-\end{frame}
-%=======
 \end{document} 
