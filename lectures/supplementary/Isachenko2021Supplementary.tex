@@ -754,4 +754,80 @@ where $i$ is treated as random variable:
 	\myfootnotewithlink{https://arxiv.org/abs/1606.03498}{Salimans T. et al. Improved Techniques for Training GANs, 2016}
 \end{frame}
 %=======
+\begin{frame}{StyleGAN}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 2: Style modulation}
+		\begin{itemize}
+			\item Adaptive Instance Normalization transfers the $\bw$ vector to the synthesis Network.
+			\item The module is added to each resolution to define the visual expression of the features.
+		\end{itemize}
+		\begin{figure}
+			\centering
+			\includegraphics[width=1.0\linewidth]{figs/stylegan_adain}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 3: Remove traditional input}
+		Mapping network provides stochasticity to different stages of the synthesis network. Input of the synthesis network is a trainable vector.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.55\linewidth]{figs/stylegan_input}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 4: Stochastic variation}
+		Inject random noise to add small aspects, such as freckles, exact placement of hairs, wrinkles, features which make the image more realistic and increase the variety of outputs.
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.9\linewidth]{figs/stylegan_noise}
+		\end{figure}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{block}{Step 4: Style Mixing}
+		\vspace{-0.33cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.8\linewidth]{figs/stylegan_mix_reg}
+		\end{figure}
+	\begin{itemize}
+		\item Makes different levels of synthesis network to be independent.
+		\item Allows to couple diffirent styles.
+	\end{itemize}
+	\end{block}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.8\linewidth]{figs/stylegan_scheme}
+	\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
+\begin{frame}{StyleGAN}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/stylegan_mix}
+		\end{figure}
+
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
+\end{frame}
+%=======
 \end{document} 
