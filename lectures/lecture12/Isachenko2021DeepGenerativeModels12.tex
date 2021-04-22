@@ -46,7 +46,7 @@
 	\end{itemize}
 	\vspace{0.5cm}
 	\[
-		\mathbf{f}(\bx) = \bW_f(\bx), \quad \mathbf{g}(\bx) = \bW_g(\bx), \quad \mathbf{h}(\bx) = \bW_h(\bx), \quad \mathbf{v}(\bx) = \bW_v(\bx)
+		\mathbf{f}(\bx) = \bW_f \bx, \quad \mathbf{g}\bx = \bW_g\bx, \quad \mathbf{h}\bx = \bW_h\bx, \quad \mathbf{v}\bx = \bW_v\bx
 	\]
 	\[
 		s_{ij} = \mathbf{f}(\bx_i)^T \mathbf{g}(\bx_j), \quad a_{ij} = \frac{\exp{s_{ij}}}{\sum_{i=1}^N \exp{s_{ij}}}, \quad \textbf{o}_j = \textbf{v}\left( \sum_{i=1}^N a_{ij} \mathbf{h}(\bx_i) \right)
@@ -58,23 +58,15 @@
 	\begin{block}{Technical Details}
 		\begin{itemize}
 			\item Hinge loss for training.
-			\item Spectral Normalization in both the generator and the discriminator.
+			\item SpectralNorm in both the generator and the discriminator.
 			\item Separate learning rates for the generator and the discriminator.
 		\end{itemize}
 	\end{block}
 	\begin{figure}
 		\centering
-		\includegraphics[width=\linewidth]{figs/sa_results1}
+		\includegraphics[width=0.85\linewidth]{figs/sa_results2}
 	\end{figure}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/sa_results2}
-	\end{figure}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1805.08318}{Zhang H. et al. Self-Attention Generative Adversarial Networks, 2018}
-\end{frame}
-%=======
-\begin{frame}{Self-Attention GAN}
+	\vspace{-0.3cm}
 	\begin{block}{Visualization of attention maps}
 		\begin{figure}
 			\centering
@@ -86,30 +78,19 @@
 \end{frame}
 %=======
 \begin{frame}{BigGAN}
-	\begin{block}{Model description}
-		\begin{itemize}
-			\item Self-Attention GAN baseline.
-			\item Class-conditional generator.
-			\item Increasing batch size gives tremendous benefit (allows to cover more modes).
-			\item Increasing model size is helpful (wider helps as much as deeper).
-			\item Hinge loss for training.
-			\item Orthogonal regularization for smoothness the generator output.
-			\item Truncation trick for balancing between diversity and fidelity.
-		\end{itemize}
-	\end{block}
-	\vspace{0.5cm}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
-\end{frame}
-%=======
-\begin{frame}{BigGAN}
-	\begin{itemize}
-		\item \textbf{Orthogonal regularization}
-		\[
-		\| \bW^T \bW - \bI \|^2 \quad \Rightarrow \| \bW^T \bW - \text{diag}(\bW^T \bW) \|^2
-		\]
-		\item \textbf{Truncation trick.} Coordinates of samples $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled to fall inside that range.
-	\end{itemize}
+		\begin{block}{Technical Details}
+			\begin{itemize}
+				\item Hinge loss.
+				\item Self-Attention GAN baseline.
+				\item \textbf{Orthogonal regularization}
+				\vspace{-0.2cm}
+				\[
+					\| \bW^T \bW - \bI \|^2 \quad \Rightarrow \quad \| \bW^T \bW - \text{diag}(\bW^T \bW) \|^2
+				\]
+				\vspace{-0.8cm}
+				\item \textbf{Truncation trick.} Components of $\bz \sim \cN(0, \bI)$ which fall outside a predefined range are resampled.
+			\end{itemize}
+		\end{block}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/biggan_results}
@@ -125,11 +106,7 @@
 			\includegraphics[width=\linewidth]{figs/biggan_samples}
 		\end{figure}
 	\end{block}
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1809.11096}{Brock A., Donahue J., Simonyan K. Large Scale GAN Training for High Fidelity Natural Image Synthesis, 2018}
-\end{frame}
-%=======
-\begin{frame}{BigGAN}
+	\vspace{-0.4cm}
 	\begin{block}{Interpolations}
 		\begin{figure}
 			\centering
