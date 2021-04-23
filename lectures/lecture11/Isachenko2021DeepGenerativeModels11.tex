@@ -80,7 +80,7 @@
 \end{frame}
 %=======
 \begin{frame}{Wasserstein GAN with Gradient Penalty}
-	\begin{block}{Weight clipping annalysis}
+	\begin{block}{Weight clipping analysis}
 		\begin{itemize}
 			\item The critic ignores higher moments of the data distribution.
 			\item The gradients either grow or decay exponentially.
@@ -188,7 +188,7 @@
 	This feedforward network is a superposition of simple functions.
 	\begin{itemize}
 		\item $a_k$ is a pointwise nonlinearities. We assume that $\| a_k \|_L = 1$ (it holds for ReLU).
-		\item $\mathbf{g}(\bh) = \bW \bh$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
+		\item $\mathbf{g}(\bx) = \bW \bx$ is a linear transformation ($\nabla \mathbf{g}(\bx) = \bW$).
 		\[
 			\| \mathbf{g} \|_L = \sup_\bx \sigma( \nabla \mathbf{g}(\bx)) = \sigma(\bW).
 		\]
@@ -215,11 +215,11 @@
 	 		\item $\bu_0$ -- random vector.
 	 		\item for $k = 0, \dots, n - 1$: ($n$ is a large enough number of steps)
 	 		\[
-	 			\bv_{k+1} = \frac{\bW^T \bu_{k}}{\| \bW^T \bu_{k} \|}, \quad \bu_{k+1} = \frac{\bW \bv_{k+1}}{\| \bW \bv_{k+1} \|}
+	 			\bv_{k+1} = \frac{\bW^T \bu_{k}}{\| \bW^T \bu_{k} \|}, \quad \bu_{k+1} = \frac{\bW \bv_{k+1}}{\| \bW \bv_{k+1} \|}.
 	 		\]
 	 		\item approximate the spectral norm
 	 		\[
-	 			\sigma(\bW) \approx \bu_{n}^T \bW \bv_{n}
+	 			\sigma(\bW) \approx \bu_{n}^T \bW \bv_{n}.
 	 		\]
 	 	\end{itemize}
 	 \end{block}
