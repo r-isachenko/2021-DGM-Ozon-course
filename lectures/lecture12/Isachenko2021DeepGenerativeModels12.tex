@@ -335,6 +335,68 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
+\begin{frame}{Density ratio trick}
+	Consider two distributions $q_1(\bx)$, $q_2(\bx)$ and probabilistic model
+	\[
+		p(\bx | y) = \begin{cases}
+			q_1(\bx), \text{ if } y = 1, \\
+			q_2(\bx), \text{ if } y = 0,
+		\end{cases}
+		\quad 
+		y \sim \text{Bern}(0.5).
+	\]
+	\[
+		p(y = 0) = p (y = 1) = 0.5.
+	\]
+	\begin{block}{Density ratio}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\frac{q_1(\bx)}{q_2(\bx)} = \frac{p(\bx | y = 1)}{p(\bx | y = 0)} = \frac{p(y = 1 | \bx) p(\bx)}{p(y=1)} \bigg/ \frac{p(y = 0 | \bx) p(\bx)}{p(y=0)} = \\
+			= \frac{p(y = 1 | \bx)}{p(y = 0 | \bx)} = \frac{p(y = 1 | \bx)}{1 - p(y = 1 | \bx)} = \frac{D(\bx)}{1 - D(\bx)}
+		\end{multline*}
+		Here $D(\bx)$ could be treated as a discriminator model the output of which is a probability that $\bx$ is a sample
+		from $q_1(\bx)$ rather than from $q_2(\bx)$.
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{VAE recap}
+	\vspace{-0.3cm}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
+	\end{figure}
+	\vspace{-0.5cm}
+	\begin{itemize}
+		\item Encoder $q(\bz | \bx, \bphi) = \cN(\bz | \bmu_{\bphi}(\bx), \bsigma_{\bphi}(\bx))$.
+		\item Variational posterior $q(\bz | \bx, \bphi)$ originally approximates the true posterior $p(\bz | \bx, \btheta)$.
+		\item Which methods are you already familiar with to make the posterior is more flexible?
+	\end{itemize}
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}{image credit: https://lilianweng.github.io/lil-log/2018/08/12/from-autoencoder-to-beta-vae.html}
+\end{frame}
+%=======
+\begin{frame}{Adversarial Variational Bayes}
+	\begin{block}{ELBO objective}
+		\vspace{-0.5cm}
+		\[
+			 \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx | \bz, \btheta) + \log p(\bz) - \log q(\bz| \bx, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
+		\]	
+		\vspace{-0.5cm}
+	\end{block}
+	What is the problem to make the variational posterior model an implicit model?
+	\begin{itemize}
+	\item The first term is reconstruction loss that needs only samples from $q(\bz | \bx, \bphi)$ to evaluate.
+	\item Reparametrization trick allows to get gradients of reconstruction loss
+		\vspace{-0.4cm}
+		\begin{multline*}
+			\nabla_{\bphi}\int q(\bz|\bx, \bphi) f(\bz) d\bz = \nabla_{\bphi}\int r(\bepsilon)  f(\bz) d\bepsilon \\ = \int r(\bepsilon) \nabla_{\bphi} f(g(\bx, \bepsilon, \bphi)) d\bepsilon \approx \nabla_{\bphi} f(g(\bx, \bepsilon^*, \bphi)),
+		\end{multline*}
+		\vspace{-0.6cm} \\
+		where $\bepsilon^* \sim r(\bepsilon), \quad \bz = g(\bx, \bepsilon, \bphi), \quad \bz \sim q(\bz | \bx, \bphi)$.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
+\end{frame}
+%=======
+		
 \begin{frame}{Summary}
 \end{frame}
 %=======
