@@ -114,6 +114,32 @@
 	\href{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017} }
 \end{frame}
 %=======
+\begin{frame}{Precision-Recall}
+	\begin{block}{What do we want from samples}
+		\begin{itemize}
+			\item \textbf{Sharpness}: generated samples should be of high quality.
+			\item \textbf{Diversity}: their variation should match that observed in the training set.
+		\end{itemize}
+	\end{block}
+	\vspace{-0.5cm}
+	\begin{figure}
+		\includegraphics[width=0.95\linewidth]{figs/pr_curve}
+	\end{figure}
+	\vspace{-0.3cm}
+	\begin{itemize}
+		\item \textbf{Precision} denotes the fraction of generated images that are realistic.
+		\item \textbf{Recall} measures the fraction of the training data manifold covered by the generator.
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
+\begin{frame}{Precision-Recall}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/pr_k_nearest}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+\end{frame}
+%=======
 \begin{frame}{Evolution of GANs}
 	\begin{figure}
 		\centering
@@ -335,30 +361,6 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
-\begin{frame}{Density ratio trick}
-	Consider two distributions $q_1(\bx)$, $q_2(\bx)$ and probabilistic model
-	\[
-		p(\bx | y) = \begin{cases}
-			q_1(\bx), \text{ if } y = 1, \\
-			q_2(\bx), \text{ if } y = 0,
-		\end{cases}
-		\quad 
-		y \sim \text{Bern}(0.5).
-	\]
-	\[
-		p(y = 0) = p (y = 1) = 0.5.
-	\]
-	\begin{block}{Density ratio}
-		\vspace{-0.5cm}
-		\begin{multline*}
-			\frac{q_1(\bx)}{q_2(\bx)} = \frac{p(\bx | y = 1)}{p(\bx | y = 0)} = \frac{p(y = 1 | \bx) p(\bx)}{p(y=1)} \bigg/ \frac{p(y = 0 | \bx) p(\bx)}{p(y=0)} = \\
-			= \frac{p(y = 1 | \bx)}{p(y = 0 | \bx)} = \frac{p(y = 1 | \bx)}{1 - p(y = 1 | \bx)} = \frac{D(\bx)}{1 - D(\bx)}
-		\end{multline*}
-		Here $D(\bx)$ could be treated as a discriminator model the output of which is a probability that $\bx$ is a sample
-		from $q_1(\bx)$ rather than from $q_2(\bx)$.
-	\end{block}
-\end{frame}
-%=======
 \begin{frame}{VAE recap}
 	\vspace{-0.3cm}
 	\begin{figure}[h]
@@ -396,7 +398,77 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
 \end{frame}
 %=======
-		
+\begin{frame}{Adversarial Variational Bayes}
+	\begin{block}{ELBO objective}
+		\vspace{-0.5cm}
+		\[
+			 \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx | \bz, \btheta) + \log p(\bz) - \log q(\bz| \bx, \bphi) \right] \rightarrow \max_{\bphi, \btheta}.
+		\]	
+		\vspace{-0.5cm}
+	\end{block}
+	What is the problem to make the variational posterior model an implicit model?
+	\begin{itemize}
+	\item The third term requires the ability to calculate the value of $q(\bz | \bx, \bphi)$.
+	\item We could join second and third terms:
+		\vspace{-0.2cm}
+		\[
+			\mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bz)}{q(\bz| \bx, \bphi)} = \mathbb{E}_{q(\bz | \bx, \bphi)} \log \frac{p(\bz) \pi(\bx)}{q(\bz| \bx, \bphi) \pi (\bx)}.
+		\]
+		\vspace{-0.5cm}
+	\item We have to estimate density ratio 
+		\vspace{-0.2cm}
+		\[
+			r(\bx, \bz) = \frac{q_1(\bx, \bz)}{q_2(\bx, \bz)} = \frac{p(\bz) \pi(\bx)}{q(\bz| \bx, \bphi) \pi (\bx)}.
+		\] 
+	\end{itemize}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
+\end{frame}
+%=======
+\begin{frame}{Density ratio trick}
+	Consider two distributions $q_1(\bx)$, $q_2(\bx)$ and probabilistic model
+	\[
+		p(\bx | y) = \begin{cases}
+			q_1(\bx), \text{ if } y = 1, \\
+			q_2(\bx), \text{ if } y = 0,
+		\end{cases}
+		\quad 
+		y \sim \text{Bern}(0.5).
+	\]
+	\vspace{-0.3cm}
+	\begin{block}{Density ratio}
+		\vspace{-0.7cm}
+		{\small
+		\begin{multline*}
+			\frac{q_1(\bx)}{q_2(\bx)} = \frac{p(\bx | y = 1)}{p(\bx | y = 0)} = \frac{p(y = 1 | \bx) p(\bx)}{p(y=1)} \bigg/ \frac{p(y = 0 | \bx) p(\bx)}{p(y=0)} = \\
+			= \frac{p(y = 1 | \bx)}{p(y = 0 | \bx)} = \frac{p(y = 1 | \bx)}{1 - p(y = 1 | \bx)} = \frac{D(\bx)}{1 - D(\bx)}
+		\end{multline*}
+		}
+		Here $D(\bx)$ is a discriminator model the output of which is a probability that $\bx$ is a sample
+		from $q_1(\bx)$ rather than from $q_2(\bx)$.
+	\end{block}
+	\begin{block}{Adversarial Variational Bayes}
+		\vspace{-0.6cm}
+		\[
+			\max_D \left[ \bbE_{\pi(\bx)} \bbE_{q(\bz | \bx, \bphi)} \log D(\bx, \bz) + \bbE_{\pi(\bx)} \bbE_{p(\bz)} \log (1 - D(\bx, \bz)) \right]
+		\]
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
+\end{frame}
+%=======
+\begin{frame}{Adversarial Variational Bayes}
+	\begin{block}{ELBO objective}
+		\vspace{-0.5cm}
+		\[
+			 \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\bz | \bx, \bphi)} \left[\log p(\bx | \bz, \btheta) + \log \frac{p(\bz)}{q(\bz| \bx, \bphi)} \right] \rightarrow \max_{\bphi, \btheta}.
+		\]	
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/avb_scheme}
+	\end{figure}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.04722}{Mescheder L., Nowozin S., Geiger A. Adversarial variational bayes: Unifying variational autoencoders and generative adversarial networks, 2017}
+\end{frame}
+%=======
 \begin{frame}{Summary}
 \end{frame}
 %=======
