@@ -208,7 +208,7 @@
 	\end{itemize}
 	\vspace{0.5cm}
 	\[
-		\mathbf{f}(\bx) = \bW_f \bx, \quad \mathbf{g}\bx = \bW_g\bx, \quad \mathbf{h}\bx = \bW_h\bx, \quad \mathbf{v}\bx = \bW_v\bx
+		\mathbf{f}(\bx) = \bW_f \bx, \quad \mathbf{g}(\bx) = \bW_g\bx, \quad \mathbf{h} (\bx) = \bW_h\bx, \quad \mathbf{v}(\bx) = \bW_v\bx
 	\]
 	\[
 		s_{ij} = \mathbf{f}(\bx_i)^T \mathbf{g}(\bx_j), \quad a_{ij} = \frac{\exp{s_{ij}}}{\sum_{i=1}^N \exp{s_{ij}}}, \quad \textbf{o}_j = \textbf{v}\left( \sum_{i=1}^N a_{ij} \mathbf{h}(\bx_i) \right)
@@ -500,6 +500,18 @@
 \end{frame}
 %=======
 \begin{frame}{Summary}
+	\begin{itemize}
+		\item Precision-recall allows to select model with compromise with sample quality and sample diversity.
+		\vfill
+		\item Self-Attention GAN allows to make huge receptive field and reduce convolution inductive bias.
+		\vfill
+		\item BigGAN shows that large batch size increase model quality gradually.
+		\item Progressive growing for GAN learning allows to make training more stable.
+		\vfill
+		\item StyleGAN introduces mapping network to get more disentangled latent representation.
+		\vfill
+		\item Adversarial Variational Bayes uses density ratio trick to get more powerful variational posterior.
+	\end{itemize}
 \end{frame}
 %=======
 \end{document} 
