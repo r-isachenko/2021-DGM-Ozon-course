@@ -345,36 +345,69 @@
 \end{frame}
 %=======
 \begin{frame}{Discrete VAE}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{figs/vae-gaussian.png}
+	\end{figure}
 	\begin{itemize}
-		\item Before we have discussed VAE with \textbf{continuous} latent variables.
-		\item VAE suffers from posterior collapse if the decoder too powerful (PixelVAE, VLAE tries to solve this problem).
-		\item \textbf{Discrete} representations are potentially a more natural fit for many of the modalities.
-		\item Powerful autoregressive models (like PixelCNNN) have been developed for modelling distributions over discrete variables.
-		\item However, to construct the model with discrete representations is not so easy (e.g. variance of such estimators is a problem).
+		\item Previous VAE models had \textbf{continuous} latent variables $\bz$.
+		\item \textbf{Discrete} representations $\bz$ are potentially a more natural fit for many of the modalities.
+		\item Powerful autoregressive models (like PixelCNN) have been developed for modelling distributions over discrete variables.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE}
 	\begin{itemize}
-		\item Latent embedding space $\{\be_j\}_{j=1}^K$, where $\be_j \in \bbR^D$, $K$ is the size of a discrete latent space.
-		\item $\bz_e(\bx)$ is an encoder output.
-		\item $z$ is a discrete random variable calculated by a nearest neighbour look-up using the shared embedding space. The posterior categorical distribution is defined as 
+		\item Define dictionary space $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^C$, $K$ is the size of the dictionary.
+		\item Let $\bz = \text{NN}_\text{e}(\bx) \in \bbR^{W \times H \times C}$ be an encoder output.
+		\item Quantized representation $\bz_q \in \bbR^{W \times H \times C}$ is defined by a nearest neighbour look-up using the shared dictionary space for each of $W \times H$ spatial locations
+		\vspace{-0.2cm}
 		\[
-			q(z = k | \bx) = \begin{cases}
-				1 , \quad \text{for } k = \argmin_j \| \bz_e(\bx) - \be_j \| \\
-				0, \quad \text{otherwise}.
-			\end{cases}
-		\]
-		
-		\item VAE proposal distribution $q(z | \bx)$ is deterministic. If prior $p(z)$ is a uniform then $KL(q(z| \bx) || p(z))$ term in ELBO is constant (equals to $\log K$).
-		\item Quantized representation is defined as follows
-		\[
-			\bz_q(\bx) = \be_k, \quad \text{where } k = \argmin_j \| \bz_e(\bx) - \be_j \| 
+			[\bz_q]_{ij} = \be_{k^*}, \quad \text{where } k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \|.
 		\] 
-		
 	\end{itemize}
+	\vspace{-0.6cm}
+	\begin{block}{Quantization procedure}
+		\begin{minipage}[t]{0.65\columnwidth}
+			\begin{figure}
+				\includegraphics[width=\linewidth]{figs/fqgan_cnn.png}
+			\end{figure}
+		\end{minipage}%
+		\begin{minipage}[t]{0.35\columnwidth}
+			\begin{figure}
+				\includegraphics[width=0.9\linewidth]{figs/fqgan_lookup}
+			\end{figure}
+		\end{minipage}
+	\end{block}
 
+	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
+\end{frame}
+\begin{frame}{Vector Quantized VAE}
+	Define VAE latent variable $\hat{\bz} \in \bbR^{W \times H}$ with prior distribution $p(\hat{\bz}) = \text{Uniform}\{1, \dots, K\}$ and variational posterior distribution 
+	\vspace{-0.3cm}
+	\[
+		q(\hat{\bz} | \bx) = \prod_{i=1}^W \prod_{j=1}^H q(\hat{z}_{ij} | \bx)
+	\]
+	\vspace{-0.3cm}
+	\[
+		q(\hat{z}_{ij} = k^* | \bx) = \begin{cases}
+			1 , \quad \text{for } k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \| \\
+			0, \quad \text{otherwise}.
+		\end{cases}
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{ELBO objective}
+		\vspace{-0.5cm}
+		\[
+		 \mathcal{L} (\bphi, \btheta)  = \mathbb{E}_{q(\hat{\bz} | \bx, \bphi)} \log p(\bx | \hat{\bz}, \btheta)] - KL(q(\hat{\bz}| \bx) || p(\hat{\bz})) \rightarrow \max_{\bphi, \btheta}.
+		\]	
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{itemize}
+		\item VAE proposal distribution $q(z | \bx)$ is deterministic. 
+		\item $KL(q(\hat{z}| \bx) || p(\hat{z}))$ term in ELBO is constant (equals to $\log K$).
+	\end{itemize}
+	
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
@@ -386,10 +419,11 @@
 	\begin{block}{Objective}
 		\vspace{-0.3cm}
 		\[
-			\log p(\bx | \bz_q(\bx)) + \| \text{sg} (\bz_e(\bx)) - \bz_q(\bx) \| + \beta \| \bz_e(\bx) - \text{sg}(\bz_q(\bx)) \|
+			\log p(\bx | \bz_q) + \| \text{sg} (\bz_e) - \bz_q \| + \beta \| \bz_e - \text{sg}(\bz_q) \|
 		\]
 	\end{block}
 	\begin{itemize}
+		\item First term is ELBO part.
 		\item Quantization operation is not differentiable.
 		\item Straight-through gradient estimation is used to backpropagate the quantization operation.
 	\end{itemize}
@@ -399,10 +433,10 @@
 %=======
 \begin{frame}{Vector Quantized VAE}
 	\begin{itemize}
-		\item The prior distribution over the discrete latents $p(\bz)$ is a categorical distribution.
-		\item It could be made autoregressive by depending on other $\bz$ in the feature map. 
-		\item Whilst training the VQ-VAE, the prior is kept constant and uniform. 
-		\item After training, fit an autoregressive distribution (using PixelCNN) over $\bz$.
+		\item The prior distribution over the discrete latents $p(\hat{\bz})$ is a categorical distribution.
+		\item It could be made autoregressive by depending on other $\hat{\bz}$ in the feature map. 
+		\item While training the VQ-VAE, the prior is kept constant and uniform. 
+		\item After training, fit an autoregressive distribution (using PixelCNN) over $\hat{\bz}$.
 	\end{itemize}
 	\begin{figure}
 		\centering
@@ -423,9 +457,7 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/vqvae2}
 	\end{figure}
-	\vfill
-	\hrule\medskip
-	{\scriptsize \href{https://arxiv.org/abs/1906.00446}{https://arxiv.org/abs/1906.00446}} 
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
@@ -433,6 +465,7 @@
 			\centering
 			\includegraphics[width=0.9\linewidth]{figs/vqvae2_pseudo}
 		\end{figure}
+		\vspace{-0.2cm}
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.85\linewidth]{figs/vqvae2_latents}
@@ -441,91 +474,23 @@
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2}
-	\begin{block}{FFHQ 1024x1024}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.63\linewidth]{figs/vqvae2_faces}
-	\end{figure}
-	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
-\end{frame}
-%=======
-\begin{frame}{Vector Quantized VAE-2}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.65\linewidth]{figs/vqvae2_diversity}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
-\end{frame}
-%=======
-\begin{frame}{Feature Quantized GAN}
-	\begin{itemize}
-		\item GAN tries to find Nash equilibrium, minibatch training is unstable. GAN relies heavily on the minibatch statistics.
-		\item Lots of feature matching strategies were proposed to stabilize the training. 
-	\end{itemize}
-	\begin{block}{Feature quantized GAN discriminator}
-		\[
-			D(\bx) = f_{\bw_T} \circ f_{\bw_B}(\bx) \quad \Rightarrow \quad D(\bx) = f_{\bw_T} \circ f_Q \circ f_{\bw_B}(\bx). 
-		\]
-	\end{block}
-	Here $f_Q$ is a vector quantization operation.
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.7\linewidth]{figs/fqgan}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
-\end{frame}
-%=======
-\begin{frame}{Feature Quantized GAN}
-	\begin{block}{Quantization procedure}
-		\begin{minipage}[t]{0.65\columnwidth}
-			\begin{figure}
-				\centering
-				\includegraphics[width=\linewidth]{figs/fqgan_cnn.png}
-			\end{figure}
-		\end{minipage}%
-		\begin{minipage}[t]{0.35\columnwidth}
-			\begin{figure}
-				\centering
-				\includegraphics[width=0.9\linewidth]{figs/fqgan_lookup}
-			\end{figure}
-		\end{minipage}
-	\end{block}
-	\begin{block}{Quantized features}
+	\begin{block}{Samples 1024x1024}
+		\vspace{-0.2cm}
 		\begin{figure}
 			\centering
-			\includegraphics[width=\linewidth]{figs/fqgan_features}
+			\includegraphics[width=0.63\linewidth]{figs/vqvae2_faces}
 		\end{figure}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
+	\vspace{-0.6cm}
+	\begin{block}{Samples diversity}
+		\vspace{-0.2cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.65\linewidth]{figs/vqvae2_diversity}
+		\end{figure}
+	\end{block}
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
-%=======
-\begin{frame}{Feature Quantized GAN}
-		\begin{minipage}[t]{0.45\columnwidth}
-			\begin{block}{ImageNet-1000}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results1.png}
-				\end{figure}
-			\end{block}
-			\begin{block}{FFHQ}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results2.png}
-				\end{figure}
-			\end{block}
-		\end{minipage}%
-		\begin{minipage}[t]{0.55\columnwidth}
-			\begin{block}{Per class metrics for ImageNet}
-				\begin{figure}
-					\centering
-					\includegraphics[width=\linewidth]{figs/fqgan_results3}
-				\end{figure}
-			\end{block}
-		\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
-\end{frame}
-%=======
 \begin{frame}{Summary}
 \end{frame}
 \end{document} 
