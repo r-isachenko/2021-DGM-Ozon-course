@@ -106,30 +106,6 @@
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
-	\begin{minipage}[t]{0.6\columnwidth}
-	\vspace{0.2cm}
-	\begin{itemize}
-		\item Neural networks for classification task have hundreds of layers.
-		\item Skip connections eliminate exploding/vanishing gradients.
-	\end{itemize}
-	\[
-		\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
-	\]
-	\end{minipage}%
-	\begin{minipage}[t]{0.4\columnwidth}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=0.95\linewidth]{figs/resnet_1.png}
-	\end{figure}
-	\end{minipage}
-	\begin{figure}
-	    \centering
-	    \includegraphics[width=\linewidth]{figs/resnet_2.png}
-	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
 	Consider Ordinary Differential Equation    
 	\begin{align*}
 	    \frac{d \bz(t)}{dt} &= f(\bz(t), \btheta); \quad \text{with initial condition }\bz(t_0) = \bz_0. \\
@@ -137,52 +113,60 @@
 	\end{align*}
 	\vspace{-0.4cm}
 	\begin{block}{Euler update step}
-		\vspace{-0.4cm}
+		\vspace{-0.6cm}
 		\[
 		    \frac{\bz(t + \Delta t) - \bz(t)}{\Delta t} = f(\bz(t), \btheta) \quad \Rightarrow \quad \bz(t + \Delta t) = \bz(t) + \Delta t f(\bz(t), \btheta).
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.6cm}
 	\end{block}
 	\begin{block}{Residual block}
-		\vspace{-0.5cm}
-		\[
-		    \bz_{t+1} = \bz_t + f(\bz_t, \btheta).
-		\]
+		\begin{minipage}[t]{0.7\columnwidth}
+			\vspace{-0.4cm}
+			\[
+				\bz_{t + 1} = \bz_t + f(\bz_t, \btheta)
+			\]
+			\vspace{-0.6cm}
+			\begin{itemize}
+				 \item It is equavalent to Euler update step for solving ODE with $\Delta t = 1$!
+				 \item Euler update step is unstable and trivial. There are more sophisticated methods.
+			\end{itemize}
+		\end{minipage}%
+		\begin{minipage}[t]{0.3\columnwidth}
+			\vspace{-0.2cm}
+			\begin{figure}
+			    \centering
+			    \includegraphics[width=\linewidth]{figs/resnet_1.png}
+			\end{figure}
+		\end{minipage}
 		\vspace{-0.4cm}
 	\end{block}
-	\begin{itemize}
-	 \item Residual learning is equavalent to Euler update step for solving ODE with $\Delta t = 1$!
-	 \item Euler update step is unstable and trivial. There are much more sophisticated methods.
-	\end{itemize}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
 	\begin{block}{Residual block}
-	\vspace{-0.3cm}
+	\vspace{-0.4cm}
 	\[
 	    \bz_{t+1} = \bz_t + f(\bz_t, \btheta).
 	\]
 	\vspace{-0.4cm}
 	\end{block}
-	\begin{itemize}
-		\item What happens as we add more layers and take smaller steps? \\
-		\item In the limit, we parameterize the continuous dynamics of hidden units using an ODE specified by a neural network: 
+	In the limit of adding more layers and taking smaller steps, we parameterize the continuous dynamics of hidden units using an ODE specified by a neural network: 
 	\[
 	    \frac{d \bz(t)}{dt} = f(\bz(t), t, \btheta); \quad \bz(t_0) = \bx; \quad \bz(t_1) = \by.
 	\]
-	\end{itemize}
 	\begin{minipage}[t]{0.4\columnwidth}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.9\linewidth]{figs/euler}
+			\includegraphics[width=0.8\linewidth]{figs/euler}
 		\end{figure}
 	\end{minipage}%
 	\begin{minipage}[t]{0.6\columnwidth}
+		\vspace{-0.4cm}
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.8\linewidth]{figs/resnet_vs_neural_ode.png}
+			\includegraphics[width=0.9\linewidth]{figs/resnet_vs_neural_ode.png}
 		\end{figure}
 	\end{minipage}
 
@@ -192,20 +176,20 @@
 
 \begin{frame}{Neural ODE}
 	\begin{block}{Forward pass (loss function)}
-		\vspace{-0.5cm}
+		\vspace{-0.8cm}
 		\begin{align*}
-			L(\by) = L(\bz(t_1)) &= L\left( \bz(t_0) + \int_{t_0}^{t_1} f(\bz(t), \btheta) dt \right) \\ &= L\left(\text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta) \right)
+			L(\by) = L(\bz(t_1)) &= L\left( \bz(t_0) + \int_{t_0}^{t_1} f(\bz(t), \btheta) dt \right) \\ &= L\bigl(\text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta) \bigr)
 		\end{align*}
 	\vspace{-0.5cm}
 	\end{block}
-	\textbf{Note:} ODESolve could be any method (not neccessary Euler).
+	\textbf{Note:} ODESolve could be any method (Euler step, Runge-Kutta methods).
 	\begin{block}{Backward pass (gradients computation)}
 		For fitting parameters we need gradients:
 		\[
-		\ba_{\bz}(t) = \frac{\partial L(\by)}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\by)}{\partial \btheta(t)}.
+			\ba_{\bz}(t) = \frac{\partial L(\by)}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\by)}{\partial \btheta(t)}.
 		\]
-		In theory of optimal control this functions called \textbf{adjoint} functions. 
-		They shows how the gradient of the loss depends on the hidden state~$\bz(t)$ and parameters $\btheta$.
+		In theory of optimal control these functions called \textbf{adjoint} functions. 
+		They show how the gradient of the loss depends on the hidden state~$\bz(t)$ and parameters $\btheta$.
 	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}     
@@ -213,90 +197,63 @@
 %=======
 \begin{frame}{Neural ODE}
 	\begin{block}{Loss function (forward pass)}
-	\vspace{-0.2cm}
+	\vspace{-0.3cm}
 	\[
 	    L(\by) = L(\bz(t_1)) = L\left(\text{ODESolve}(\bz(t_0), f, t_0,t_1, \btheta) \right)
 	\]
-	\vspace{-0.3cm}
+	\vspace{-0.6cm}
 	\end{block}
 	\begin{block}{Adjoint functions}
-	\vspace{-0.2cm}
-	\[
-	    \ba_{\bz}(t) = \frac{\partial L(\bz(t))}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\bz(t))}{\partial \btheta}
-	\]
-	\vspace{-0.2cm}
+		\vspace{-0.3cm}
+		\[
+			\ba_{\bz}(t) = \frac{\partial L(\by)}{\partial \bz(t)}; \quad \ba_{\btheta}(t) = \frac{\partial L(\by)}{\partial \btheta(t)}.
+		\]
+		\vspace{-0.4cm}
 	\end{block}
 	\begin{block}{Theorem (Pontryagin)}
 	\vspace{-0.3cm}
 	\[
-	    \frac{d \ba_{\bz}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)}; \quad  \frac{d \ba_{\btheta}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \btheta}
+	     \frac{d \ba_{\btheta}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \btheta}
 	\]
 	Do we know any initilal condition?
 	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	\begin{block}{Theorem (Pontryagin)}
+	\begin{block}{Solution for adjoint function}
 		\vspace{-0.3cm}
 		\[
-		\frac{d \ba_{\bz}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \bz(t)}; \quad  \frac{d \ba_{\btheta}(t)}{dt} = - \ba_{\bz}(t)^T \cdot \frac{\partial f(\bz(t), \btheta)}{\partial \btheta}
+			 \frac{\partial L}{\partial \btheta(t_0)} = \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta))}{\partial \btheta(t)} dt.
 		\]
 	\end{block}
-	\begin{block}{Solution for adjoint function}
-		\begin{align*}
-		 \frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), t, \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)} \\
-		 \frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta))}{\partial \btheta(t)} dt \\
-		 \bz(t_0) &= \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
-		\end{align*}
-	\end{block}
-
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Neural ODE}
 	\begin{block}{Forward pass}
+		\vspace{-0.3cm}
 		\[
-		\bz(t_1) = \int^{t_1}_{t_0} f(\bz(t), \btheta) d t  + \bz_0 \quad \Rightarrow \quad \text{ODE Solver}
+			\bz(t_1) = \int^{t_1}_{t_0} f(\bz(t), \btheta) d t  + \bz_0 \quad \Rightarrow \quad \text{ODE Solver}
 		\]
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Backward pass}
-		\small
-		\vspace{-0.3cm}
+		\vspace{-0.8cm}
 		\begin{equation*}
 			{\left.\begin{aligned}
-				\frac{\partial L}{\partial \bz(t_0)} &= \ba_{\bz}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), t, \btheta)}{\partial \bz(t)} dt + \frac{\partial L}{\partial \bz(t_1)} \\
 				\frac{\partial L}{\partial \btheta(t_0)} &= \ba_{\btheta}(t_0) =  - \int_{t_1}^{t_0} \ba_{\bz}(t)^T \frac{\partial f(\bz(t), \btheta))}{\partial \btheta(t)} dt \\
-				\bz(t_0) &= \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
+				\bz(t_0) &= - \int^{t_0}_{t_1} f(\bz(t), \btheta) d t  + \bz_1.
 			\end{aligned}\right\rbrace} \Rightarrow
 			\text{ODE Solver}
 		\end{equation*}
 	\end{block}
-
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
-\end{frame}
-%=======
-\begin{frame}{Neural ODE}
-	
+	\vspace{-0.4cm} 
+	It could be shown that such transformation is generalization of usual backpropagation.
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/neural_ode}
 	\end{figure}
-	
-	\begin{block}{Benefits}
-		\begin{itemize}
-			\item memory efficient (there is no need to store activations);
-			\item adaptive computation (depth is not defined explicitly);
-			\item parameter efficient (there is only parameters of function $f(\bz(t), \btheta)$);
-			\item scalable and invertible normalizing flows (we will discuss it today).
-		\end{itemize}
-	\end{block}
-
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
-\begin{frame}{Continuous Normaling Flows}
+\begin{frame}{Continuous Normalizing Flows}
 	\begin{block}{Discrete Normalizing Fflows}
 		\vspace{-0.4cm}
 		  \[
@@ -326,7 +283,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
-\begin{frame}{Continuous Normaling Flows}
+\begin{frame}{Continuous Normalizing Flows}
 	\begin{block}{Theorem}
 		Consider the continuous dynamic $\frac{d\bz(t)}{dt} = f(\bz(t), \btheta)$. if function $f$ is uniformly Lipschitz continuous in $\bz$ and continuous in $t$, then the change in log probability follows a differential equation
 		\[
@@ -348,7 +305,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
-\begin{frame}{Continuous NF}
+\begin{frame}{Continuous Normalizing Flows}
 	\begin{block}{Solution for continuous NF}
 		\vspace{-0.3cm}
 	\begin{align*}
