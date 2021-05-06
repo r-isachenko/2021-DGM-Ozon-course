@@ -117,7 +117,7 @@
 		\[
 		    \frac{\bz(t + \Delta t) - \bz(t)}{\Delta t} = f(\bz(t), \btheta) \quad \Rightarrow \quad \bz(t + \Delta t) = \bz(t) + \Delta t f(\bz(t), \btheta).
 		\]
-		\vspace{-0.6cm}
+		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Residual block}
 		\begin{minipage}[t]{0.7\columnwidth}
@@ -283,7 +283,7 @@
 %=======
 \begin{frame}{Continuous Normalizing Flows}
 	To train this flow we have to get the way to calculate the density~$p(\bz(t))$.
-	\begin{block}{Theorem}
+	\begin{block}{Theorem (Fokker-Planck)}
 		if function $f$ is uniformly Lipschitz continuous in $\bz$ and continuous in $t$, then
 		\vspace{-0.3cm}
 		\[
@@ -493,7 +493,7 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item VAE proposal distribution $q(z | \bx)$ is deterministic. 
+		\item VAE proposal distribution $q(\hat{\bz} | \bx)$ is deterministic. 
 		\item $KL(q(\hat{z}| \bx) || p(\hat{z}))$ term in ELBO is constant (equals to $\log K$).
 	\end{itemize}
 	
@@ -527,10 +527,12 @@
 		\item While training the VQ-VAE, the prior is kept constant and uniform. 
 		\item After training, fit an autoregressive distribution (using PixelCNN) over $\hat{\bz}$.
 	\end{itemize}
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{figs/vqvae_results}
-	\end{figure}
+	\begin{block}{Samples}
+		\begin{figure}
+			\centering
+			\includegraphics[width=\linewidth]{figs/vqvae_results}
+		\end{figure}
+	\end{block}
 
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
@@ -582,6 +584,21 @@
 \end{frame}
 %=======
 \begin{frame}{DALL-E}
+	\begin{block}{Deterministic VQ-VAE posterior}
+		\vspace{-0.3cm}
+		\[
+			q(\hat{z}_{ij} = k^* | \bx) = \begin{cases}
+				1 , \quad \text{for } k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \| \\
+				0, \quad \text{otherwise}.
+			\end{cases}
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\begin{itemize}
+		\item It is possible to use Gumbel-Softmax trick to relax this distribution to continuous one.
+		\item Since latent space is discrete we could train autoregressive transformers in it.
+		\item It is a natural way to incorporate text and image spaces.
+	\end{itemize}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/dalle}
 	\end{figure}
@@ -590,7 +607,17 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-	\item 
+	\item Residual networks could be interpreted as solution of ODE with Euler method.
+	\vfill
+	\item Adjoint method generalizes backpropagation procedure and allows to train Neural ODE solving ODE for adjoint function back in time.
+	\vfill
+	\item Fokker-Planck theorem allows to construct continuous-in-time normalizing flow with less functional restrictions.
+	\vfill
+	\item FFJORD model makes such kind of flows scalable.
+	\vfill
+	\item Gumbel-Softmax and Quantization are the two ways to create VAE with discrete latent space.
+	\vfill
+	\item It becomes more and more popular to use discrete latent spaces in the fields of image/video/music generaton.
 	\end{itemize}
 \end{frame}
 \end{document} 
