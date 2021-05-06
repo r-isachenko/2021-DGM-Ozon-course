@@ -30,6 +30,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 | 10 | April, 15 | Gan problems: vanishing gradients + mode collapse. KL vs JSD. DCGAN. Wasserstein GAN. | [slides](lectures/lecture10/Isachenko2021DeepGenerativeModels10.pdf) | [slides](seminars/seminar10/seminar10.ipynb) | 
 | 11 | April, 22 | WGAN-GP. Spectral Normalization GAN. f-divergence minimization. GAN evaluation (Inception score, FID) | [slides](lectures/lecture11/Isachenko2021DeepGenerativeModels11.pdf) | [slides](seminars/seminar11/seminar11.ipynb) | 
 | 12 | April, 29 | GAN evaluation (Precision-Recall). GAN models (Self-Attention GAN, BigGAN, PGGAN, StyleGAN). AVB. | [slides](lectures/lecture12/Isachenko2021DeepGenerativeModels12.pdf) | [slides](seminars/seminar12/seminar12.ipynb) | 
+| 13 | May, 6 | Neural ODE. Continuous-in-time NF (FFJORD). Discrete VAE (Gumbel-Softmax trick, VQ-VAE, VQ-VAE-2, DALL-E). | [slides](lectures/lecture13/Isachenko2021DeepGenerativeModels13.pdf) | [slides](seminars/seminar13/seminar13.ipynb) | 
 
 
 ## Homeworks 
